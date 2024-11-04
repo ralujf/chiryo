@@ -1,0 +1,56 @@
+.chiryo_primary {
+  padding: 0.5em 1em !important;
+  border-color: rgb(135, 206, 235);
+  background-color: rgb(135, 206, 235) !important;
+  transition: background-color 0.3s ease;
+}
+
+.chiryo_primary_action {
+  padding: 0.5em 1em !important;
+  border-color: rgb(215, 234, 241);
+  background-color: rgb(215, 234, 241) !important;
+  transition: background-color 0.3s ease;
+}
+
+.chiryo_primary:hover {
+  border-color: rgb(100, 149, 237);
+  background-color: rgb(100, 149, 237) !important;
+}
+
+.chiryo_textarea {
+  overflow: auto;
+  resize: none;
+  outline: none;
+  border: 0px 0px 2px 0px solid slategrey;
+  border-radius: 2em;
+  background-color: rgb(197, 236, 248);
+  box-shadow: rgba(15, 37, 42, 0.3) 0px 5px 10px -2.5px,
+    rgba(22, 47, 56, 0.1) 0px 3px 6px -3px;
+}
+
+.chiryo_textarea:hover {
+  background-color: white;
+}
+
+.chiryo_textarea:focus {
+  background-color: white;
+  box-shadow: rgba(15, 37, 42, 0.3) 0px 10px 20px -5px,
+    rgba(22, 47, 56, 0.1) 0px 6px 12px -6px;
+}
+
+.chiryo_rounded {
+  border-radius: 2rem !important;
+}
+
+.chiryo_border {
+  border-color: rgba(40, 40, 40, 0.3);
+}
+
+.chiryo_gap {
+  gap: 2rem;
+}
+
+.chiryo_shadow {
+  box-shadow: rgba(15, 37, 42, 0.3) 0px 10px 20px -5px,
+    rgba(22, 47, 56, 0.1) 0px 6px 12px -6px;
+}
