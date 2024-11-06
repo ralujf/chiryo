@@ -8,6 +8,7 @@ const GET_USER_TABLE_URL = '';
 const POST_SYMPTOMS_URL = '';
 const LOAD_TABLE_URL = '';
 const REMOVE_ROW_URL = '';
+const UPDATE_ROW_URL = '';
 
 export {
   API_URL,
@@ -19,4 +20,5 @@ export {
   POST_SYMPTOMS_URL,
   LOAD_TABLE_URL,
   REMOVE_ROW_URL,
+  UPDATE_ROW_URL,
 };

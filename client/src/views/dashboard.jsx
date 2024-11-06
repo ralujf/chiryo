@@ -4,6 +4,7 @@ import { loadTableData, removeRowFromTable } from '../api/crud';
 const pageNo = (eventTarget) => {
   return eventTarget.value;
 };
+
 const headerParam = 'therapist';
 
 const Dashboard = () => {
