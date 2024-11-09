@@ -8,9 +8,7 @@ const pageNo = (eventTarget) => {
 const headerParam = 'therapist';
 
 const Dashboard = () => {
-  const [tableData, setTableData] = useState(
-    Array.from({ length: 5 }, () => Array(5).fill(null)),
-  );
+  const [tableData, setTableData] = useState([[], [], [], [], []]);
   const [fetchOffset, setFetchOffset] = useState(0);
   const pages = Array(5).fill(1);
 
@@ -19,19 +17,19 @@ const Dashboard = () => {
     const userId = 1;
     let offset = 0;
 
-    offset = pageNo() * 10;
-    console.log(offset);
+    // offset = pageNo() * 10;
+    // console.log(offset);
 
     const newTableData = loadTableData(userId, offset);
 
     setFetchOffset(offset / 10);
-    setTableData(newTableData);
+    // setTableData(newTableData);
   }, []);
 
   return (
     <div
-      className="container-fluid main-container d-flex flex-column justify-content-center"
-      style={{ width: '100vw', padding: '0vw 5vw' }}
+      className="container-fluid main-container"
+      style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
       <h1 className="display-3 fw-bolder mb-5">Dashboard | {fetchOffset}</h1>
       <div
@@ -56,22 +54,22 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((_, rowIndex) => (
-              <tr key={rowIndex}>
-                <td>Data 1</td>
-                <td>Data 2</td>
-                <td>Data 3</td>
-                <td>Data 4</td>
-                <td onKeyDown={removeRowFromTable}>
-                  <i className="bi bi-trash"></i>
-                </td>
-              </tr>
-            ))}
+            {Array.isArray(tableData) &
+              tableData.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>{cell}</td>
+                  ))}
+                  <td onKeyDown={removeRowFromTable}>
+                    <i className="bi bi-trash"></i>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
 
-      <nav aria-label="Page navigation example">
+      <nav aria-label="Page navigation">
         <ul className="pagination">
           {pages.map((_, idx) => {
             <li className="page-item" key={idx} onClick={pageNo}>

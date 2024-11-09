@@ -18,14 +18,16 @@
 }
 
 .chiryo_textarea {
+  color: black;
+  width: 100%;
+  min-height: 20vh;
   overflow: auto;
   resize: none;
   outline: none;
-  border: 0px 0px 2px 0px solid slategrey;
-  border-radius: 2em;
+  border: none;
+  border-bottom: solid 10px;
   background-color: rgb(197, 236, 248);
-  box-shadow: rgba(15, 37, 42, 0.3) 0px 5px 10px -2.5px,
-    rgba(22, 47, 56, 0.1) 0px 3px 6px -3px;
+  transition: ease-in-out 180ms;
 }
 
 .chiryo_textarea:hover {
@@ -33,9 +35,10 @@
 }
 
 .chiryo_textarea:focus {
+  transition: ease-in-out 180ms;
   background-color: white;
-  box-shadow: rgba(15, 37, 42, 0.3) 0px 10px 20px -5px,
-    rgba(22, 47, 56, 0.1) 0px 6px 12px -6px;
+  box-shadow: rgba(15, 37, 42, 0.1) 0px 40px 12px 0px;
+  border-radius: 0;
 }
 
 .chiryo_rounded {

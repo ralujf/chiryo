@@ -9,12 +9,12 @@ const Footer = () => {
             <h5>Seek Help</h5>
             <ul className="list-unstyled">
               <li>
-                <Link className="text-muted" href="/">
+                <Link className="text-white link-opacity-50-hover" href="/">
                   Home
                 </Link>
               </li>
               <li>
-                <Link className="text-muted" href="">
+                <Link className="text-white link-opacity-50-hover" href="">
                   About
                 </Link>
               </li>
@@ -24,17 +24,23 @@ const Footer = () => {
             <h5>Become a Therapist</h5>
             <ul className="list-unstyled">
               <li>
-                <Link className="text-muted" href="/become-a-therapist">
+                <Link
+                  className="text-white link-opacity-50-hover"
+                  href="/become-a-therapist"
+                >
                   Apply
                 </Link>
               </li>
               <li>
-                <Link className="text-muted" href="/become-a-therapist">
+                <Link
+                  className="text-white link-opacity-100-hover"
+                  href="/become-a-therapist"
+                >
                   Requirements
                 </Link>
               </li>
               <li>
-                <Link className="text-muted" href="">
+                <Link className="text-white link-opacity-100-hover" href="">
                   Additional Information for Therapists
                 </Link>
               </li>

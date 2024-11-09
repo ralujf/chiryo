@@ -14,12 +14,9 @@ const Application = () => {
   return (
     <div
       className="container-fluid main-container"
-      style={{ margin: '30vh 0vw' }}
+      style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
-      <div
-        className="justify-content-center chiryo_rounded"
-        style={{ margin: '30vh 5vw' }}
-      >
+      <div className="justify-content-center chiryo_rounded">
         <h1 className="display-3 fw-bolder mb-5">Requirements</h1>
         <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
           <h2 className="">You must have...</h2>

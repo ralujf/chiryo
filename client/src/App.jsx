@@ -1,3 +1,4 @@
+import './app.css';
 import './styles/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -15,7 +16,7 @@ import Login from './views/login';
 
 function App() {
   return (
-    <div style={{ width: '100%' }}>
+    <div>
       <Navbar />
       <Switch>
         <Route path="/" component={Main} />

@@ -69,26 +69,30 @@ const deleteUser = async (userId) => {
 
 // Dashboard Requests
 const loadTableData = async (userId, offset) => {
-  try {
-    const response = await axios.post(
-      createURL({ baseURL: LOAD_TABLE_URL, userId: userId }),
-      {
-        headers: {
-          Authorization: fetchJWT(),
-        },
-        params: {
-          offset: offset,
-        },
-      },
-    );
-    console.log(response);
-    // Placeholder
-    return Array.from({ length: 5 }, () => {
-      Array(5).fill(null);
-    });
-  } catch (error) {
-    errorLog(error);
-  }
+  return Array.from({ length: 5 }, () => {
+    Array(5).fill(null);
+  });
+
+  // try {
+  //   const response = await axios.post(
+  //     createURL({ baseURL: LOAD_TABLE_URL, userId: userId }),
+  //     {
+  //       headers: {
+  //         Authorization: fetchJWT(),
+  //       },
+  //       params: {
+  //         offset: offset,
+  //       },
+  //     },
+  //   );
+  //   console.log(response);
+  //   // Placeholder
+  //   return Array.from({ length: 5 }, () => {
+  //     Array(5).fill(null);
+  //   });
+  // } catch (error) {
+  //   errorLog(error);
+  // }
 };
 
 const removeRowFromTable = async (userId, index) => {
