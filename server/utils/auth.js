@@ -1,9 +1,45 @@
-const generateJWT = () => {
-    // TODO: Perform mongoose query to check if user exists in db
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); 
 
-    // TODO: Generate jwt with the user information
+const generateJWT = async (userId) => {
+    try {
+        const user = await User.findById(userId);
 
-    // TODO: Return token
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        return token;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error generating JWT');
+    }
 }
 
-module.exports = { generateJWT }
+const validateJWT = async (token) => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+        
+        return user;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Invalid token');
+    }
+}
+
+// TODO: Add way to invalidate a users token
+const invalidateJWT = (token) => {
+    
+}
+
+module.exports = { generateJWT, invalidateJWT, validateJWT }

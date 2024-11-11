@@ -14,15 +14,13 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
-// TODO: Perform AI implementation, (Add headers to params to store when account is created)
-
 const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const textareaRef = useRef(null);
-  const usernameRef = useRef(null);
-  const passwordRef = useRef(null);
+  const username = useCredentialStore((state) => state.username);
+  const password = useCredentialStore((state) => state.password);
   const setUsername = useCredentialStore.getState().setUsername;
   const setPassword = useCredentialStore.getState().setPassword;
 
@@ -46,11 +44,7 @@ const Questionnaire = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       console.log('All questions answered:', answers);
-
-      //TODO: Store credentials automatically so that the user can login
       updateGlobalCredentials();
-
-      // Progress to next stage
       setIntroSet(introStateOptions.MATCH);
     }
   };
@@ -120,22 +114,25 @@ const Questionnaire = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="credsModal">
-                User Credentials
+                Your account details are...
               </h5>
             </div>
-            <div className="modal-body">
+            <div className="modal-body text-center">
               <p>
                 Awesome work! We&apos;ll send you some therapist as soon as
                 possible - be sure to check your email!
               </p>
               <p>Your user credentials have been generated successfully.</p>
-              <h5 ref={usernameRef}>{userCredentials.name}</h5>
+              <h5>{username}</h5>
               <small>Click the password to reveal</small>
               <h5
-                ref={passwordRef}
-                onClick={(e) =>
-                  (e.currentTarget.innerText = userCredentials.password)
-                }
+                onClick={(e) => {
+                  if (e.currentTarget.innerText == '*******') {
+                    e.currentTarget.innerText = password;
+                  } else {
+                    e.currentTarget.innerText = '*******';
+                  }
+                }}
               >
                 *******
               </h5>

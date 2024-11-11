@@ -6,6 +6,7 @@ import {
   LOAD_TABLE_URL,
   REMOVE_ROW_URL,
   UPDATE_ROW_URL,
+  POST_SYMPTOMS_URL,
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
 
@@ -34,7 +35,6 @@ function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
   return url;
 }
 
-// User Requests
 const registerUser = async (userData) => {
   try {
     const response = await axios.post(REGISTER_URL, userData);
@@ -67,38 +67,34 @@ const deleteUser = async (userId) => {
   }
 };
 
-// Dashboard Requests
 const loadTableData = async (userId, offset) => {
-  return Array.from({ length: 5 }, () => {
-    Array(5).fill(null);
-  });
+  try {
+    const response = await axios.post(
+      createURL({ baseURL: LOAD_TABLE_URL, userId: userId }),
+      {
+        headers: {
+          Authorization: fetchJWT(),
+        },
+        params: {
+          offset: offset,
+        },
+      },
+    );
+    console.log(response);
 
-  // try {
-  //   const response = await axios.post(
-  //     createURL({ baseURL: LOAD_TABLE_URL, userId: userId }),
-  //     {
-  //       headers: {
-  //         Authorization: fetchJWT(),
-  //       },
-  //       params: {
-  //         offset: offset,
-  //       },
-  //     },
-  //   );
-  //   console.log(response);
-  //   // Placeholder
-  //   return Array.from({ length: 5 }, () => {
-  //     Array(5).fill(null);
-  //   });
-  // } catch (error) {
-  //   errorLog(error);
-  // }
+    // Placeholder
+    return Array.from({ length: 5 }, () => {
+      Array(5).fill(null);
+    });
+  } catch (error) {
+    errorLog(error);
+  }
 };
 
 const removeRowFromTable = async (userId, index) => {
   try {
     const response = await axios.post(
-      { baseURL: REMOVE_ROW_URL, userId: userId },
+      createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
       {
         headers: {
           Authorization: fetchJWT(),
@@ -108,7 +104,24 @@ const removeRowFromTable = async (userId, index) => {
         },
       },
     );
-    console.log(response);
+    console.log(response.data);
+  } catch (error) {
+    errorLog(error);
+  }
+};
+
+const clearTable = async (userId) => {
+  try {
+    const response = await axios.delete(
+      createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
+      {
+        headers: {
+          Authorization: fetchJWT(),
+        },
+      },
+    );
+    console.log('Table cleared for user:', response.data);
+    return response.data;
   } catch (error) {
     errorLog(error);
   }
@@ -125,23 +138,35 @@ const updateRowFromTable = async (userId, userData) => {
         },
       },
     );
-    console.log(response);
+    console.log(response.data);
   } catch (error) {
     errorLog(error);
   }
 };
 
-// Match Requests
-// TODO: Figure out how to implement GAIS to match therapists
-const matchUser = (userData) => {
-  // Placeholder
-  // eslint-disable-next-line no-unused-vars
-  const { problem, age, race, id } = userData;
+const matchUser = async (userData) => {
+  const { id } = userData;
+  if (!id) return null;
 
   return [
-    { id: 1, therapist: 'temp', otherDetails: 'couple dets' },
-    { id: 2, therapist: 'temp', otherDetails: 'couple dets' },
+    { id: 1, therapist: 'John Doe', otherDetails: 'Details' },
+    { id: 2, therapist: 'Jane Smith', otherDetails: 'More Details' },
   ];
+  // TODO: Temp stuff
+  try {
+    const response = await axios.put(
+      createURL({ baseURL: POST_SYMPTOMS_URL, userId: id }),
+      userData,
+      {
+        headers: {
+          Authorization: fetchJWT(),
+        },
+      },
+    );
+    console.log(response.data);
+  } catch (error) {
+    errorLog(error);
+  }
 };
 
 export {
@@ -150,6 +175,7 @@ export {
   loginUser,
   loadTableData,
   removeRowFromTable,
+  clearTable,
   updateRowFromTable,
   matchUser,
 };

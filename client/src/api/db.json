@@ -19,6 +19,7 @@
       "id": 1,
       "firstName": "John",
       "lastName": "Doe",
+      "role": "therapist",
       "age": 45,
       "race": "Caucasian",
       "background": "Clinical Psychology",
@@ -27,6 +28,7 @@
       "email": "john.doe@example.com",
       "password": "hashedpassword123",
       "yoe": 20,
+      "ableToTreat": "",
       "reviews": [
         {
           "reviewer": "Jane Smith",
@@ -49,13 +51,15 @@
       "username": "whiplashFrog6",
       "password": "******",
       "firstName": "Steve",
-      "lastName": "Wan",
+      "lastName": "Wang",
+      "role": "client",
       "age": 45,
       "race": "Asian",
       "background": "Film maker",
       "religion": "Atheist",
       "location": "New York, NY",
       "email": "whiplashFrog@example.com",
+      "diagnosis": "",
       "createdAt": "2023-10-01T12:00:00.000Z",
       "updatedAt": "2023-10-01T12:00:00.000Z"
     }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { loadTableData, removeRowFromTable } from '../api/crud';
+import { loadTableData, removeRowFromTable, clearTable } from '../api/crud';
 
 const pageNo = (eventTarget) => {
-  return eventTarget.value;
+  return eventTarget.currenTarget.value;
 };
 
 const headerParam = 'therapist';
@@ -13,17 +13,15 @@ const Dashboard = () => {
   const pages = Array(5).fill(1);
 
   useEffect(() => {
-    // TODO: Fetch relevant table data
     const userId = 1;
     let offset = 0;
 
-    // offset = pageNo() * 10;
-    // console.log(offset);
-
+    offset = pageNo() * 10;
+    console.log(offset);
     const newTableData = loadTableData(userId, offset);
 
     setFetchOffset(offset / 10);
-    // setTableData(newTableData);
+    setTableData(newTableData);
   }, []);
 
   return (
@@ -50,7 +48,9 @@ const Dashboard = () => {
               <th className="chiryo_primary">
                 {headerParam == 'therapist' ? 'Success' : 'Problem'}
               </th>
-              <th className="chiryo_primary">Remove All</th>
+              <th className="chiryo_primary" onClick={clearTable()}>
+                Remove All
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -60,7 +60,7 @@ const Dashboard = () => {
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>{cell}</td>
                   ))}
-                  <td onKeyDown={removeRowFromTable}>
+                  <td onKeyDown={removeRowFromTable()}>
                     <i className="bi bi-trash"></i>
                   </td>
                 </tr>
@@ -72,7 +72,7 @@ const Dashboard = () => {
       <nav aria-label="Page navigation">
         <ul className="pagination">
           {pages.map((_, idx) => {
-            <li className="page-item" key={idx} onClick={pageNo}>
+            <li className="page-item" key={idx} onClick={pageNo()}>
               {idx}
             </li>;
           })}

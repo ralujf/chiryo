@@ -42,7 +42,7 @@ const Navbar = () => {
                 Apply to be a Therapist
               </Link>
             </li>
-
+            {/* TODO: Add missing links towards end of project */}
             <li className="nav-item dropdown">
               <Link
                 className="nav-link dropdown-toggle"

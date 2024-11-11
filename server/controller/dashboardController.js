@@ -18,5 +18,4 @@ const insertToDashboard = (registeredUser) => {
 
 }
 
-
 module.exports = { fetchDashboard, deleteRecord, updateRecord, insertToDashboard }
