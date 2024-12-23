@@ -1,4 +1,5 @@
 const generateJWT = require('../utils/auth')
+const User = require('../models/user')
 
 const register = (req, res) => {
     const { username, password } = req.body;
@@ -8,7 +9,7 @@ const register = (req, res) => {
         if (err) {
             return res.status(500).send('Error registering new user');
         }
-        res.status(200).send('User registered successfully');
+        return res.status(200).send('User registered successfully');
     });
 }
 
@@ -27,21 +28,19 @@ const login = async (req, res) => {
         }
         
         const token = generateJWT();
-        res.status(200).send({ message: 'Login successful', token });
+        return res.status(200).send({ message: 'Login successful', token })
+
     } catch (err) {
-        res.status(500).send('Error logging in user');
+        return res.status(500).send('Error logging in user');
     }
 }
 
 const logout = async (req, res) => {
     try {
-        // TODO: Remove token, forcefully redirect user
-        console.log("Logging out User")
         const token = req.headers.authorization.split(' ')[1];
-        console.log(token)
-        res.status(200).send('Logout successful');
+        return res.status(200).send('Logout successful')
     } catch (err) {
-        res.status(500).send('Error logging out user');
+        return res.status(500).send('Error logging out user');
     }
 }
 
@@ -59,9 +58,9 @@ const deleteUser = async (req, res) => {
             return res.status(200).send('Successfully removed account');
         }
 
-        res.status(401).send('There was something wrong with the entered credentials');
+        return res.status(401).send('There was something wrong with the entered credentials');
     } catch (error) {
-        res.status(500).send(`There was an error: ${error}`);
+        return res.status(500).send(`There was an error: ${error}`);
     }
 }
 

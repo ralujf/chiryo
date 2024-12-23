@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema;
 
-const therapistSchema = Schema({
+const TherapistSchema = new Schema({
     firstName: {
         type: String,
         required: true,
@@ -11,6 +11,15 @@ const therapistSchema = Schema({
         type: String, 
         required: true, 
     },
+    email: {
+        type: String, 
+        required: true,
+    },
+    password: {
+        type: String, 
+        required: true, 
+        unique: true, 
+    }, 
     age: {
         type: Number, 
         required: true,
@@ -31,14 +40,9 @@ const therapistSchema = Schema({
         type: String,
         required: true, 
     }, 
-    email: {
-        type: String, 
-        required: true,
-    }, 
-    password: {
+    expertise: {
         type: String, 
         required: true, 
-        unique: true, 
     },
     yoe: {
         type: Number,
@@ -52,6 +56,6 @@ const therapistSchema = Schema({
     }
 }, { timestamps: true })
 
-const Therapist = mongoose.model('Therapist', therapistSchema)
+const Therapist = mongoose.model('Therapist', TherapistSchema)
 
 module.exports = Therapist

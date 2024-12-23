@@ -1,35 +1,46 @@
 import { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import Intro from '../components/intro';
+import DashboardSidebar from '../components/dashboardSidebar';
 import { loadTableData, removeRowFromTable, clearTable } from '../api/crud';
-
-const pageNo = (eventTarget) => {
-  return eventTarget.currenTarget.value;
-};
-
+import 'react-datepicker/dist/react-datepicker.css';
+// TODO: Get this information from globalState
 const headerParam = 'therapist';
+const userId = 1;
+const firstTime = false;
 
 const Dashboard = () => {
-  const [tableData, setTableData] = useState([[], [], [], [], []]);
-  const [fetchOffset, setFetchOffset] = useState(0);
-  const pages = Array(5).fill(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [tableData, setTableData] = useState([[], [], [], [], [], []]);
+  const pages = Array.from({ length: 5 }, (_, i) => i + 1);
 
   useEffect(() => {
-    const userId = 1;
-    let offset = 0;
+    let offset = currentPage;
+    let newTableData;
+    const updateData = () => {
+      newTableData = loadTableData(userId, offset);
+      console.log(newTableData);
+      setTableData(newTableData);
+    };
+    updateData();
+  }, [currentPage]);
 
-    offset = pageNo() * 10;
-    console.log(offset);
-    const newTableData = loadTableData(userId, offset);
-
-    setFetchOffset(offset / 10);
-    setTableData(newTableData);
-  }, []);
+  const updatePage = (eventTarget) => {
+    console.log(eventTarget);
+  };
 
   return (
     <div
       className="container-fluid main-container"
       style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
-      <h1 className="display-3 fw-bolder mb-5">Dashboard | {fetchOffset}</h1>
+      {firstTime && <Intro />}
+      <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
+        Dashboard | {currentPage}
+      </h1>
+      <button className="right text-dark chiryo_rounded chiryo_primary_active mb-3">
+        Request New Therapists
+      </button>
       <div
         className="chiryo_shadow"
         style={{
@@ -42,26 +53,126 @@ const Dashboard = () => {
         <table className="table table-hover w-100">
           <thead className="chiryo_primary">
             <tr>
-              <th className="chiryo_primary">Name</th>
-              <th className="chiryo_primary">Time</th>
-              <th className="chiryo_primary">Meeting Point</th>
-              <th className="chiryo_primary">
+              <th className="chiryo_primary align-middle">Name</th>
+              <th className="chiryo_primary align-middle">Time</th>
+              <th className="chiryo_primary align-middle">Meeting Point</th>
+              <th className="chiryo_primary align-middle">
                 {headerParam == 'therapist' ? 'Success' : 'Problem'}
               </th>
-              <th className="chiryo_primary" onClick={clearTable()}>
-                Remove All
+              <th className="chiryo_primary" onClick={() => clearTable(userId)}>
+                <button
+                  className="btn chiryo_rounded chiryo_primary_action"
+                  style={{ width: '100%' }}
+                >
+                  {' '}
+                  <i className="bi bi-trash"></i> Remove All
+                </button>
               </th>
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(tableData) &
+            {Array.isArray(tableData) &&
               tableData.map((row, rowIndex) => (
-                <tr key={rowIndex}>
+                <tr key={rowIndex} className="align-middle">
                   {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
+                    <td key={cellIndex}>
+                      {cellIndex === 0 && (
+                        <span>
+                          <DashboardSidebar username={cell} />
+                        </span>
+                      )}
+                      {cellIndex === 1 && (
+                        <div
+                          className="chiryo_secondary rounded"
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'start',
+                            alignItems: 'center',
+                            alignContent: 'center',
+                            gap: '5px',
+                          }}
+                        >
+                          <input
+                            type="time"
+                            className="form-control chiryo_secondary rounded mr-3"
+                            value={cell.toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          ></input>
+                          <DatePicker
+                            selected={cell}
+                            onChange={(date) => console.log(date)}
+                          />
+                        </div>
+                      )}
+                      {cellIndex === 2 && (
+                        <div className="d-flex flex-row">
+                          <div className="dropdown">
+                            <button
+                              className="btn chiryo_secondary dropdown-toggle"
+                              type="button"
+                              id="dropdownMenuButton"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              {cell}
+                            </button>
+                            <ul
+                              className="dropdown-menu"
+                              aria-labelledby="dropdownMenuButton"
+                            >
+                              <li>
+                                <button className="dropdown-item">
+                                  Virtual
+                                </button>
+                              </li>
+                              <li>
+                                <button className="dropdown-item">Phone</button>
+                              </li>
+                              <li>
+                                <button className="dropdown-item">
+                                  In-Person
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                          <a
+                            href={cell}
+                            className="chiryo_secondary text-secondary rounded py-1 px-2"
+                          >
+                            <i className="bi bi-person-video3"></i>
+                          </a>
+                        </div>
+                      )}
+                      {cellIndex === 3 && (
+                        <button
+                          className="chiryo_secondary text-secondary"
+                          style={{ height: 'fit-content' }}
+                        >
+                          <div
+                            className="d-flex flex-row justify-content-evenly"
+                            style={{ gap: '10px' }}
+                          >
+                            <p className="mb-0">{cell}</p>
+                            <i className="bi bi-arrow-repeat"></i>
+                          </div>
+                        </button>
+                      )}
+                      {cellIndex === 4 && <span>{cell}</span>}
+                    </td>
                   ))}
-                  <td onKeyDown={removeRowFromTable()}>
-                    <i className="bi bi-trash"></i>
+                  <td onKeyDown={() => removeRowFromTable(userId, rowIndex)}>
+                    <button
+                      className="btn btn-outline-secondary"
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                      }}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -69,15 +180,30 @@ const Dashboard = () => {
         </table>
       </div>
 
-      <nav aria-label="Page navigation">
-        <ul className="pagination">
-          {pages.map((_, idx) => {
-            <li className="page-item" key={idx} onClick={pageNo()}>
-              {idx}
-            </li>;
-          })}
-        </ul>
-      </nav>
+      <div className="container-fluid mt-5">
+        <nav
+          aria-label="Page navigation"
+          className="d-flex justify-content-center"
+        >
+          <ul className="pagination">
+            {pages.map((_, idx) => {
+              return (
+                <li className="page-item" key={idx}>
+                  <button
+                    className="page-link"
+                    onClick={() => {
+                      setCurrentPage(idx);
+                      updatePage(idx);
+                    }}
+                  >
+                    {idx}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 };

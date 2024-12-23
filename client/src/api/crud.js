@@ -35,15 +35,29 @@ function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
   return url;
 }
 
-const registerUser = async (userData) => {
-  try {
-    const response = await axios.post(REGISTER_URL, userData);
-    console.log('User registered:', response.data);
-    return response.data;
-  } catch (error) {
-    errorLog(error);
-  }
-};
+const handleRequest =
+  (method, url, data = null, params = null) =>
+  async () => {
+    try {
+      const response = await axios({
+        method,
+        url,
+        data,
+        params,
+        headers: {
+          Authorization: fetchJWT(),
+        },
+      });
+      return response.data;
+    } catch (error) {
+      errorLog(error);
+    }
+  };
+
+const registerUser = handleRequest('post', REGISTER_URL);
+
+const deleteUser = (userId) =>
+  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
 
 const loginUser = async (userData) => {
   try {
@@ -55,127 +69,81 @@ const loginUser = async (userData) => {
   }
 };
 
-const deleteUser = async (userId) => {
-  try {
-    const response = await axios.delete(
-      createURL({ baseURL: DELETE_USER_URL, userId: userId }),
-    );
-    console.log('User deleted:', response.data);
-    return response.data;
-  } catch (error) {
-    errorLog(error);
-  }
-};
+const loadTableData = (userId, offset) => {
+  handleRequest(
+    'post',
+    createURL({ baseURL: LOAD_TABLE_URL, userId }),
+    null,
+    offset,
+  );
 
-const loadTableData = async (userId, offset) => {
-  try {
-    const response = await axios.post(
-      createURL({ baseURL: LOAD_TABLE_URL, userId: userId }),
+  // Placeholder row format
+  return Array.from({ length: 5 }, () => {
+    return [
       {
-        headers: {
-          Authorization: fetchJWT(),
+        user: {
+          _id: 'sLS9S*(£a3L',
+          username: 'UnlawfulGod',
+          email: 'ralphdaveysss@gmail.com',
         },
-        params: {
-          offset: offset,
+        therapist: {
+          _id: 'ie*234£39)23!',
+          firstName: 'Steve',
+          lastName: 'Watts',
+          email: 'stevewatts@gmail.com',
+          expertise: 'Couples',
         },
+        location: 'virtual',
+        time: new Date(),
+        diagnosis: 'Depression',
+        markResolvedUser: false,
+        markResolvedTherapist: false,
       },
-    );
-    console.log(response);
-
-    // Placeholder
-    return Array.from({ length: 5 }, () => {
-      Array(5).fill(null);
-    });
-  } catch (error) {
-    errorLog(error);
-  }
+    ];
+    // return [`Steve Watts`, new Date(), `Virtual`, `No`];
+  });
 };
+const removeRowFromTable = (userId, rowData) =>
+  handleRequest(
+    'post',
+    createURL({ baseURL: REMOVE_ROW_URL, userId }),
+    rowData,
+  );
 
-const removeRowFromTable = async (userId, index) => {
-  try {
-    const response = await axios.post(
-      createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
-      {
-        headers: {
-          Authorization: fetchJWT(),
-        },
-        params: {
-          rowIndex: index,
-        },
-      },
-    );
-    console.log(response.data);
-  } catch (error) {
-    errorLog(error);
-  }
-};
+const clearTable = (userId) =>
+  handleRequest('delete', createURL({ baseURL: REMOVE_ROW_URL, userId }));
 
-const clearTable = async (userId) => {
-  try {
-    const response = await axios.delete(
-      createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
-      {
-        headers: {
-          Authorization: fetchJWT(),
-        },
-      },
-    );
-    console.log('Table cleared for user:', response.data);
-    return response.data;
-  } catch (error) {
-    errorLog(error);
-  }
-};
+const updateRowFromTable = (userId, rowData) =>
+  handleRequest('put', createURL({ baseURL: UPDATE_ROW_URL, userId }), rowData);
 
-const updateRowFromTable = async (userId, userData) => {
-  try {
-    const response = await axios.put(
-      createURL({ baseURL: UPDATE_ROW_URL, userId: userId }),
-      userData,
-      {
-        headers: {
-          Authorization: fetchJWT(),
-        },
-      },
-    );
-    console.log(response.data);
-  } catch (error) {
-    errorLog(error);
-  }
-};
-
-const matchUser = async (userData) => {
+const getTherapists = async (userData) => {
   const { id } = userData;
   if (!id) return null;
 
-  return [
-    { id: 1, therapist: 'John Doe', otherDetails: 'Details' },
-    { id: 2, therapist: 'Jane Smith', otherDetails: 'More Details' },
-  ];
-  // TODO: Temp stuff
-  try {
-    const response = await axios.put(
-      createURL({ baseURL: POST_SYMPTOMS_URL, userId: id }),
-      userData,
-      {
-        headers: {
-          Authorization: fetchJWT(),
-        },
-      },
-    );
-    console.log(response.data);
-  } catch (error) {
-    errorLog(error);
-  }
+  const response = await handleRequest(
+    'get',
+    createURL({ baseURL: POST_SYMPTOMS_URL, userData }),
+  );
+  return response;
+  // return [
+  //   { id: 1, therapist: 'John Doe', otherDetails: 'Details' },
+  //   { id: 2, therapist: 'Jane Smith', otherDetails: 'More Details' },
+  // ];
+};
+
+const logoutUserRedirect = () => {
+  localStorage.removeItem('jwtToken');
+  window.location.href = '/';
 };
 
 export {
   registerUser,
   deleteUser,
   loginUser,
+  logoutUserRedirect,
   loadTableData,
   removeRowFromTable,
   clearTable,
   updateRowFromTable,
-  matchUser,
+  getTherapists,
 };

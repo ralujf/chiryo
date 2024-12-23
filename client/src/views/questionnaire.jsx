@@ -6,7 +6,9 @@ import {
 } from '../api/generateData';
 import QUESTIONS from '../api/questions';
 import IsLoading from './isLoading';
-import useCredentialStore from '../api/state';
+import Stars from '../components/stars';
+import { ToastContainer, toast } from 'react-toastify';
+import { useCredentialStore } from '../state/state';
 
 const introStateOptions = {
   START: 'START',
@@ -14,6 +16,7 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
+// TODO: Change this to ensure that the user has account details BEFORE matching
 const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -30,6 +33,18 @@ const Questionnaire = () => {
     }
   }, []);
 
+  const notify = () =>
+    toast.success('🦄 Wow so easy!', {
+      position: 'bottom-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+    });
+
   const updateGlobalCredentials = () => {
     setUsername(generateRandomUsername());
     setPassword(generateRandomPassword());
@@ -42,6 +57,7 @@ const Questionnaire = () => {
       currentQuestionIndex < QUESTIONS.length - 1
     ) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      notify();
     } else {
       console.log('All questions answered:', answers);
       updateGlobalCredentials();
@@ -61,6 +77,19 @@ const Questionnaire = () => {
           padding: '15vh 5vw',
         }}
       >
+        <Stars number={currentQuestionIndex} />
+        <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover
+          theme="light"
+        />
         <div className="w-75">
           <p className="display-3 fw-bolder mb-5">
             {QUESTIONS[currentQuestionIndex]}
@@ -88,7 +117,11 @@ const Questionnaire = () => {
               type="submit"
               className="btn chiryo_primary chiryo_rounded mt-5 d-flex justify-content-center"
             >
-              Next <i className="bi bi-arrow-right-square-fill"></i>
+              Next{' '}
+              <i
+                className="bi bi-arrow-right-square-fill"
+                style={{ marginLeft: '10px' }}
+              ></i>
             </button>
           </form>
         </div>

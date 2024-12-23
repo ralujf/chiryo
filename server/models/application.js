@@ -5,23 +5,54 @@ const Schema = mongoose.Schema;
 const ApplicationSchema = new Schema({
     firstName: {
         type: String,
-        required: true, 
+        required: true,
     }, 
     lastName: {
-        type: String,
-        required: true,
+        type: String, 
+        required: true, 
     },
-    emailAddress: {
-        type: String,
-        required: true,
-    },
-    personality: {
-        type: String,
+    email: {
+        type: String, 
         required: true,
     }, 
-    interests: {
-        type: [String],
+    password: {
+        type: String, 
+        required: true, 
+        unique: true, 
+    },
+    age: {
+        type: Number, 
         required: true,
+    }, 
+    race: {
+        type: String, 
+        required: true, 
+    },
+    background: {
+        type: String, 
+        required: true, 
+    }, 
+    religion: {
+        type: String,
+        required: true,
+    },
+    location: {
+        type: String,
+        required: true, 
+    }, 
+    expertise: {
+        type: String, 
+        required: true, 
+    },
+    yoe: {
+        type: Number,
+        required: false,
+        unique: false, 
+    }, 
+    reviews: {
+        type: Array, 
+        required: true, 
+        unique: false, 
     },
     pdfInformation: {
         type: String, 

@@ -1,24 +1,30 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL + '/api'
+  : 'http://localhost:3000/api';
 
-const REGISTER_URL = '';
-const LOGIN_URL = '';
-const DELETE_USER_URL = '';
-const GET_DETAILS_URL = '';
-const GET_USER_TABLE_URL = '';
-const POST_SYMPTOMS_URL = '';
-const LOAD_TABLE_URL = '';
-const REMOVE_ROW_URL = '';
-const UPDATE_ROW_URL = '';
+const REGISTER_URL = '/register';
+const LOGIN_URL = '/login';
+const LOGOUT_URL = '/logout';
+
+const DELETE_USER_URL = '/delete-user';
+
+const POST_SYMPTOMS_URL = '/find-matches';
+
+const GET_TABLE_URL = '/load-user-dashboard';
+const REMOVE_ROW_URL = '/delete-row';
+const UPDATE_ROW_URL = '/update-field';
+
+const APPLICATION_URL = '/therapist-application';
 
 export {
   API_URL,
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,
-  GET_DETAILS_URL,
-  GET_USER_TABLE_URL,
+  LOGOUT_URL,
+  GET_TABLE_URL,
   POST_SYMPTOMS_URL,
-  LOAD_TABLE_URL,
   REMOVE_ROW_URL,
   UPDATE_ROW_URL,
+  APPLICATION_URL,
 };

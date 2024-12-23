@@ -27,11 +27,19 @@ app.use('/api', validUserCheck, dashboardRouter)
 // MongoDB connection
 const mongoURI = process.env.MONGOURI + `0.0.0.0:27017/chiryo`;
 
-mongoose.connect(mongoURI)
+mongoose.connect(mongoURI, { autoIndex: false, tls: true })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-app.listen(port, () => {
+mongoose.connection.on('error', (err) => {
+    console.error(err)
+})
+
+mongoose.connection.on('disconnected', () => {
+    console.log('The server is disconnected')
+})
+
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 

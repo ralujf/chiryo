@@ -2,11 +2,21 @@ const { body, validationResult } = require('express-validator');
 const UserController = require('../controller/userController');
 const router = express.Router();
 
-router.post('/register', [
+const userValidationChecks = [
     body('username').trim().isLength({ min: 3 }).escape(),
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 6 }).escape()
-], (req, res) => {
+]
+
+router.post('/login', (req, res) => {
+    try {
+        UserController.login(req, res)
+    } catch (error) {
+        console.error(error)
+    }
+})
+// TODO: Refactor validator, put code in controller here
+router.post('/register', userValidationChecks, (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -16,21 +26,12 @@ router.post('/register', [
     UserController.register(req, res);
 });
 
-router.post('/create', [
-    body('username').trim().isLength({ min: 3 }).escape(),
-    body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 6 }).escape()
-], (req, res) => {
-    const errors = validationResult(req);
+router.post('/logout', (req, res) => {
+    // TODO: Check if the user is actually logged in 
+    UserController.logout(req, res)
+})
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    UserController.create(req, res);
-});
-
-router.delete('/delete', [
+router.delete('/delete-user', [
     body('userId').isUUID().escape()
 ], (req, res) => {
     const errors = validationResult(req);

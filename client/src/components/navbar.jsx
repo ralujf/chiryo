@@ -85,9 +85,8 @@ const Navbar = () => {
           </ul>
 
           <Link
-            className="nav-link text-dark chiryo_rounded chiryo_primary"
+            className="nav-link text-dark chiryo_rounded chiryo_primary_active"
             to="/login"
-            style={{ color: 'darkgrey' }}
           >
             Login
           </Link>

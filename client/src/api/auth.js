@@ -13,4 +13,6 @@ const fetchJWT = () => {
   return null;
 };
 
-export { fetchJWT, storeJWT };
+const checkIsNewUser = () => {};
+
+export { fetchJWT, storeJWT, checkIsNewUser };

@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 
+// TODO: Refactor to use same form
 const Application = () => {
   const {
     register,
@@ -7,16 +8,14 @@ const Application = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+  const onSubmit = (data) => console.log(data);
 
   return (
     <div
       className="container-fluid main-container"
-      style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
+      style={{ width: '50%', minHeight: '80vh', margin: '15vh 5vw' }}
     >
-      <div className="justify-content-center chiryo_rounded">
+      <div className="justify-content-center chiryo_rounded mb-5">
         <h1 className="display-3 fw-bolder mb-5">Requirements</h1>
         <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
           <h2 className="">You must have...</h2>
@@ -28,15 +27,12 @@ const Application = () => {
             </li>
             <li>Strong & demonstrable communication skills</li>
             <li>Professional Accreditation (BACP, NCS, UKCP)</li>
-            <li>Good Vibes</li>
+            <li>Good Vibes ☀️</li>
           </ul>
         </div>
       </div>
 
-      <div
-        className="justify-content-center chiryo_rounded"
-        style={{ margin: '30vh 5vw' }}
-      >
+      <div className="chiryo_rounded">
         <h1 className="display-3 fw-bolder mb-5">Application Form</h1>
         <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,7 +102,7 @@ const Application = () => {
             </div>
             <button
               type="submit"
-              className="btn chiryo_rounded chiryo_primary chiryo_shadow"
+              className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
             >
               Submit
             </button>

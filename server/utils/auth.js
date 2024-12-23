@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); 
+const User = require('../models/'); 
 
 const generateJWT = async (userId) => {
     try {
@@ -37,9 +37,5 @@ const validateJWT = async (token) => {
     }
 }
 
-// TODO: Add way to invalidate a users token
-const invalidateJWT = (token) => {
-    
-}
 
-module.exports = { generateJWT, invalidateJWT, validateJWT }
+module.exports = { generateJWT, validateJWT }

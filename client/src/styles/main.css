@@ -1,20 +1,31 @@
-.chiryo_primary {
+.chiryo_primary,
+.chiryo_primary_active {
   padding: 0.5em 1em !important;
   border-color: rgb(135, 206, 235);
   background-color: rgb(135, 206, 235) !important;
-  transition: background-color 0.3s ease;
+  transition: 0.2s ease-in-out;
 }
 
 .chiryo_primary_action {
   padding: 0.5em 1em !important;
   border-color: rgb(215, 234, 241);
   background-color: rgb(215, 234, 241) !important;
-  transition: background-color 0.3s ease;
+  color: rgba(255, 255, 255, 0.75);
+  transition: 0.3s ease-in-out !important;
 }
 
-.chiryo_primary:hover {
+.chiryo_primary_active:hover,
+.chiryo_primary_action:hover {
   border-color: rgb(100, 149, 237);
   background-color: rgb(100, 149, 237) !important;
+  padding: 0.5em 1em !important;
+  transform: scale(0.95);
+  transition: background-color 0.2s ease-in;
+}
+
+.chiryo_secondary {
+  border-color: rgb(228, 228, 228);
+  background-color: rgb(228, 228, 228) !important;
 }
 
 .chiryo_textarea {
@@ -56,4 +67,23 @@
 .chiryo_shadow {
   box-shadow: rgba(15, 37, 42, 0.3) 0px 10px 20px -5px,
     rgba(22, 47, 56, 0.1) 0px 6px 12px -6px;
+}
+
+.chiryo_footer_link {
+  color: white;
+  opacity: 0.7;
+  padding: 0.5em 1em;
+  transition: 0.3s ease;
+}
+
+.chiryo_footer_link:hover {
+  opacity: 1;
+  color: rgb(135, 206, 235);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chiryo_footer_link:focus {
+  opacity: 1;
+  color: rgb(135, 206, 235);
+  background-color: rgba(255, 255, 255, 0.2);
 }

@@ -1,9 +1,10 @@
 import './app.css';
 import './styles/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Switch, Route } from 'wouter';
+// import { PrivateRoute } from './api/routes';
 
 import Navbar from './components/navbar';
 import Footer from './components/footer';
@@ -21,10 +22,11 @@ function App() {
       <Switch>
         <Route path="/" component={Main} />
         <Route path="/become-a-therapist" component={Application} />
-        <Route
+        {/* <PrivateRoute
           path="/dashboard"
           component={() => <Dashboard tableHeaders="header" />}
-        />
+        /> */}
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />
         <Route>404: No Page Here Boss</Route>
