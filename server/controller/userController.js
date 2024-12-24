@@ -2,8 +2,8 @@ const generateJWT = require('../utils/auth')
 const User = require('../models/user')
 
 const register = (req, res) => {
-    const { username, password } = req.body;
-    const newUser = new User({ username, password });
+    const { username, password, email, age, race, background, religion, location, firstLogin } = req.body;
+    const newUser = new User({ username, password, email, age, race, background, religion, location, firstLogin });
     
     newUser.save((err) => {
         if (err) {

@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
         console.error(error)
     }
 })
-// TODO: Refactor validator, put code in controller here
+// TODO: Ensure the request has all relevant fields (see register function)
 router.post('/register', userValidationChecks, (req, res) => {
     const errors = validationResult(req);
 

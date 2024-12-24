@@ -9,6 +9,7 @@ import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
+import { registerUser, getTherapists } from '../api/crud';
 
 const introStateOptions = {
   START: 'START',
@@ -16,7 +17,6 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
-// TODO: Change this to ensure that the user has account details BEFORE matching
 const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -34,7 +34,7 @@ const Questionnaire = () => {
   }, []);
 
   const notify = () =>
-    toast.success('🦄 Wow so easy!', {
+    toast.success('+100 Points🦄', {
       position: 'bottom-center',
       autoClose: 5000,
       hideProgressBar: false,
@@ -57,10 +57,15 @@ const Questionnaire = () => {
       currentQuestionIndex < QUESTIONS.length - 1
     ) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      // TODO (Maybe): Depending on the index, append a sentence started to give the google AI model context
       notify();
     } else {
-      console.log('All questions answered:', answers);
       updateGlobalCredentials();
+
+      // TODO: Add form information
+      // Need to also address the fact that i fthe user do not entire the requied fields then there matching will be completely random
+      registerUser({ username: username, password: password });
+      console.log('All questions answered:', answers);
       setIntroSet(introStateOptions.MATCH);
     }
   };
@@ -149,6 +154,9 @@ const Questionnaire = () => {
               <h5 className="modal-title" id="credsModal">
                 Your account details are...
               </h5>
+              <button onClick={() => getTherapists(currentUserId)}>
+                Find Matches
+              </button>
             </div>
             <div className="modal-body text-center">
               <p>

@@ -8,4 +8,14 @@ const QUESTIONS = [
   'How old are you?',
 ];
 
-export default QUESTIONS;
+const PROMPTS = [
+  'I am feeling',
+  'The last time I had an episode was',
+  '',
+  '',
+  'My background is',
+  'In my free time I like to',
+  '',
+];
+
+export { QUESTIONS, PROMPTS };

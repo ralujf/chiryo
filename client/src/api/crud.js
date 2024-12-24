@@ -54,11 +54,6 @@ const handleRequest =
     }
   };
 
-const registerUser = handleRequest('post', REGISTER_URL);
-
-const deleteUser = (userId) =>
-  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
-
 const loginUser = async (userData) => {
   try {
     const response = await axios.post(LOGIN_URL, userData);
@@ -68,6 +63,12 @@ const loginUser = async (userData) => {
     errorLog(error);
   }
 };
+
+const registerUser = (userData) =>
+  handleRequest('post', createURL({ baseURL: REGISTER_URL }), userData);
+
+const deleteUser = (userId) =>
+  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
 
 const loadTableData = (userId, offset) => {
   handleRequest(
@@ -116,11 +117,11 @@ const clearTable = (userId) =>
 const updateRowFromTable = (userId, rowData) =>
   handleRequest('put', createURL({ baseURL: UPDATE_ROW_URL, userId }), rowData);
 
-const getTherapists = async (userData) => {
+const getTherapists = (userData) => {
   const { id } = userData;
   if (!id) return null;
 
-  const response = await handleRequest(
+  const response = handleRequest(
     'get',
     createURL({ baseURL: POST_SYMPTOMS_URL, userData }),
   );

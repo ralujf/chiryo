@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Routers
+const applicationsRoute = require('./routes/enrol')
 const userRouter = require('./routes/user')
 const matchRouter = require('./routes/matching')
 const dashboardRouter = require('./routes/dashboard');
@@ -21,6 +22,7 @@ function validUserCheck(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use('/api', matchRouter)
+app.use('/api', applicationsRoute)
 app.use('/api', validUserCheck, userRouter)
 app.use('/api', validUserCheck, dashboardRouter)
 

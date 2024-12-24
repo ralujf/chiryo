@@ -25,10 +25,6 @@ const Dashboard = () => {
     updateData();
   }, [currentPage]);
 
-  const updatePage = (eventTarget) => {
-    console.log(eventTarget);
-  };
-
   return (
     <div
       className="container-fluid main-container"
@@ -71,98 +67,85 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
+            {/* TODO: Change this to be able to render both the user and therapist forat */}
             {Array.isArray(tableData) &&
               tableData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="align-middle">
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>
-                      {cellIndex === 0 && (
-                        <span>
-                          <DashboardSidebar username={cell} />
-                        </span>
-                      )}
-                      {cellIndex === 1 && (
-                        <div
-                          className="chiryo_secondary rounded"
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'start',
-                            alignItems: 'center',
-                            alignContent: 'center',
-                            gap: '5px',
-                          }}
-                        >
-                          <input
-                            type="time"
-                            className="form-control chiryo_secondary rounded mr-3"
-                            value={cell.toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          ></input>
-                          <DatePicker
-                            selected={cell}
-                            onChange={(date) => console.log(date)}
-                          />
-                        </div>
-                      )}
-                      {cellIndex === 2 && (
-                        <div className="d-flex flex-row">
-                          <div className="dropdown">
-                            <button
-                              className="btn chiryo_secondary dropdown-toggle"
-                              type="button"
-                              id="dropdownMenuButton"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            >
-                              {cell}
-                            </button>
-                            <ul
-                              className="dropdown-menu"
-                              aria-labelledby="dropdownMenuButton"
-                            >
-                              <li>
-                                <button className="dropdown-item">
-                                  Virtual
-                                </button>
-                              </li>
-                              <li>
-                                <button className="dropdown-item">Phone</button>
-                              </li>
-                              <li>
-                                <button className="dropdown-item">
-                                  In-Person
-                                </button>
-                              </li>
-                            </ul>
-                          </div>
-                          <a
-                            href={cell}
-                            className="chiryo_secondary text-secondary rounded py-1 px-2"
-                          >
-                            <i className="bi bi-person-video3"></i>
-                          </a>
-                        </div>
-                      )}
-                      {cellIndex === 3 && (
+                  <td key={rowIndex}>
+                    <span>
+                      <DashboardSidebar username={row.user.username} />
+                    </span>
+                    <div
+                      className="chiryo_secondary rounded"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'start',
+                        alignItems: 'center',
+                        alignContent: 'center',
+                        gap: '5px',
+                      }}
+                    >
+                      <input
+                        type="time"
+                        className="form-control chiryo_secondary rounded mr-3"
+                        value={row.time.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      ></input>
+                      <DatePicker
+                        selected={row.time}
+                        onChange={(date) => console.log(date)}
+                      />
+                    </div>
+                    <div className="d-flex flex-row">
+                      <div className="dropdown">
                         <button
-                          className="chiryo_secondary text-secondary"
-                          style={{ height: 'fit-content' }}
+                          className="btn chiryo_secondary dropdown-toggle"
+                          type="button"
+                          id="dropdownMenuButton"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
                         >
-                          <div
-                            className="d-flex flex-row justify-content-evenly"
-                            style={{ gap: '10px' }}
-                          >
-                            <p className="mb-0">{cell}</p>
-                            <i className="bi bi-arrow-repeat"></i>
-                          </div>
+                          {row.location}
                         </button>
-                      )}
-                      {cellIndex === 4 && <span>{cell}</span>}
-                    </td>
-                  ))}
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="dropdownMenuButton"
+                        >
+                          <li>
+                            <button className="dropdown-item">Virtual</button>
+                          </li>
+                          <li>
+                            <button className="dropdown-item">Phone</button>
+                          </li>
+                          <li>
+                            <button className="dropdown-item">In-Person</button>
+                          </li>
+                        </ul>
+                      </div>
+                      <a
+                        href={row}
+                        className="chiryo_secondary text-secondary rounded py-1 px-2"
+                      >
+                        <i className="bi bi-person-video3"></i>
+                      </a>
+                    </div>
+
+                    <button
+                      className="chiryo_secondary text-secondary"
+                      style={{ height: 'fit-content' }}
+                    >
+                      <div
+                        className="d-flex flex-row justify-content-evenly"
+                        style={{ gap: '10px' }}
+                      >
+                        <p className="mb-0">{row.markResolvedUser}</p>
+                        <i className="bi bi-arrow-repeat"></i>
+                      </div>
+                    </button>
+                  </td>
                   <td onKeyDown={() => removeRowFromTable(userId, rowIndex)}>
                     <button
                       className="btn btn-outline-secondary"
@@ -193,7 +176,6 @@ const Dashboard = () => {
                     className="page-link"
                     onClick={() => {
                       setCurrentPage(idx);
-                      updatePage(idx);
                     }}
                   >
                     {idx}

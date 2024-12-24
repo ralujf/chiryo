@@ -20,10 +20,10 @@ const Main = () => {
         </div>
 
         <motion.div
-          initial={{ backgroundColor: 'rgb(0, 255, 0)', opacity: 0 }}
-          whileInView={{ backgroundColor: 'rgb(255, 0, 0)', opacity: 1 }}
+          initial={{ backgroundColor: 'rgb(255, 255, 255)', opacity: 0 }}
+          whileInView={{ backgroundColor: 'rgb(135, 206, 235)', opacity: 1 }}
         >
-          This is a placeholder till i figure out what i want to animate
+          Placeholder
         </motion.div>
 
         <div className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between">
