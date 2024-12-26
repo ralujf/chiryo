@@ -7,6 +7,7 @@ import {
   REMOVE_ROW_URL,
   UPDATE_ROW_URL,
   POST_SYMPTOMS_URL,
+  APPLICATION_URL,
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
 
@@ -64,21 +65,33 @@ const loginUser = async (userData) => {
   }
 };
 
-const registerUser = (userData) =>
-  handleRequest('post', createURL({ baseURL: REGISTER_URL }), userData);
+const logoutUserRedirect = () => {
+  localStorage.removeItem('jwtToken');
+  window.location.href = '/';
+};
+
+const registerUser = (userData) => {
+  const result = handleRequest(
+    'post',
+    createURL({ baseURL: REGISTER_URL }),
+    userData,
+  );
+  return result;
+};
 
 const deleteUser = (userId) =>
   handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
 
 const loadTableData = (userId, offset) => {
-  handleRequest(
+  let result = handleRequest(
     'post',
     createURL({ baseURL: LOAD_TABLE_URL, userId }),
     null,
     offset,
   );
 
-  // Placeholder row format
+  // return result
+  // Placeholder Data
   return Array.from({ length: 5 }, () => {
     return [
       {
@@ -104,6 +117,7 @@ const loadTableData = (userId, offset) => {
     // return [`Steve Watts`, new Date(), `Virtual`, `No`];
   });
 };
+
 const removeRowFromTable = (userId, rowData) =>
   handleRequest(
     'post',
@@ -132,10 +146,12 @@ const getTherapists = (userData) => {
   // ];
 };
 
-const logoutUserRedirect = () => {
-  localStorage.removeItem('jwtToken');
-  window.location.href = '/';
-};
+const sendApplication = (applicationData) =>
+  handleRequest(
+    'post',
+    createURL({ baseURL: APPLICATION_URL }),
+    applicationData,
+  );
 
 export {
   registerUser,
@@ -147,4 +163,5 @@ export {
   clearTable,
   updateRowFromTable,
   getTherapists,
+  sendApplication,
 };

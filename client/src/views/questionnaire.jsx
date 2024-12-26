@@ -21,11 +21,18 @@ const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [userDetails, setUserDetails] = useState({});
   const textareaRef = useRef(null);
+
+  const userId = useCredentialStore((state) => state.userId);
   const username = useCredentialStore((state) => state.username);
   const password = useCredentialStore((state) => state.password);
+
   const setUsername = useCredentialStore.getState().setUsername;
   const setPassword = useCredentialStore.getState().setPassword;
+  const setID = useCredentialStore.getState().setID;
+
+  let optionalForm = false;
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -63,8 +70,20 @@ const Questionnaire = () => {
       updateGlobalCredentials();
 
       // TODO: Add form information
-      // Need to also address the fact that i fthe user do not entire the requied fields then there matching will be completely random
-      registerUser({ username: username, password: password });
+      const { email, age, race, background, religion, location } = userDetails;
+      // Need to also address the fact that if the user do not entire the required fields then there matching will be completely random
+      // TODO: Make sure this actually returns the newly saved user id if the registration is successful
+      const id = registerUser({
+        username: username,
+        password: password,
+        email: email,
+        age: age,
+        race: race,
+        background: background,
+        religion: religion,
+        location: location,
+      });
+      setID(id);
       console.log('All questions answered:', answers);
       setIntroSet(introStateOptions.MATCH);
     }
@@ -108,9 +127,64 @@ const Questionnaire = () => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               handleAnswer(formData.get('answer'));
+              setUserDetails(formData);
               textareaRef.current.value = '';
             }}
           >
+            {optionalForm && (
+              <div>
+                <input
+                  placeholder="Email"
+                  type="email"
+                  name="email"
+                  pattern=".+@example\.com"
+                  required
+                ></input>
+                <small className="text-muted text-center">
+                  While these fields are not necessary, they&apos;d really help
+                  find better matches! However, if you want to skip, press next
+                </small>
+                <input
+                  placeholder="Age"
+                  type="number"
+                  name="age"
+                  min="1"
+                  max="120"
+                  className="form-control mb-3"
+                />
+                <select name="race" className="form-control mb-3">
+                  <option value="">Select Race</option>
+                  <option value="asian">Asian</option>
+                  <option value="black">Black</option>
+                  <option value="white">White</option>
+                  <option value="hispanic">Hispanic</option>
+                  <option value="other">Other</option>
+                </select>
+                <select name="ethnicBackground" className="form-control mb-3">
+                  <option value="">Select Ethnic Background</option>
+                  <option value="asian">Asian</option>
+                  <option value="african">African</option>
+                  <option value="european">European</option>
+                  <option value="latino">Latino</option>
+                  <option value="other">Other</option>
+                </select>
+                <select name="religion" className="form-control mb-3">
+                  <option value="">Select Religion</option>
+                  <option value="christianity">Christianity</option>
+                  <option value="islam">Islam</option>
+                  <option value="hinduism">Hinduism</option>
+                  <option value="buddhism">Buddhism</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  placeholder="Location"
+                  type="text"
+                  name="location"
+                  className="form-control mb-3"
+                  id="locationInput"
+                />
+              </div>
+            )}
             <textarea
               ref={textareaRef}
               className="chiryo_textarea"
@@ -154,7 +228,7 @@ const Questionnaire = () => {
               <h5 className="modal-title" id="credsModal">
                 Your account details are...
               </h5>
-              <button onClick={() => getTherapists(currentUserId)}>
+              <button onClick={() => getTherapists(userId)}>
                 Find Matches
               </button>
             </div>
