@@ -2,16 +2,22 @@ import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
-import { loadTableData, removeRowFromTable, clearTable } from '../api/crud';
+import {
+  loadTableData,
+  removeRowFromTable,
+  clearTable,
+  getTherapists,
+  updateRowFromTable,
+} from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
 // TODO: Get this information from globalState
-const headerParam = 'therapist';
+const role = 'therapist';
 const userId = 1;
 const firstTime = false;
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [tableData, setTableData] = useState([[], [], [], [], [], []]);
+  const [tableData, setTableData] = useState();
   const pages = Array.from({ length: 5 }, (_, i) => i + 1);
 
   useEffect(() => {
@@ -19,11 +25,19 @@ const Dashboard = () => {
     let newTableData;
     const updateData = () => {
       newTableData = loadTableData(userId, offset);
-      console.log(newTableData);
+      console.log('Dashboard Data', newTableData);
       setTableData(newTableData);
     };
     updateData();
   }, [currentPage]);
+
+  const handleRowUpdate = (rowItem) => {
+    // listen for the user updating any fields
+    // Take in the row of data has had the value change
+    // pass the row that received changes, with the new data to console.log
+    console.log(rowItem);
+    // updateRowFromTable()
+  };
 
   return (
     <div
@@ -32,9 +46,12 @@ const Dashboard = () => {
     >
       {firstTime && <Intro />}
       <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
-        Dashboard | {currentPage}
+        Dashboard | {currentPage + 1}
       </h1>
-      <button className="right text-dark chiryo_rounded chiryo_primary_active mb-3">
+      <button
+        className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
+        onClick={() => getTherapists(userId)}
+      >
         Request New Therapists
       </button>
       <div
@@ -46,19 +63,20 @@ const Dashboard = () => {
           border: '1rem solid rgb(135, 206, 235)',
         }}
       >
-        <table className="table table-hover w-100">
+        <table className="table w-100">
           <thead className="chiryo_primary">
             <tr>
               <th className="chiryo_primary align-middle">Name</th>
               <th className="chiryo_primary align-middle">Time</th>
               <th className="chiryo_primary align-middle">Meeting Point</th>
               <th className="chiryo_primary align-middle">
-                {headerParam == 'therapist' ? 'Success' : 'Problem'}
+                {role == 'therapist' ? 'Success' : 'Problem'}
               </th>
-              <th className="chiryo_primary" onClick={() => clearTable(userId)}>
+              <th className="chiryo_primary">
                 <button
                   className="btn chiryo_rounded chiryo_primary_action"
                   style={{ width: '100%' }}
+                  onClick={() => clearTable(userId)}
                 >
                   {' '}
                   <i className="bi bi-trash"></i> Remove All
@@ -67,14 +85,15 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {/* TODO: Change this to be able to render both the user and therapist forat */}
             {Array.isArray(tableData) &&
               tableData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="align-middle">
-                  <td key={rowIndex}>
-                    <span>
-                      <DashboardSidebar username={row.user.username} />
-                    </span>
+                  <td>
+                    <DashboardSidebar
+                      {...(row.user ? row.user : row.therapist)}
+                    />
+                  </td>
+                  <td>
                     <div
                       className="chiryo_secondary rounded"
                       style={{
@@ -86,19 +105,20 @@ const Dashboard = () => {
                         gap: '5px',
                       }}
                     >
-                      <input
-                        type="time"
-                        className="form-control chiryo_secondary rounded mr-3"
-                        value={row.time.toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      ></input>
-                      <DatePicker
-                        selected={row.time}
-                        onChange={(date) => console.log(date)}
-                      />
+                      <div style={{ display: 'block' }}>
+                        <DatePicker
+                          selected={row.time}
+                          onChange={(date) => handleRowUpdate(date)}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          timeCaption="time"
+                          dateFormat="Pp"
+                        />
+                      </div>
                     </div>
+                  </td>
+                  <td>
                     <div className="d-flex flex-row">
                       <div className="dropdown">
                         <button
@@ -126,13 +146,14 @@ const Dashboard = () => {
                         </ul>
                       </div>
                       <a
-                        href={row}
+                        href={row.locationLink}
                         className="chiryo_secondary text-secondary rounded py-1 px-2"
                       >
                         <i className="bi bi-person-video3"></i>
                       </a>
                     </div>
-
+                  </td>
+                  <td>
                     <button
                       className="chiryo_secondary text-secondary"
                       style={{ height: 'fit-content' }}
@@ -141,7 +162,16 @@ const Dashboard = () => {
                         className="d-flex flex-row justify-content-evenly"
                         style={{ gap: '10px' }}
                       >
-                        <p className="mb-0">{row.markResolvedUser}</p>
+                        <p className="mb-0">
+                          {role === 'therapist' && (
+                            <div>
+                              {row.markResolvedTherapist ? 'Yes' : 'No'}
+                            </div>
+                          )}
+                          {role === 'user' && (
+                            <div> {row.markResolvedUser ? 'Yes' : 'No'}</div>
+                          )}
+                        </p>
                         <i className="bi bi-arrow-repeat"></i>
                       </div>
                     </button>
@@ -153,6 +183,7 @@ const Dashboard = () => {
                         height: '100%',
                         width: '100%',
                       }}
+                      onClick={() => removeRowFromTable(userId, row)}
                     >
                       <i className="bi bi-trash"></i>
                     </button>
@@ -169,20 +200,31 @@ const Dashboard = () => {
           className="d-flex justify-content-center"
         >
           <ul className="pagination">
+            <li className="page-item">
+              <a href="#" className="page-link">
+                Previous
+              </a>
+            </li>
             {pages.map((_, idx) => {
               return (
                 <li className="page-item" key={idx}>
-                  <button
+                  <a
                     className="page-link"
                     onClick={() => {
                       setCurrentPage(idx);
                     }}
+                    href="#"
                   >
-                    {idx}
-                  </button>
+                    {idx + 1}
+                  </a>
                 </li>
               );
             })}
+            <li className="page-item">
+              <a href="#" className="page-link" onClick={console.log('yessir')}>
+                Next
+              </a>
+            </li>
           </ul>
         </nav>
       </div>

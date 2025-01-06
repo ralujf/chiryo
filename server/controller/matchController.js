@@ -51,7 +51,17 @@ const matchUserWithTherapist = async (userData) => {
     } = userData
 
     const result = await run(problem)
-    // TODO: GAIS Response Format 
+    /**
+     * Predicted diagnosis
+     * @typedef {Object} Result
+     * @property {Array<Object>} diagnosis - The array holding the predicted diagnosis as an object i.e  {"name": "depression", "description" : "description of symptoms"}
+     */
+
+    /**
+     * Return format of run function
+     * @return {Result} diagnosisObject - The predicted diagnosis 
+     */
+ 
     // const response = {
     //     "diagnosis": [
     //         {"name": "depression", "description" : "description of symptoms"}

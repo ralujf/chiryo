@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
-const Form = ({ formTitle }) => {
+const Form = ({ formTitle, method }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => method(data);
 
   return (
     <div className="chiryo_rounded chiryo_primary w-50 p-5">
@@ -26,10 +26,10 @@ const Form = ({ formTitle }) => {
           className="mb-3 w-50"
           {...register('Password', { required: true })}
         />
-        {errors.exampleRequired && <span>Password is required</span>}
+        {errors.email && errors.password && <span>Password is required</span>}
         <button
           type="submit"
-          className="btn chiryo_rounded chiryo_primary chiryo_shadow"
+          className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
           style={{ width: 'fit-content' }}
         >
           Login
@@ -41,6 +41,7 @@ const Form = ({ formTitle }) => {
 
 Form.propTypes = {
   formTitle: PropTypes.string.isRequired,
+  method: PropTypes.func,
 };
 
 export default Form;

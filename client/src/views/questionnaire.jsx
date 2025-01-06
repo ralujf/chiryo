@@ -4,12 +4,14 @@ import {
   generateRandomPassword,
   generateRandomUsername,
 } from '../api/generateData';
-import QUESTIONS from '../api/questions';
+import { motion } from 'motion/react';
+import { questionAniOptions } from '../styles/animations';
+import { QUESTIONS, PROMPTS } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
-import { registerUser, getTherapists } from '../api/crud';
+import { registerUser } from '../api/crud';
 
 const introStateOptions = {
   START: 'START',
@@ -21,6 +23,7 @@ const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [animate, setAnimate] = useState(false);
   const [userDetails, setUserDetails] = useState({});
   const textareaRef = useRef(null);
 
@@ -32,8 +35,6 @@ const Questionnaire = () => {
   const setPassword = useCredentialStore.getState().setPassword;
   const setID = useCredentialStore.getState().setID;
 
-  let optionalForm = false;
-
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -43,7 +44,7 @@ const Questionnaire = () => {
   const notify = () =>
     toast.success('+100 Points🦄', {
       position: 'bottom-center',
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -57,54 +58,69 @@ const Questionnaire = () => {
     setPassword(generateRandomPassword());
   };
 
-  const handleAnswer = (answer) => {
-    setAnswers([...answers, answer]);
+  const handleAnswer = (formResponse) => {
     if (
       introState === introStateOptions.START &&
       currentQuestionIndex < QUESTIONS.length - 1
     ) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      // TODO (Maybe): Depending on the index, append a sentence started to give the google AI model context
+      setAnswers([
+        ...answers,
+        PROMPTS[currentQuestionIndex] + formResponse.get('answer'),
+      ]);
+      setAnimate(true);
+
+      textareaRef.current.value = '';
+
+      setTimeout(() => {
+        setAnimate(false);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }, 1500);
+
       notify();
     } else {
+      // Completion State
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
       updateGlobalCredentials();
-
-      // TODO: Add form information
-      const { email, age, race, background, religion, location } = userDetails;
-      // Need to also address the fact that if the user do not entire the required fields then there matching will be completely random
-      // TODO: Make sure this actually returns the newly saved user id if the registration is successful
-      const id = registerUser({
-        username: username,
-        password: password,
-        email: email,
-        age: age,
-        race: race,
-        background: background,
-        religion: religion,
-        location: location,
-      });
-      setID(id);
-      console.log('All questions answered:', answers);
-      setIntroSet(introStateOptions.MATCH);
     }
   };
 
-  if (introStateOptions.START) {
+  const handleOptionalForm = (formResponse) => {
+    setUserDetails(formResponse);
+    console.log(userDetails);
+    const { email, age, race, background, religion, location } = userDetails;
+    const id = registerUser({
+      username: username,
+      password: password,
+      email: email,
+      age: age,
+      race: race,
+      background: background,
+      religion: religion,
+      location: location,
+    });
+    console.log('All questions answered:', answers);
+    setID(id);
+    setIntroSet(introStateOptions.MATCH);
+  };
+
+  if (introState === introStateOptions.START) {
     return (
       <div
         className="container-fluid d-flex justify-content-center"
         style={{
           width: '100vw',
-          height: '140vh',
+          height: '175vh',
           maxWidth: '100%',
           minHeight: '100vh',
           padding: '15vh 5vw',
         }}
       >
-        <Stars number={currentQuestionIndex} />
+        {currentQuestionIndex < QUESTIONS.length && (
+          <Stars number={currentQuestionIndex} />
+        )}
         <ToastContainer
           position="bottom-center"
-          autoClose={5000}
+          autoClose={2000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -115,41 +131,50 @@ const Questionnaire = () => {
           theme="light"
         />
         <div className="w-75">
-          <p className="display-3 fw-bolder mb-5">
+          <motion.p
+            variants={questionAniOptions}
+            initial="hidden"
+            animate={animate ? 'hidden' : 'visible'}
+            className="display-3 fw-bolder mb-5"
+          >
             {QUESTIONS[currentQuestionIndex]}
-          </p>
-          <small>
-            It&apos;s okay! You can be honest, all your data will be encrypted
-            and unreadable by anyone!
-          </small>
+          </motion.p>
+          {currentQuestionIndex === 0 && (
+            <small>
+              It&apos;s okay! You can be honest, all your data will be encrypted
+              and unreadable by anyone!
+            </small>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
-              handleAnswer(formData.get('answer'));
-              setUserDetails(formData);
-              textareaRef.current.value = '';
+              if (currentQuestionIndex >= QUESTIONS.length) {
+                handleOptionalForm(formData);
+              } else {
+                handleAnswer(formData);
+              }
             }}
           >
-            {optionalForm && (
+            {currentQuestionIndex >= QUESTIONS.length && (
               <div>
-                <input
-                  placeholder="Email"
-                  type="email"
-                  name="email"
-                  pattern=".+@example\.com"
-                  required
-                ></input>
-                <small className="text-muted text-center">
+                <small className="text-muted text-center mb-4">
                   While these fields are not necessary, they&apos;d really help
                   find better matches! However, if you want to skip, press next
                 </small>
                 <input
+                  placeholder="Email"
+                  type="email"
+                  name="email"
+                  className="form-control mb-3"
+                  required
+                ></input>
+                <input
                   placeholder="Age"
                   type="number"
                   name="age"
-                  min="1"
-                  max="120"
+                  min="12"
+                  max="100"
                   className="form-control mb-3"
                 />
                 <select name="race" className="form-control mb-3">
@@ -183,6 +208,7 @@ const Questionnaire = () => {
                   className="form-control mb-3"
                   id="locationInput"
                 />
+                <p>Anything else?</p>
               </div>
             )}
             <textarea
@@ -191,12 +217,14 @@ const Questionnaire = () => {
               type="text"
               name="answer"
               required
+              style={{ fontSize: '2rem' }}
+              disabled={animate}
             />
             <button
               type="submit"
               className="btn chiryo_primary chiryo_rounded mt-5 d-flex justify-content-center"
             >
-              Next{' '}
+              {currentQuestionIndex >= QUESTIONS.length ? 'Submit' : 'Next'}
               <i
                 className="bi bi-arrow-right-square-fill"
                 style={{ marginLeft: '10px' }}
@@ -206,14 +234,15 @@ const Questionnaire = () => {
         </div>
       </div>
     );
-  } else if (introStateOptions.MATCH) {
+  } else if (introState === introStateOptions.MATCH) {
     return (
       <IsLoading
         introStateOptions={introStateOptions}
         introStateSetter={setIntroSet}
+        userId={userId}
       />
     );
-  } else if (introStateOptions.GENCRED) {
+  } else if (introState === introStateOptions.GENCRED) {
     return (
       <div
         className="modal show d-block"
@@ -221,16 +250,14 @@ const Questionnaire = () => {
         role="dialog"
         aria-labelledby="credsModal"
         aria-hidden="true"
+        style={{ minHeight: '100vh' }}
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="credsModal">
+              <h5 className="modal-title text-center" id="credsModal">
                 Your account details are...
               </h5>
-              <button onClick={() => getTherapists(userId)}>
-                Find Matches
-              </button>
             </div>
             <div className="modal-body text-center">
               <p>
@@ -253,7 +280,11 @@ const Questionnaire = () => {
               </h5>
             </div>
             <div className="modal-footer">
-              <Link href="/login" type="button" className="btn chiryo_button">
+              <Link
+                href="/login"
+                type="button"
+                className="btn chiryo_primary chiryo_rounded chiryo_button"
+              >
                 Login
               </Link>
             </div>

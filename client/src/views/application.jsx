@@ -1,4 +1,6 @@
 import { useForm } from 'react-hook-form';
+import applicationImage from '../assets/chiryohero-application.png';
+import { sendApplication } from '../api/crud';
 
 // TODO: Refactor to use same form
 const Application = () => {
@@ -8,108 +10,219 @@ const Application = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => sendApplication(data);
 
   return (
-    <div
-      className="container-fluid main-container"
-      style={{ width: '50%', minHeight: '80vh', margin: '15vh 5vw' }}
-    >
-      <div className="justify-content-center chiryo_rounded mb-5">
-        <h1 className="display-3 fw-bolder mb-5">Requirements</h1>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
-          <h2 className="">You must have...</h2>
-          <ul>
-            <li>Testimonials from previous clients</li>
-            <li>
-              Degree in field of Psychology, Nursing or other Mental
-              Health/Social Work Studies
-            </li>
-            <li>Strong & demonstrable communication skills</li>
-            <li>Professional Accreditation (BACP, NCS, UKCP)</li>
-            <li>Good Vibes ☀️</li>
-          </ul>
+    <>
+      <div
+        className="container-fluid main-container"
+        style={{ width: '50%', minHeight: '80vh', margin: '15vh 5vw' }}
+      >
+        <div
+          className="position-absolute"
+          style={{ height: '215%', pointerEvents: 'none' }}
+        >
+          <img
+            src={applicationImage}
+            className="sticky-top z-1"
+            alt="application image"
+            width={'35%'}
+            style={{
+              left: '60%',
+              top: '15%',
+            }}
+          />
         </div>
-      </div>
+        <div className="justify-content-center chiryo_rounded mb-5">
+          <h1 className="display-3 fw-bolder mb-5">Requirements</h1>
+          <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+            <h2>You must have...</h2>
+            <ul>
+              <li>Testimonials from previous clients</li>
+              <li>
+                Degree in field of Psychology, Nursing or other Mental
+                Health/Social Work Studies
+              </li>
+              <li>Strong & demonstrable communication skills</li>
+              <li>Professional Accreditation (BACP, NCS, UKCP)</li>
+              <li>Good Vibes ☀️</li>
+            </ul>
+          </div>
+        </div>
 
-      <div className="chiryo_rounded">
-        <h1 className="display-3 fw-bolder mb-5">Application Form</h1>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">
-                First Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="firstName"
-                {...register('firstName', { required: true })}
-              />
-              {errors.firstName && <span>This field is required</span>}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">
-                Last Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="lastName"
-                {...register('lastName', { required: true })}
-              />
-              {errors.lastName && <span>This field is required</span>}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email Address
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                {...register('email', { required: true })}
-              />
-              {errors.email && <span>This field is required</span>}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="credentials" className="form-label">
-                Credentials
-              </label>
-              <select
-                className="form-select"
-                id="credentials"
-                {...register('credentials', { required: true })}
-              >
-                <option value="">Select your credentials</option>
-                <option value="credential1">Credential 1</option>
-                <option value="credential2">Credential 2</option>
-                <option value="credential3">Credential 3</option>
-              </select>
-              {errors.credentials && <span>This field is required</span>}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="resume" className="form-label">
-                Upload Resume
-              </label>
-              <input
-                type="file"
-                className="form-control"
-                id="resume"
-                {...register('resume', { required: true })}
-              />
-              {errors.resume && <span>This field is required</span>}
-            </div>
-            <button
-              type="submit"
-              className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
+        <div className="chiryo_rounded">
+          <h1 className="display-3 fw-bolder mb-5">Application Form</h1>
+          <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+            <form
+              encType="multipart/form-data"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              Submit
-            </button>
-          </form>
+              <div className="mb-3">
+                <label htmlFor="firstName" className="form-label">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="firstName"
+                  {...register('firstName', { required: true })}
+                />
+                {errors.firstName && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="lastName" className="form-label">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="lastName"
+                  {...register('lastName', { required: true })}
+                />
+                {errors.lastName && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  {...register('email', { required: true })}
+                />
+                {errors.email && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="number" className="form-label">
+                  Age
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="age"
+                  min="12"
+                  max="100"
+                  {...register('age', { required: false })}
+                />
+                {errors.age && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="ethnicBackground" className="form-label">
+                  Ethnic Background
+                </label>
+                <select
+                  className="form-select"
+                  id="ethnicBackground"
+                  {...register('ethnicBackground', { required: true })}
+                >
+                  <option value="">Select Ethnic Background</option>
+                  <option value="asian">Asian</option>
+                  <option value="black">Black</option>
+                  <option value="white">White</option>
+                  <option value="hispanic">Hispanic</option>
+                  <option value="nativeAmerican">Native American</option>
+                  <option value="pacificIslander">Pacific Islander</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors.ethnicBackground && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="religion" className="form-label">
+                  Religion
+                </label>
+                <select
+                  className="form-select"
+                  id="religion"
+                  {...register('religion', { required: true })}
+                >
+                  <option value="">Select Religion</option>
+                  <option value="christianity">Christianity</option>
+                  <option value="islam">Islam</option>
+                  <option value="hinduism">Hinduism</option>
+                  <option value="buddhism">Buddhism</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors.religion && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="expertise" className="form-label">
+                  Expertise
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="expertise"
+                  {...register('expertise', { required: true })}
+                />
+                {errors.expertise && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="yoe" className="form-label">
+                  Years of Experience
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="yoe"
+                  {...register('yoe', { required: true })}
+                />
+                {errors.yoe && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="credentials" className="form-label">
+                  Credentials
+                </label>
+                <select
+                  className="form-select"
+                  id="credentials"
+                  {...register('credentials', { required: true })}
+                >
+                  <option value="">Select your credentials</option>
+                  <option value="psychology">Psychology BSc (Hons)</option>
+                  <option value="nursing">Nursing BSc (Hons)</option>
+                  <option value="medicine">Medicine BSc (Hons)</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors.credentials && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="postgraduateDegree" className="form-label">
+                  Postgraduate Degree
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="postgraduateDegree"
+                  {...register('postgraduateDegree', { required: true })}
+                />
+                {errors.postgraduateDegree && (
+                  <span>This field is required</span>
+                )}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="resume" className="form-label">
+                  Upload Resume
+                </label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="resume"
+                  {...register('resume', { required: true })}
+                />
+                {errors.resume && <span>This field is required</span>}
+              </div>
+              <button
+                type="submit"
+                className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

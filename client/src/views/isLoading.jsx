@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { getTherapists } from '../api/crud';
 
-const IsLoading = ({ introStateOptions, introStateSetter }) => {
+const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
+  getTherapists(userId);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setLoadingProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(interval);
+          // TODO: Wrong way of doing this, refactor at some point to use global state instead of external mutation
           introStateSetter(introStateOptions.GENCRED);
           return 100;
         }
-        return prevProgress + 3.33; //Fake default timer
+        return prevProgress + 3.33;
       });
     }, 1000);
 
@@ -19,8 +23,11 @@ const IsLoading = ({ introStateOptions, introStateSetter }) => {
   }, []);
 
   return (
-    <div className="d-flex flex-column align-items-center">
-      <p>Generating your match...</p>
+    <div
+      className="d-flex flex-column align-items-center"
+      style={{ minHeight: '100vh' }}
+    >
+      <p className="display-4">Generating your match...</p>
       <div className="progress" style={{ width: '80%' }}>
         <div
           className="progress-bar"
@@ -31,7 +38,7 @@ const IsLoading = ({ introStateOptions, introStateSetter }) => {
           aria-valuemax="100"
         ></div>
       </div>
-      <p>{loadingProgress}%</p>
+      <p className="display-5">{loadingProgress}%</p>
     </div>
   );
 };
@@ -39,6 +46,7 @@ const IsLoading = ({ introStateOptions, introStateSetter }) => {
 IsLoading.propTypes = {
   introStateOptions: PropTypes.string.isRequired,
   introStateSetter: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired,
 };
 
 export default IsLoading;

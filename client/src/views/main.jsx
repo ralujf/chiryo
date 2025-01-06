@@ -1,6 +1,7 @@
 import '../styles/main.css';
 
-import { motion } from 'motion';
+import { motion } from 'motion/react';
+import { animationOptions } from '../styles/animations';
 import topHero from '../assets/chiryohero1.png';
 import mentalHealthChart from '../assets/chart.png';
 import bottomHero from '../assets/chiryohero2.png';
@@ -16,15 +17,10 @@ const Main = () => {
         style={{ margin: '30vh 0vh' }}
       >
         <div className="col-md-5 chiryo_rounded p-3 p-md">
-          <img src={topHero} alt="hero" width={'100%'} />
+          <motion.div {...animationOptions}>
+            <img src={topHero} alt="hero" width={'100%'} />
+          </motion.div>
         </div>
-
-        <motion.div
-          initial={{ backgroundColor: 'rgb(255, 255, 255)', opacity: 0 }}
-          whileInView={{ backgroundColor: 'rgb(135, 206, 235)', opacity: 1 }}
-        >
-          Placeholder
-        </motion.div>
 
         <div className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between">
           <h1 className="text-center display-4 fw-bolder mb-3">
@@ -48,11 +44,30 @@ const Main = () => {
       </div>
 
       <div className="row" style={{ margin: '30vh 15vw' }}>
-        <img src={mentalHealthChart} alt="hero" width={'25%'} />
-        <p className="text-center display-3 fw-bolder">
+        <motion.img
+          {...animationOptions}
+          src={mentalHealthChart}
+          alt="hero"
+          width={'25%'}
+        />
+        <motion.h1
+          style={{
+            position: 'absolute',
+            left: '40%',
+            fontSize: '10em',
+            fontWeight: 'bolder',
+          }}
+          {...animationOptions}
+        >
+          20%
+        </motion.h1>
+        <motion.p
+          className="text-center display-3 fw-bolder"
+          {...animationOptions}
+        >
           1 in 5 Young adults suffer from mental health issues, you aren&apos;t
           alone
-        </p>
+        </motion.p>
       </div>
 
       <div
@@ -74,7 +89,12 @@ const Main = () => {
         </div>
 
         <div className="col-md-5 chiryo_rounded">
-          <img src={bottomHero} alt="hero" width={'100%'} />
+          <motion.img
+            {...animationOptions}
+            src={bottomHero}
+            alt="hero"
+            width={'100%'}
+          />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 const DashboardSidebar = (props) => {
-  const { username, information } = props;
+  const { username, email, age, diagnosis } = props;
   return (
     <>
       <button
@@ -32,7 +32,14 @@ const DashboardSidebar = (props) => {
           ></button>
         </div>
         <div className="offcanvas-body">
-          <div>{information}</div>
+          {age}
+          {diagnosis}
+          <button
+            className="text-dark chiryo_rounded chiryo_primary_active mb-3"
+            onClick={() => (window.location.href = `mailto:${email}`)}
+          >
+            Send Email
+          </button>
         </div>
       </div>
     </>
@@ -41,7 +48,10 @@ const DashboardSidebar = (props) => {
 
 DashboardSidebar.propTypes = {
   username: PropTypes.string.isRequired,
-  information: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  // TODO: Alter implementation and change the rest once everything is done
+  age: PropTypes.string,
+  diagnosis: PropTypes.string,
 };
 
 export default DashboardSidebar;

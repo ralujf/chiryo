@@ -42,7 +42,7 @@ const Navbar = () => {
                 Apply to be a Therapist
               </Link>
             </li>
-            {/* TODO: Add missing links towards end of project */}
+
             <li className="nav-item dropdown">
               <Link
                 className="nav-link dropdown-toggle"
@@ -60,19 +60,18 @@ const Navbar = () => {
                 className="dropdown-menu"
                 aria-labelledby="navbarDropdownMenuLink"
               >
-                <Link className="dropdown-item" to="#">
+                <Link className="dropdown-item" to="/info/#">
                   Why is mental health important?
                 </Link>
-                <Link className="dropdown-item" to="#">
+                <Link className="dropdown-item" to="/info/#">
                   Ways to improve mental health
                 </Link>
-                <Link className="dropdown-item" to="#">
+                <Link className="dropdown-item" to="/info/#">
                   Recommended Services
                 </Link>
               </div>
             </li>
 
-            {/* if the user is logged in only */}
             <li className="nav-item">
               <Link
                 className="nav-link"

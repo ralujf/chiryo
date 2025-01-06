@@ -3,7 +3,7 @@ import {
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,
-  LOAD_TABLE_URL,
+  GET_TABLE_URL,
   REMOVE_ROW_URL,
   UPDATE_ROW_URL,
   POST_SYMPTOMS_URL,
@@ -85,7 +85,7 @@ const deleteUser = (userId) =>
 const loadTableData = (userId, offset) => {
   let result = handleRequest(
     'post',
-    createURL({ baseURL: LOAD_TABLE_URL, userId }),
+    createURL({ baseURL: GET_TABLE_URL, userId }),
     null,
     offset,
   );
@@ -93,28 +93,26 @@ const loadTableData = (userId, offset) => {
   // return result
   // Placeholder Data
   return Array.from({ length: 5 }, () => {
-    return [
-      {
-        user: {
-          _id: 'sLS9S*(£a3L',
-          username: 'UnlawfulGod',
-          email: 'ralphdaveysss@gmail.com',
-        },
-        therapist: {
-          _id: 'ie*234£39)23!',
-          firstName: 'Steve',
-          lastName: 'Watts',
-          email: 'stevewatts@gmail.com',
-          expertise: 'Couples',
-        },
-        location: 'virtual',
-        time: new Date(),
-        diagnosis: 'Depression',
-        markResolvedUser: false,
-        markResolvedTherapist: false,
+    return {
+      user: {
+        _id: 'sLS9S*(£a3L',
+        username: 'UnlawfulGod',
+        email: 'ralphdaveysss@gmail.com',
       },
-    ];
-    // return [`Steve Watts`, new Date(), `Virtual`, `No`];
+      therapist: {
+        _id: 'ie*234£39)23!',
+        firstName: 'Steve',
+        lastName: 'Watts',
+        email: 'stevewatts@gmail.com',
+        expertise: 'Couples',
+      },
+      location: 'Virtual',
+      locationLink: '',
+      time: new Date(),
+      diagnosis: 'Depression',
+      markResolvedUser: false,
+      markResolvedTherapist: false,
+    };
   });
 };
 

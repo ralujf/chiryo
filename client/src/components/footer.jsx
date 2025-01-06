@@ -1,9 +1,9 @@
 import { Link } from 'wouter';
-// TODO: Add the missing links towards the end of project
+
 const Footer = () => {
   return (
     <footer
-      className="bg-dark text-white py-4 container-fluid"
+      className="bg-dark text-white py-4 container-fluid z-6 relative-bottom"
       style={{ width: '100vw' }}
     >
       <div className="container">
@@ -17,7 +17,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="chiryo_footer_link rounded">
-                <Link className="text-white" href="#">
+                <Link className="text-white" href="/about">
                   About
                 </Link>
               </li>
@@ -37,7 +37,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="chiryo_footer_link rounded">
-                <Link className="text-white" href="#">
+                <Link className="text-white" href="/become-a-therapist/info">
                   Additional Information for Therapists
                 </Link>
               </li>

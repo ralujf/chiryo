@@ -3,7 +3,7 @@
   padding: 0.5em 1em !important;
   border-color: rgb(135, 206, 235);
   background-color: rgb(135, 206, 235) !important;
-  transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out !important;
 }
 
 .chiryo_primary_action {
@@ -24,14 +24,14 @@
 }
 
 .chiryo_secondary {
-  border-color: rgb(228, 228, 228);
-  background-color: rgb(228, 228, 228) !important;
+  border-color: rgb(243, 243, 243);
+  background-color: rgb(243, 243, 243) !important;
 }
 
 .chiryo_textarea {
   color: black;
   width: 100%;
-  min-height: 20vh;
+  min-height: 40vh;
   overflow: auto;
   resize: none;
   outline: none;
@@ -86,4 +86,11 @@
   opacity: 1;
   color: rgb(135, 206, 235);
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chiryo_login_background {
+  background-image: url('../assets/login-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

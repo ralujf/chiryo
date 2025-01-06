@@ -15,6 +15,23 @@ import Dashboard from './views/dashboard';
 import Questionnaire from './views/questionnaire';
 import Login from './views/login';
 
+// Stateless pages
+import userInfo from './views/userInfo';
+import therapistInfo from './views/therapistInfo';
+import about from './views/about';
+
+{
+  /* TODO: Refactor and stop putting the same styling in every component lol */
+}
+const NotFound = () => (
+  <div
+    className="d-flex justify-content-center align-items-center"
+    style={{ height: '100vh', width: '100vw' }}
+  >
+    <h1>404: No Page Here Boss</h1>
+  </div>
+);
+
 function App() {
   return (
     <div>
@@ -29,7 +46,10 @@ function App() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />
-        <Route>404: No Page Here Boss</Route>
+        <Route path="/about" component={about} />
+        <Route path="/info" component={userInfo} />
+        <Route path="/become-a-therapist/info" component={therapistInfo} />
+        <Route>{NotFound}</Route>
       </Switch>
       <Footer />
     </div>
