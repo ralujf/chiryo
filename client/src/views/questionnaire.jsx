@@ -12,6 +12,7 @@ import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
 import { registerUser } from '../api/crud';
+import quizSound from '../assets/correct.mp3';
 
 const introStateOptions = {
   START: 'START',
@@ -34,6 +35,8 @@ const Questionnaire = () => {
   const setUsername = useCredentialStore.getState().setUsername;
   const setPassword = useCredentialStore.getState().setPassword;
   const setID = useCredentialStore.getState().setID;
+
+  const correctAudio = new Audio(quizSound);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -147,6 +150,7 @@ const Questionnaire = () => {
           )}
           <form
             onSubmit={(e) => {
+              correctAudio.play();
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               if (currentQuestionIndex >= QUESTIONS.length) {

@@ -4,7 +4,10 @@
   "description": "backend api for chiryo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tests" : "node tests/tests.js",
+    "test:coverage": "jest --coverage",
+    "start" : "node index.js"
+
   },
   "author": "JonathanFajobi",
   "license": "ISC",

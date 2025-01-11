@@ -31,12 +31,21 @@ const Dashboard = () => {
     updateData();
   }, [currentPage]);
 
-  const handleRowUpdate = (rowItem) => {
-    // listen for the user updating any fields
-    // Take in the row of data has had the value change
-    // pass the row that received changes, with the new data to console.log
-    console.log(rowItem);
-    // updateRowFromTable()
+  /**
+   *
+   * @param {number} rowIndex
+   * @param {Object} data
+   * @param {string} type - i.e. time, location, locationLink
+   * @description - Update the state, then pass the newly updated state to an async function that will update the database
+   */
+  const handleRowUpdate = (rowIndex, data, type) => {
+    const updatedTableData = [...tableData];
+    updatedTableData[rowIndex] = {
+      ...updatedTableData[rowIndex],
+      [type]: data,
+    };
+    setTableData(updatedTableData);
+    updateRowFromTable(tableData[rowIndex]);
   };
 
   return (
@@ -108,7 +117,10 @@ const Dashboard = () => {
                       <div style={{ display: 'block' }}>
                         <DatePicker
                           selected={row.time}
-                          onChange={(date) => handleRowUpdate(date)}
+                          onChange={(e) => {
+                            console.log(e.currentTarget.value);
+                            handleRowUpdate();
+                          }}
                           showTimeSelect
                           timeFormat="HH:mm"
                           timeIntervals={15}

@@ -11,6 +11,9 @@ import {
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
 
+// eslint-disable-next-line no-unused-vars
+import * as types from './typedefs';
+
 function errorLog(error) {
   if (error.response) {
     console.error('Error response:', error.response.data);
@@ -82,6 +85,12 @@ const registerUser = (userData) => {
 const deleteUser = (userId) =>
   handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
 
+/**
+ *
+ * @param {*} userId
+ * @param {*} offset
+ * @returns @type {types.TableRow[]}
+ */
 const loadTableData = (userId, offset) => {
   let result = handleRequest(
     'post',
@@ -91,7 +100,6 @@ const loadTableData = (userId, offset) => {
   );
 
   // return result
-  // Placeholder Data
   return Array.from({ length: 5 }, () => {
     return {
       user: {
