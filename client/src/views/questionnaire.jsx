@@ -20,6 +20,8 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
+// TODO: Create a super compressed GIF of slow waves in the background for chill vibes
+
 const Questionnaire = () => {
   const [introState, setIntroSet] = useState(introStateOptions.START);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -45,7 +47,7 @@ const Questionnaire = () => {
   }, []);
 
   const notify = () =>
-    toast.success('+100 Points🦄', {
+    toast.success('Nice Job! +100 Points🦄', {
       position: 'bottom-center',
       autoClose: 2000,
       hideProgressBar: false,
@@ -56,6 +58,9 @@ const Questionnaire = () => {
       theme: 'light',
     });
 
+  /**
+   * @description - Generates a random username for a new user
+   */
   const updateGlobalCredentials = () => {
     setUsername(generateRandomUsername());
     setPassword(generateRandomPassword());
@@ -87,6 +92,11 @@ const Questionnaire = () => {
     }
   };
 
+  /**
+   *
+   * @param {Object} formResponse
+   * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
+   */
   const handleOptionalForm = (formResponse) => {
     setUserDetails(formResponse);
     console.log(userDetails);

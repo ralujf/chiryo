@@ -1,46 +1,35 @@
+const express = require('express');
 const { body, validationResult } = require('express-validator');
-const UserController = require('../controller/userController');
+const { login, logout, register, deleteUser } = require('../controller/userController');
+const { generateJWT } = require('../middleware/auth')
 const router = express.Router();
 
-const userValidationChecks = [
+const registrationValidation = [
     body('username').trim().isLength({ min: 3 }).escape(),
     body('email').isEmail().normalizeEmail(),
     body('password').isLength({ min: 6 }).escape()
 ]
 
-router.post('/login', (req, res) => {
-    try {
-        UserController.login(req, res)
-    } catch (error) {
-        console.error(error)
-    }
-})
-// TODO: Ensure the request has all relevant fields (see register function)
-router.post('/register', userValidationChecks, (req, res) => {
+const loginValidation = [
+    body('username').trim().isLength({ min: 3 }).escape(),
+    body('password').isLength({ min: 6 }).escape()
+]
+
+router.post('/logout', logout)
+
+router.post('/login', loginValidation, (req, res, next) => {
     const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+}, login, generateJWT)
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    
-    UserController.register(req, res);
-});
-
-router.post('/logout', (req, res) => {
-    // TODO: Check if the user is actually logged in 
-    UserController.logout(req, res)
-})
-
-router.delete('/delete-user', [
-    body('userId').isUUID().escape()
-], (req, res) => {
+router.post('/register', registrationValidation, () => {
     const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+}, register);
 
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    UserController.deleteUser(req, res);
-});
+router.delete('/delete-user-account', loginValidation, () => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())return res.status(400).json({ errors: errors.array() });
+}, deleteUser);
 
 module.exports = router;

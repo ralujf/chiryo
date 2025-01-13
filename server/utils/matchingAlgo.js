@@ -1,7 +1,13 @@
 const stringComparison = require('string-comparison');
 const Therapist = require('../models/therapist')
 
-
+/**
+ * 
+ * @param {Object} objectA - object with any number of keys 
+ * @param {Object} objectB - object with any number of keys
+ * @returns 
+ * @description - Return correlation score between two objects with the same keys using string comparison (cosine.similarity) and a simple distance calculation. The higher the number, the better the correlation
+ */
 function calculateCorrelation(objectA, objectB) {
     const keys = Object.keys(objectA);
     let totalScore = 0;
@@ -30,7 +36,13 @@ function calculateCorrelation(objectA, objectB) {
 
     return count > 0 ? totalScore / count : 0;
 }
-
+/**
+ * 
+ * @param {Object} objectA - an object with any keys
+ * @param {Object} objectB - an objects with any keys
+ * @returns {boolean}
+ * @description - Returns true if the objects have the same complete structure 
+ */
 function assertObject(objectA, objectB) {
     const keysA = Object.keys(objectA);
     const keysB = Object.keys(objectB);
@@ -58,6 +70,21 @@ const returnAllTherapists = async () => {
     }
 };
 
+/**
+ * @typedef {Object} UserSubset
+ * @property {string} _id
+ * @property {number} age
+ * @property {race} string
+ * @property {religion} string 
+ * @property {diagnosis} string 
+ */
+
+/**
+ * 
+ * @param {UserSubset} userInfo - Subset of user information containing the information required to make a successful match 
+ * @returns {CorrelationScore[]} - Matches: Ranking of the therapists, Diagnosis: The users diagnosis    
+ * @description - Return matches and diagnosis of the user by taking a users information, i.e. age, race, diagnosis, religion and use these features to match them with a therapist  
+ */
 async function matchObject(userInfo) {
     const correlationScores = []
     const userFormatForMatching = {
@@ -66,6 +93,8 @@ async function matchObject(userInfo) {
         "religion": "",
         "diagnosis": "", 
     }
+
+    // Double check keys are filtered
     const user = userInfo
     Object.keys(user).forEach(key => {
         if (!(key in userFormatForMatching)) {
@@ -74,21 +103,41 @@ async function matchObject(userInfo) {
     });
 
     const therapistArray = returnAllTherapists()
-    const valid = assertObject(userInfo, userFormat)
+    const valid = assertObject(userInfo, userFormatForMatching)
     if(!valid) throw new Error('Object format incorrect')
 
-    for (let therapist of therapistArray) {
+    for (const  therapist of therapistArray) {
         let correlationValue = calculateCorrelation(userInfo, therapist) 
         correlationScores.push({compatibilityScore: correlationValue, therapist: therapist})
     }
 
-    const top5Indices = correlationScores
+    /**
+     * @typedef {Object} Therapist
+     * @property {string} _id
+     * @property {string} firstName
+     * @property {string} lastName
+     * @property {string} email
+     * @property {string} expertise
+     */
+
+    /**
+     * @typedef {Object} CorrelationScore
+     * @property {number} compatibilityScore
+     * @property {Therapist} therapist
+     */
+
+    /**
+     * @type {CorrelationScore[]}
+     */
+
+    const topMatches = correlationScores
         .sort((a, b) => b.compatibilityScore - a.compatibilityScore)
         .slice(0, 7)
 
-    const ranking = top5Indices.map(index => therapistArray[index]);
+    const rankedTherapistByCompat = topMatches.map((x) => x.therapist)
+    
     const result = {
-        matches: ranking, 
+        matches: rankedTherapistByCompat, 
         diagnosis: user.diagnosis
     }
 

@@ -7,6 +7,7 @@ const {
 const matchObject = require('../utils/matchingAlgo')
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
+const User = require('../models/user')
 
 const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
@@ -20,6 +21,24 @@ const generationConfig = {
     maxOutputTokens: 8192,
     responseMimeType: "application/json",
 };
+
+/**
+ * @typedef {Object}
+ * @property {string} name - The name of the illness of which the users has been diagnosed with 
+ * @property {string} description - The description of the illness which the user has been diagnosed with
+ */
+
+/**
+ * Predicted diagnosis
+ * @typedef {Object} ModelResult 
+ * @property {Array<Object>} diagnosis - The array holding the predicted diagnosis as an object i.e  {"name": "depression", "description" : "description of symptoms"}
+ */
+
+
+/**
+ * @param {Object} data - The users information from file://./../../client/src/views/questionnaire.jsx
+ * @returns {ModelResult} diagnosisObject - The predicted diagnosis, accessible by response.diagnosis[0].name 
+ */
 
 async function run(data) {
     const chatSession = model.startChat({
@@ -45,48 +64,39 @@ async function run(data) {
     return result.response.text()
 }
 
-const matchUserWithTherapist = async (userData) => {
-    const {
-        _id, age, race, religion, problem
-    } = userData
-
-    const result = await run(problem)
-    /**
-     * Predicted diagnosis
-     * @typedef {Object} Result
-     * @property {Array<Object>} diagnosis - The array holding the predicted diagnosis as an object i.e  {"name": "depression", "description" : "description of symptoms"}
-     */
-
-    /**
-     * Return format of run function
-     * @return {Result} diagnosisObject - The predicted diagnosis 
-     */
- 
-    // const response = {
-    //     "diagnosis": [
-    //         {"name": "depression", "description" : "description of symptoms"}
-    //     ]
-    // }
-    //
-    // response.diagnosis[0].name
-
-    // TODO: Match this with internal matchObject schema, only include variables to match 
-    const userForMatching = {
-        age: age,
-        race : race, 
-        religion: religion,
-        diagnosis: result?.diagnosis[0].name,
-    }
-
+const matchUserWithTherapist = async (req, res, next) => {
     try {
-        let output = await matchObject(userForMatching)
-        // TODO: placeholder for output 
-        // return output
-        return { matches: [therapist1, therapist2, therapist3], diagnosis: userForMatching.diagnosis }
+        const { userId } = req.params
+        const { userInfo } = req.body
+        const currentUser = await User.findById(userId)
+
+        if (!currentUser) return res.status(400).send("There is an issue with the provided ID")
+
+        const {
+            _id, age, race, religion, problem
+        } = userInfo
+    
+        const response = run(problem)
+
+        const userForMatching = {
+            age: age,
+            race : race, 
+            religion: religion,
+            diagnosis: response?.diagnosis[0].name,
+        }
+
+        try {
+            // output format: { matches: [therapist1, therapist2, therapist3], diagnosis: userForMatching.diagnosis }
+            let output = await matchObject(userForMatching)
+            req.matches = output
+            next()
+        } catch (error) {
+            console.error(`There has been an unexpected error: ${error}`)
+            return res.status(500).send("Server error, matching unsuccessful")
+        }
     } catch (error) {
-        console.error(`There has been an unexpected error: ${error}`)
-        return []
+        return res.status(404).send("There was no user found")
     }
 }
 
-module.exports = matchUserWithTherapist
+module.exports = { matchUserWithTherapist }

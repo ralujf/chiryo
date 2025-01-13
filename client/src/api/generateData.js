@@ -1,3 +1,4 @@
+// TODO: Replace with dict API
 const adjectives = [
   'Quick',
   'Elated',
@@ -10,6 +11,7 @@ const adjectives = [
   'Brave',
   'Calm',
 ];
+
 const nouns = [
   'Fox',
   'Dog',
@@ -22,9 +24,6 @@ const nouns = [
   'Eagle',
   'Shark',
 ];
-
-// TODO: Replace the avoid with a call to a dictionary api for far more variations
-// Note to self - avoid words with negative connotations
 
 function generateRandomUsername() {
   const randomAdjective =

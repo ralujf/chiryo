@@ -13,23 +13,15 @@ const matchRouter = require('./routes/matching')
 const dashboardRouter = require('./routes/dashboard');
 const { validateJWT } = require('./utils/auth');
 
-function validUserCheck(req, res, next) { 
-    const authToken = req.headers.authorization;
-    validateJWT(authToken);
-    next();
-}
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
-app.use('/api', matchRouter)
 app.use('/api', applicationsRoute)
-app.use('/api', validUserCheck, userRouter)
-app.use('/api', validUserCheck, dashboardRouter)
+app.use('/api', userRouter)
+app.use('/api', validateJWT, matchRouter)
+app.use('/api', validateJWT, dashboardRouter)
 
-// MongoDB connection
-const mongoURI = process.env.MONGOURI + `0.0.0.0:27017/chiryo`;
-
-mongoose.connect(mongoURI, { autoIndex: false, tls: true })
+mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 

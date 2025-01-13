@@ -10,7 +10,6 @@ import {
   APPLICATION_URL,
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
-
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
 
@@ -83,18 +82,22 @@ const registerUser = (userData) => {
 };
 
 const deleteUser = (userId) =>
-  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
+  handleRequest(
+    'delete',
+    createURL({ baseURL: DELETE_USER_URL, userId: userId }),
+  );
 
 /**
  *
  * @param {*} userId
  * @param {*} offset
- * @returns @type {types.TableRow[]}
+ * @returns {types.TableRow[]}
+ * @description - Load the paginated view for the users (therapist or client) dashboard
  */
 const loadTableData = (userId, offset) => {
   let result = handleRequest(
     'post',
-    createURL({ baseURL: GET_TABLE_URL, userId }),
+    createURL({ baseURL: GET_TABLE_URL, userId: userId }),
     null,
     offset,
   );
@@ -123,20 +126,45 @@ const loadTableData = (userId, offset) => {
     };
   });
 };
-
+/**
+ *
+ * @param {string} userId
+ * @param {Object} rowData
+ * @returns
+ * @description - finds and dereferences a specific row from a specific users view, does not delete data
+ */
 const removeRowFromTable = (userId, rowData) =>
   handleRequest(
-    'post',
-    createURL({ baseURL: REMOVE_ROW_URL, userId }),
+    'put',
+    createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
     rowData,
   );
 
+/**
+ *
+ * @param {string} userId
+ * @returns void
+ * @description - Removes the users reference to be able to retrieve data
+ */
 const clearTable = (userId) =>
-  handleRequest('delete', createURL({ baseURL: REMOVE_ROW_URL, userId }));
+  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId }));
 
+/**
+ *
+ * @param {string} userId
+ * @param {Object} rowData
+ * @returns void
+ * @description - Update a specific item of a specific record by overwriting with new row data
+ */
 const updateRowFromTable = (userId, rowData) =>
   handleRequest('put', createURL({ baseURL: UPDATE_ROW_URL, userId }), rowData);
 
+/**
+ *
+ * @param {Object} userData
+ * @returns {types.Therapist[]}
+ * @description - Return the therapists that the user has matched with in ranked order of perceived compatibility
+ */
 const getTherapists = (userData) => {
   const { id } = userData;
   if (!id) return null;
@@ -152,6 +180,12 @@ const getTherapists = (userData) => {
   // ];
 };
 
+/**
+ *
+ * @param {types.Applicant} applicationData
+ * @returns
+ * @description - Post an applicants details to the database to be ported into a HR system and reviewed
+ */
 const sendApplication = (applicationData) =>
   handleRequest(
     'post',

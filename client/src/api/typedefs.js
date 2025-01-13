@@ -30,4 +30,10 @@
  * @returns {TableRow[]}
  */
 
-export {};
+/**
+ * @typedef {Object} Applicant
+ * @property {string} _id
+ * @property {string} username
+ * @property {string} email
+ */
+export default {};

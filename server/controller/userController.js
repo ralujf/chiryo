@@ -1,9 +1,9 @@
-const generateJWT = require('../utils/auth')
 const User = require('../models/user')
 
 const register = (req, res) => {
-    const { username, password, email, age, race, background, religion, location, firstLogin } = req.body;
-    const newUser = new User({ username, password, email, age, race, background, religion, location, firstLogin });
+    // username, password, email, age, race, background, religion, location,
+    const { registrationInfo } = req.body;
+    const newUser = new User({ ...registrationInfo, firstLogin: false });
     
     newUser.save((err) => {
         if (err) {
@@ -13,7 +13,7 @@ const register = (req, res) => {
     });
 }
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     const { username, password } = req.body;
 
     try {
@@ -26,10 +26,7 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(401).send('Authentication failed. Wrong password.');
         }
-        
-        const token = generateJWT();
-        return res.status(200).send({ message: 'Login successful', token })
-
+        next()
     } catch (err) {
         return res.status(500).send('Error logging in user');
     }
@@ -38,7 +35,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
-        return res.status(200).send('Logout successful')
+        return res.status(200).send('Logout successful' + token)
     } catch (err) {
         return res.status(500).send('Error logging out user');
     }
@@ -54,7 +51,7 @@ const deleteUser = async (req, res) => {
         }
 
         if (user.password === password) {
-            await user.deleteOne();
+            await user.deleteOne().exec()
             return res.status(200).send('Successfully removed account');
         }
 
