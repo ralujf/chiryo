@@ -4,9 +4,9 @@
   "description": "Backend API for Chiryo",
   "main": "index.js",
   "scripts": {
-    "tests" : "node tests/tests.js",
+    "tests": "node tests/tests.js",
     "test:coverage": "jest --coverage",
-    "start" : "node index.js"
+    "start": "node index.js"
   },
   "author": "JonathanFajobi",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.1",
     "path": "^0.12.7",
+    "puppeteer": "^24.1.0",
     "string-comparison": "^1.3.0"
   },
   "devDependencies": {

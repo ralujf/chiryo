@@ -27,7 +27,7 @@ const generateJWT = async (req, res) => {
 
 const validateJWT = async (req, res, next) => {
     const token = req.headers['authorization'];
-    const { userId } = req.params
+    const { userId } = req.body
     
     if (!token) {
         return res.status(401).send('Access Denied: No Token Provided!');

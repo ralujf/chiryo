@@ -66,14 +66,13 @@ async function run(data) {
 
 const matchUserWithTherapist = async (req, res, next) => {
     try {
-        const { userId } = req.params
-        const { userInfo } = req.body
+        const { userId, userInfo } = req.body
         const currentUser = await User.findById(userId)
 
         if (!currentUser) return res.status(400).send("There is an issue with the provided ID")
 
         const {
-            _id, age, race, religion, problem
+           age, race, religion, problem
         } = userInfo
     
         const response = run(problem)

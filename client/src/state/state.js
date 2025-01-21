@@ -5,10 +5,11 @@ const useCredentialStore = create((set) => ({
   username: '',
   password: '',
   role: '',
-  setID: (id) => set({ userId: id }),
+  firstLogin: false,
+  setID: (user) =>
+    set({ userId: user.id, setRole: user.role, firstLogin: user.firstLogin }),
   setUsername: (username) => set({ username }),
   setPassword: (password) => set({ password }),
-  setRole: (role) => set({ role }),
 }));
 
 export { useCredentialStore };
