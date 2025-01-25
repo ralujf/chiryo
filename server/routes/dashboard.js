@@ -18,6 +18,4 @@ router.put('/add-field', updateRecord);
 
 router.put('/add-dashboard-item', insertToDashboard);
 
-// TODO: Create the same things for the therapists
-
 module.exports = router;

@@ -1,11 +1,18 @@
-const { request } = require('supertest')
-const app = require('../index')
+const { request } = require('supertest');
+const app = require('../index');
 
-describe('Entry test', () => {
-    it('Initialisation Test', () => {
-        
-    })
-})
+describe('Admin Routes', () => {
+  it('', () => {});
+});
 
+describe('Dashboard Routes', () => {
+  it('', () => {});
+});
 
+describe('Enrol Routes', () => {
+  it('', () => {});
+});
 
+describe('User Routes', () => {
+  it('', () => {});
+});

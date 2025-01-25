@@ -1,5 +1,6 @@
 const Application = require('../models/application');
 const Therapist = require('../models/therapist');
+const { scrapeTherapists } = require('./scraper');
 
 const handleApplication = async (req, res) => {
   try {
@@ -10,6 +11,16 @@ const handleApplication = async (req, res) => {
     return res.status(200).send('Application Submitted');
   } catch (err) {
     return res.status(500).send('Save failed' + err);
+  }
+};
+
+const fillExternal = async (req, res) => {
+  try {
+    const arr = await scrapeTherapists();
+    arr.forEach((therapist) => therapist.save());
+    return res.status(201).send('Therapists successfully added');
+  } catch (err) {
+    return res.status(500).send('Scrape failed' + err);
   }
 };
 
@@ -59,4 +70,5 @@ module.exports = {
   viewApplications,
   approveApplication,
   rejectApplication,
+  fillExternal,
 };

@@ -1,4 +1,4 @@
-const therapist = require('../models/therapist');
+const Therapist = require('../models/therapist');
 const puppeteer = require('puppeteer');
 const link = 'https://www.psychologytoday.com/gb/counselling/eng/london';
 
@@ -30,7 +30,10 @@ const scrapeTherapists = async () => {
       const therapist = new Therapist({
         firstName: firstName,
         lastName: lastName,
-        email: email,
+        phoneNumber: phoneNumber,
+        password: password,
+        expertise: expertise,
+        location: location,
       });
       console.log(therapist);
     });
@@ -52,4 +55,4 @@ const scrapeTherapists = async () => {
   return therapistArray;
 };
 
-export { scrapeTherapists };
+module.exports = { scrapeTherapists };

@@ -14,11 +14,11 @@ const TherapistSchema = new Schema(
     },
     email: {
       type: String,
-      required: !phoneNumber ? true : false,
+      required: !this.phoneNumber ? true : false,
     },
     phoneNumber: {
       type: String,
-      required: !email ? true : false,
+      required: !this.email ? true : false,
     },
     password: {
       type: String,
