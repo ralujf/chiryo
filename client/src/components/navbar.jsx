@@ -60,13 +60,13 @@ const Navbar = () => {
                 className="dropdown-menu"
                 aria-labelledby="navbarDropdownMenuLink"
               >
-                <Link className="dropdown-item" to="/info/#">
+                <Link className="dropdown-item" to="/info/">
                   Why is mental health important?
                 </Link>
-                <Link className="dropdown-item" to="/info/#">
+                <Link className="dropdown-item" to="/info/">
                   Ways to improve mental health
                 </Link>
-                <Link className="dropdown-item" to="/info/#">
+                <Link className="dropdown-item" to="/info/">
                   Recommended Services
                 </Link>
               </div>

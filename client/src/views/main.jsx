@@ -10,11 +10,11 @@ const Main = () => {
   return (
     <div
       className="container-fluid main-container"
-      style={{ margin: '30vh 0vh' }}
+      style={{ margin: '30vh 0vw' }}
     >
       <div
         className="row justify-content-center chiryo_rounded"
-        style={{ margin: '30vh 0vh' }}
+        style={{ margin: '30vh 0vw' }}
       >
         <div className="col-md-5 chiryo_rounded p-3 p-md">
           <motion.div {...animationOptions}>
@@ -72,7 +72,7 @@ const Main = () => {
 
       <div
         className="row justify-content-center chiryo_rounded"
-        style={{ margin: '30vh 0vh' }}
+        style={{ margin: '30vh 0vw' }}
       >
         <div className="col-md-5 mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
           <h1 className="text-center display-3 fw-bolder mb-3">

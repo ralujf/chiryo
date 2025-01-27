@@ -1,8 +1,17 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
+const saltRounds = 13;
 const register = (req, res) => {
   // username, password, email, age, race, background, religion, location,
   const { registrationInfo } = req.body;
+
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    bcrypt.hash(registrationInfo.password, salt, function (err, hash) {
+      if (err) return res.status(500).send('Error salting' + err);
+      registrationInfo.password = hash;
+    });
+  });
   const newUser = new User({ ...registrationInfo, firstLogin: false });
 
   newUser.save((err) => {
@@ -22,10 +31,14 @@ const login = async (req, res, next) => {
       return res.status(401).send('Authentication failed. User not found.');
     }
 
-    const isMatch = user.password === password;
-    if (!isMatch) {
-      return res.status(401).send('Authentication failed. Wrong password.');
-    }
+    bcrypt.compare(password, user.password, function (err, result) {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error registering new user');
+      }
+      if (!result)
+        return res.status(401).send('Authentication failed. Wrong password.');
+    });
 
     res.id = user._id;
     next();

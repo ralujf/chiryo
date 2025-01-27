@@ -5,7 +5,7 @@ const userInfo = () => {
   return (
     <div
       className="container-fluid main-container"
-      style={{ margin: '30vh 0vh' }}
+      style={{ margin: '30vh 0vw' }}
     ></div>
   );
 };
