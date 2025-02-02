@@ -2,8 +2,20 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getTherapists } from '../api/crud';
 
+const funnyStuff = [
+  // a bit bored ngl
+  'Searching through the stars... ✨',
+  'Talking to Lin... 🎓',
+  'Gimme one sec...',
+  'Hold on tight!',
+  'Playing with kittens... 🐈',
+  'Procrastinating about life',
+  'Listening to Yitai Wang 😌 🎶',
+];
+
 const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [text, setText] = useState('Generating your match...');
   getTherapists(userId);
 
   useEffect(() => {
@@ -11,8 +23,9 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
       setLoadingProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(interval);
-          // TODO: Wrong way of doing this, refactor at some point to use global state instead of external mutation
+          // TODO: Defo wrong way of doing this, refactor at some point to use global state instead of external mutation
           introStateSetter(introStateOptions.GENCRED);
+          setText(funnyStuff[Math.floor(Math.random() * funnyStuff.length)]);
           return 100;
         }
         return prevProgress + 3.33;
@@ -20,14 +33,14 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [introStateOptions.GENCRED, introStateSetter]);
 
   return (
     <div
       className="d-flex flex-column align-items-center"
       style={{ minHeight: '100vh' }}
     >
-      <p className="display-4">Generating your match...</p>
+      <p className="display-4">{text}</p>
       <div className="progress" style={{ width: '80%' }}>
         <div
           className="progress-bar"
@@ -36,6 +49,7 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
           aria-valuenow={loadingProgress}
           aria-valuemin="0"
           aria-valuemax="100"
+          data-cy="loading"
         ></div>
       </div>
       <p className="display-5">{loadingProgress}%</p>

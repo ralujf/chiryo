@@ -47,7 +47,7 @@ const Questionnaire = () => {
   }, []);
 
   const notify = () =>
-    toast.success('Nice Job! +100 Points🦄', {
+    toast.success('Nice Job! +100 Points✨', {
       position: 'bottom-center',
       autoClose: 2000,
       hideProgressBar: false,
@@ -149,6 +149,7 @@ const Questionnaire = () => {
             initial="hidden"
             animate={animate ? 'hidden' : 'visible'}
             className="display-3 fw-bolder mb-5"
+            data-cy="question"
           >
             {QUESTIONS[currentQuestionIndex]}
           </motion.p>
@@ -181,6 +182,7 @@ const Questionnaire = () => {
                   type="email"
                   name="email"
                   className="form-control mb-3"
+                  data-cy="email"
                   required
                 ></input>
                 <input
@@ -190,8 +192,13 @@ const Questionnaire = () => {
                   min="12"
                   max="100"
                   className="form-control mb-3"
+                  data-cy="age"
                 />
-                <select name="race" className="form-control mb-3">
+                <select
+                  name="race"
+                  data-cy="race"
+                  className="form-control mb-3"
+                >
                   <option value="">Select Race</option>
                   <option value="asian">Asian</option>
                   <option value="black">Black</option>
@@ -199,7 +206,11 @@ const Questionnaire = () => {
                   <option value="hispanic">Hispanic</option>
                   <option value="other">Other</option>
                 </select>
-                <select name="ethnicBackground" className="form-control mb-3">
+                <select
+                  name="ethnicBackground"
+                  data-cy="ethnic-background"
+                  className="form-control mb-3"
+                >
                   <option value="">Select Ethnic Background</option>
                   <option value="asian">Asian</option>
                   <option value="african">African</option>
@@ -207,7 +218,11 @@ const Questionnaire = () => {
                   <option value="latino">Latino</option>
                   <option value="other">Other</option>
                 </select>
-                <select name="religion" className="form-control mb-3">
+                <select
+                  name="religion"
+                  data-cy="religion"
+                  className="form-control mb-3"
+                >
                   <option value="">Select Religion</option>
                   <option value="christianity">Christianity</option>
                   <option value="islam">Islam</option>
@@ -221,6 +236,7 @@ const Questionnaire = () => {
                   name="location"
                   className="form-control mb-3"
                   id="locationInput"
+                  data-cy="location"
                 />
                 <p>Anything else?</p>
               </div>
@@ -232,10 +248,12 @@ const Questionnaire = () => {
               name="answer"
               required
               style={{ fontSize: '2rem' }}
+              data-cy="response"
               disabled={animate}
             />
             <button
               type="submit"
+              data-cy="submit-answer"
               className="btn chiryo_primary chiryo_rounded mt-5 d-flex justify-content-center"
             >
               {currentQuestionIndex >= QUESTIONS.length ? 'Submit' : 'Next'}
@@ -282,6 +300,7 @@ const Questionnaire = () => {
               <h5>{username}</h5>
               <small>Click the password to reveal</small>
               <h5
+                data-cy="password"
                 onClick={(e) => {
                   if (e.currentTarget.innerText == '*******') {
                     e.currentTarget.innerText = password;
@@ -298,6 +317,7 @@ const Questionnaire = () => {
                 href="/login"
                 type="button"
                 className="btn chiryo_primary chiryo_rounded chiryo_button"
+                data-cy="login-link"
               >
                 Login
               </Link>
