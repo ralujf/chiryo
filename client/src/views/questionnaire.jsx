@@ -10,7 +10,6 @@ import { QUESTIONS, PROMPTS } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
-import { useCredentialStore } from '../state/state';
 import { registerUser } from '../api/crud';
 import quizSound from '../assets/correct.mp3';
 
@@ -23,34 +22,16 @@ const introStateOptions = {
 // TODO: Create a super compressed GIF of slow waves in the background for chill vibes
 
 const Questionnaire = () => {
+  // const { }
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [userDetails, setUserDetails] = useState({});
+  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [introState, setIntroState] = useState(introStateOptions.START);
   const textareaRef = useRef(null);
-
-  const {
-    userId,
-    username,
-    password,
-    currentQuestionIndex,
-    introState,
-    setUsername,
-    setPassword,
-    setID,
-    setCurrentQuestionIndex,
-    setIntroState,
-  } = useCredentialStore((state) => ({
-    userId: state.userId,
-    username: state.username,
-    password: state.password,
-    introState: state.introState,
-    currentQuestionIndex: state.currentQuestionIndex,
-    setUsername: state.setUsername,
-    setPassword: state.setPassword,
-    setID: state.setID,
-    setCurrentQuestionIndex: state.setCurrentQuestionIndex,
-    setIntroState: state.setIntroState,
-  }));
 
   const correctAudio = new Audio(quizSound);
 
@@ -126,7 +107,7 @@ const Questionnaire = () => {
       location: location,
     });
     console.log('All questions answered:', answers);
-    setID(id);
+    setUserId(id);
     setIntroState(introStateOptions.MATCH);
   };
 
@@ -282,59 +263,62 @@ const Questionnaire = () => {
     );
   } else if (introState === introStateOptions.MATCH) {
     return (
-      <IsLoading
-        introStateOptions={introStateOptions}
-        introStateSetter={setIntroState}
-        userId={userId}
-      />
+      <div style={{ marginTop: '20vh' }}>
+        <IsLoading
+          introStateOptions={introStateOptions}
+          introStateSetter={setIntroState}
+          userId={userId}
+        />
+      </div>
     );
   } else if (introState === introStateOptions.GENCRED) {
     return (
-      <div
-        className="modal show d-block"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="credsModal"
-        aria-hidden="true"
-        style={{ minHeight: '100vh' }}
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title text-center" id="credsModal">
-                Your account details are...
-              </h5>
-            </div>
-            <div className="modal-body text-center">
-              <p>
-                Awesome work! We&apos;ll send you some therapist as soon as
-                possible - be sure to check your email!
-              </p>
-              <p>Your user credentials have been generated successfully.</p>
-              <h5>{username}</h5>
-              <small>Click the password to reveal</small>
-              <h5
-                data-cy="password"
-                onClick={(e) => {
-                  if (e.currentTarget.innerText == '*******') {
-                    e.currentTarget.innerText = password;
-                  } else {
-                    e.currentTarget.innerText = '*******';
-                  }
-                }}
-              >
-                *******
-              </h5>
-            </div>
-            <div className="modal-footer">
-              <Link
-                href="/login"
-                type="button"
-                className="btn chiryo_primary chiryo_rounded chiryo_button"
-                data-cy="login-link"
-              >
-                Login
-              </Link>
+      <div style={{ minHeight: '100vh' }}>
+        <div
+          className="modal d-block show mt-5"
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="credsModal"
+          aria-hidden="false"
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title text-center" id="credsModal">
+                  Your account details are...
+                </h5>
+              </div>
+              <div className="modal-body text-center">
+                <p>
+                  Awesome work! We&apos;ll send you some therapist as soon as
+                  possible - be sure to check your email!
+                </p>
+                <p>Your user credentials have been generated successfully.</p>
+                <h5>{username}</h5>
+                <small>Click the password to reveal</small>
+                <h5
+                  data-cy="password"
+                  onClick={(e) => {
+                    if (e.currentTarget.innerText == '*******') {
+                      e.currentTarget.innerText = password;
+                    } else {
+                      e.currentTarget.innerText = '*******';
+                    }
+                  }}
+                >
+                  *******
+                </h5>
+              </div>
+              <div className="modal-footer">
+                <Link
+                  href="/login"
+                  type="button"
+                  className="btn chiryo_primary chiryo_rounded chiryo_button"
+                  data-cy="login-link"
+                >
+                  Login
+                </Link>
+              </div>
             </div>
           </div>
         </div>

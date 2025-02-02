@@ -103,7 +103,7 @@ const loadTableData = (userId, offset) => {
   );
 
   // return result
-  return Array.from({ length: 5 }, () => {
+  let exampleArr = Array.from({ length: 12 }, () => {
     return {
       user: {
         _id: 'sLS9S*(£a3L',
@@ -125,6 +125,8 @@ const loadTableData = (userId, offset) => {
       markResolvedTherapist: false,
     };
   });
+
+  return exampleArr.slice(offset * 10);
 };
 /**
  *

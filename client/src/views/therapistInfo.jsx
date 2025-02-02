@@ -12,40 +12,47 @@ const therapistInfo = () => {
       </section>
 
       <section style={{ margin: '30vh 0vw' }}>
-        <div className="row justify-content-evenly">
-          <motion.div
-            {...animationOptions}
-            className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between"
-          >
-            <h1 className="text-center display-4 fw-bolder mb-3">
-              Technology and Reliability
-            </h1>
-            <p className="text-center display-6">
-              A stable internet connection and a quiet, professional space are
-              key to a successful online practice. While our platform handles
-              video conferencing, messaging, and scheduling, you’ll still need a
-              reliable setup with good lighting and audio. We provide tech
-              support and best practices to help you get started.
-            </p>
-          </motion.div>
+        <motion.div
+          {...animationOptions}
+          className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
+        >
+          <h1 className="text-center display-4 fw-bolder mb-3">
+            Technology and Reliability
+          </h1>
+          <p className="text-center display-6">
+            Online therapy can be a different experience compared to in-person
+            sessions. Some clients may need help adjusting to a virtual setting,
+            and others may expect immediate availability. Setting clear
+            boundaries for response times, session lengths, and communication
+            outside of scheduled sessions is important to prevent burnout and
+            maintain a healthy work-life balance. Though this platform is not a
+            platform to host sessions, it is important to understand and
+            sympathize with any issues that the user may face with non face to
+            face appointments.
+          </p>
+        </motion.div>
+      </section>
 
-          <div className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between">
-            <h1 className="text-center display-4 fw-bolder mb-3">
-              Client Expectations
-            </h1>
-            <p className="text-center display-6">
-              Online therapy can be a different experience compared to in-person
-              sessions. Some clients may need help adjusting to a virtual
-              setting, and others may expect immediate availability. Setting
-              clear boundaries for response times, session lengths, and
-              communication outside of scheduled sessions is important to
-              prevent burnout and maintain a healthy work-life balance. Though
-              this platform is not a platform to host sessions, it is important
-              to understand and sympathize with any issues that the user may
-              face with non face to face appointments.
-            </p>
-          </div>
-        </div>
+      <section style={{ margin: '30vh 0vw' }}>
+        <motion.div
+          {...animationOptions}
+          className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
+        >
+          <h1 className="text-center display-4 fw-bolder mb-3">
+            Client Expectations
+          </h1>
+          <p className="text-center display-6">
+            Online therapy can be a different experience compared to in-person
+            sessions. Some clients may need help adjusting to a virtual setting,
+            and others may expect immediate availability. Setting clear
+            boundaries for response times, session lengths, and communication
+            outside of scheduled sessions is important to prevent burnout and
+            maintain a healthy work-life balance. Though this platform is not a
+            platform to host sessions, it is important to understand and
+            sympathize with any issues that the user may face with non face to
+            face appointments.
+          </p>
+        </motion.div>
       </section>
 
       <section style={{ margin: '30vh 0vw' }}>
@@ -82,12 +89,12 @@ const therapistInfo = () => {
               area and provide accessible care to those who need it.
             </li>
           </ul>
-          <h2>
-            Signing up is simple, and we’re here to support you every step of
-            the way. Join a community of professionals making therapy more
-            accessible, one session at a time!
-          </h2>
         </div>
+        <motion.p {...animationOptions} className="display-4 mt-5 mb-5">
+          Signing up is simple, and we’re here to support you every step of the
+          way. Join a community of professionals making therapy more accessible,
+          one session at a time!
+        </motion.p>
       </section>
     </div>
   );

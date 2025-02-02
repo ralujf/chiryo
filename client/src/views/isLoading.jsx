@@ -20,17 +20,27 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      let num = Math.floor(Math.random() * funnyStuff.length);
+      setText(funnyStuff[num]);
+    }, 1200);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    let incrementor = Math.floor(Math.random() * 10);
+    const interval = setInterval(() => {
       setLoadingProgress((prevProgress) => {
-        if (prevProgress >= 100) {
+        if (prevProgress >= 100 || prevProgress + 3.33 > 100) {
           clearInterval(interval);
           // TODO: Defo wrong way of doing this, refactor at some point to use global state instead of external mutation
           introStateSetter(introStateOptions.GENCRED);
-          setText(funnyStuff[Math.floor(Math.random() * funnyStuff.length)]);
           return 100;
         }
-        return prevProgress + 3.33;
+        let value = prevProgress + incrementor;
+        value = Math.min(value, 100);
+        return value;
       });
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [introStateOptions.GENCRED, introStateSetter]);
