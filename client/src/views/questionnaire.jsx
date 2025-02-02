@@ -23,20 +23,34 @@ const introStateOptions = {
 // TODO: Create a super compressed GIF of slow waves in the background for chill vibes
 
 const Questionnaire = () => {
-  const [introState, setIntroSet] = useState(introStateOptions.START);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [userDetails, setUserDetails] = useState({});
   const textareaRef = useRef(null);
 
-  const userId = useCredentialStore((state) => state.userId);
-  const username = useCredentialStore((state) => state.username);
-  const password = useCredentialStore((state) => state.password);
-
-  const setUsername = useCredentialStore.getState().setUsername;
-  const setPassword = useCredentialStore.getState().setPassword;
-  const setID = useCredentialStore.getState().setID;
+  const {
+    userId,
+    username,
+    password,
+    currentQuestionIndex,
+    introState,
+    setUsername,
+    setPassword,
+    setID,
+    setCurrentQuestionIndex,
+    setIntroState,
+  } = useCredentialStore((state) => ({
+    userId: state.userId,
+    username: state.username,
+    password: state.password,
+    introState: state.introState,
+    currentQuestionIndex: state.currentQuestionIndex,
+    setUsername: state.setUsername,
+    setPassword: state.setPassword,
+    setID: state.setID,
+    setCurrentQuestionIndex: state.setCurrentQuestionIndex,
+    setIntroState: state.setIntroState,
+  }));
 
   const correctAudio = new Audio(quizSound);
 
@@ -113,7 +127,7 @@ const Questionnaire = () => {
     });
     console.log('All questions answered:', answers);
     setID(id);
-    setIntroSet(introStateOptions.MATCH);
+    setIntroState(introStateOptions.MATCH);
   };
 
   if (introState === introStateOptions.START) {
@@ -270,7 +284,7 @@ const Questionnaire = () => {
     return (
       <IsLoading
         introStateOptions={introStateOptions}
-        introStateSetter={setIntroSet}
+        introStateSetter={setIntroState}
         userId={userId}
       />
     );

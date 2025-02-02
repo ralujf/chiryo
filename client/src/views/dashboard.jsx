@@ -10,14 +10,12 @@ import {
   updateRowFromTable,
 } from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
-// TODO: Get this information from globalState
-const role = 'therapist';
-const userId = 1;
-const firstTime = false;
+import { useCredentialStore } from '../state/state';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [tableData, setTableData] = useState();
+  const { userId, role, firstLogin } = useCredentialStore((state) => state);
   const pages = Array.from({ length: 5 }, (_, i) => i + 1);
 
   useEffect(() => {
@@ -29,7 +27,7 @@ const Dashboard = () => {
       setTableData(newTableData);
     };
     updateData();
-  }, [currentPage]);
+  }, [currentPage, userId]);
 
   /**
    *
@@ -53,7 +51,7 @@ const Dashboard = () => {
       className="container-fluid main-container"
       style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
-      {firstTime && <Intro />}
+      {firstLogin && <Intro />}
       <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
         Dashboard | {currentPage + 1}
       </h1>
@@ -213,7 +211,14 @@ const Dashboard = () => {
         >
           <ul className="pagination">
             <li className="page-item">
-              <a href="#" className="page-link">
+              <a
+                href="#"
+                className="page-link"
+                disabled={currentPage === 0}
+                onClick={() => {
+                  if (currentPage > 0) setCurrentPage(currentPage - 1);
+                }}
+              >
                 Previous
               </a>
             </li>
@@ -233,7 +238,14 @@ const Dashboard = () => {
               );
             })}
             <li className="page-item">
-              <a href="#" className="page-link" onClick={console.log('yessir')}>
+              <a
+                href="#"
+                className="page-link"
+                disabled={currentPage === pages}
+                onClick={() => {
+                  if (currentPage < pages) setCurrentPage(currentPage + 1);
+                }}
+              >
                 Next
               </a>
             </li>

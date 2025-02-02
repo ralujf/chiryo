@@ -12,7 +12,7 @@ const funnyStuff = [
   'Procrastinating about life',
   'Listening to Yitai Wang 😌 🎶',
 ];
-
+// TODO: think about putting this into global state
 const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [text, setText] = useState('Generating your match...');
