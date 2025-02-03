@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-
+// TODO: bootstrap messing up fix this at some  point
 const Navbar = () => {
   return (
     <nav

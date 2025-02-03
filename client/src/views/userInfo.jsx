@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
-import { animationOptions } from '../styles/animations';
+import { animationOptions, animationOptions3 } from '../styles/animations';
 
 const userInfo = () => {
   return (
-    <div className="container" style={{ margin: '15vh 5vw' }}>
+    <div className="container" style={{ padding: '15vh 7.5vw' }}>
       <section style={{ margin: '0vh 0vw 30vh 0vw' }}>
         <h1
           className="display-3 text-center fw-bolder mb-5"
@@ -29,7 +29,7 @@ const userInfo = () => {
         >
           Cornerstones of improving mental health
         </h1>
-        <div className="row justify-content-evenly">
+        <div className="row justify-content-evenly gap-5">
           <motion.div
             {...animationOptions}
             className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between"
@@ -71,12 +71,15 @@ const userInfo = () => {
         </div>
       </section>
 
-      <section className="" style={{ margin: '30vh 0vw' }}>
+      <section style={{ margin: '30vh 0vw' }}>
         <h2 className="display-3 fw-bolder mb-5">Other Recommended Services</h2>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+        <motion.div
+          {...animationOptions3}
+          className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
+        >
           <h2>
             Here are a couple of services to help out if Chiryo alone is not
-            having the desired results
+            having the desired results!
           </h2>
           <ul>
             <li>
@@ -136,7 +139,7 @@ const userInfo = () => {
               </a>
             </li>
           </ul>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

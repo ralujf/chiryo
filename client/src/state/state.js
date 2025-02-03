@@ -9,7 +9,7 @@ const useCredentialStore = create((set) => ({
   currentQuestionIndex: 0,
   answers: [],
   introState: 'START',
-  setID: (user) =>
+  setUserId: (user) =>
     set({ userId: user.id, role: user.role, firstLogin: user.firstLogin }),
   setUsername: (username) => set({ username }),
   setPassword: (password) => set({ password }),

@@ -1,22 +1,56 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getTherapists } from '../api/crud';
+import { useCredentialStore } from '../state/state';
 
 const funnyStuff = [
   // a bit bored ngl
+  'Watching the rain fall... 🌧️',
   'Searching through the stars... ✨',
+  'Sun gazing... ☀️',
+  'Vibing and trying...',
+  'Looking somewhere in the luscious fields... 🌳',
+  'Texting the bros... 📱 ',
+  'Soul searching... 💙',
   'Talking to Lin... 🎓',
   'Gimme one sec...',
+  'Just a little more... 🎯',
   'Hold on tight!',
   'Playing with kittens... 🐈',
   'Procrastinating about life',
   'Listening to Yitai Wang 😌 🎶',
+  'Get ready!',
+  'Finding the perfect match for you... 🫂',
 ];
-// TODO: think about putting this into global state
-const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
+const IsLoading = ({ introStateOptions }) => {
+  const { setIntroState, userId } = useCredentialStore((state) => state);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [text, setText] = useState('Generating your match...');
+  const completion = 100;
+
   getTherapists(userId);
+  useEffect(() => {
+    let incrementor = Math.floor(Math.random() * 10);
+    const interval = setInterval(() => {
+      setLoadingProgress((prevProgress) => {
+        if (prevProgress >= completion || prevProgress + 3.33 > completion) {
+          clearInterval(interval);
+          return completion;
+        }
+        let value = prevProgress + incrementor;
+        value = Math.min(value, completion);
+        return value;
+      });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [completion]);
+
+  useEffect(() => {
+    if (loadingProgress >= completion) {
+      setIntroState(introStateOptions.GENCRED);
+    }
+  }, [loadingProgress, completion, setIntroState, introStateOptions.GENCRED]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,25 +59,6 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
     }, 1200);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    let incrementor = Math.floor(Math.random() * 10);
-    const interval = setInterval(() => {
-      setLoadingProgress((prevProgress) => {
-        if (prevProgress >= 100 || prevProgress + 3.33 > 100) {
-          clearInterval(interval);
-          // TODO: Defo wrong way of doing this, refactor at some point to use global state instead of external mutation
-          introStateSetter(introStateOptions.GENCRED);
-          return 100;
-        }
-        let value = prevProgress + incrementor;
-        value = Math.min(value, 100);
-        return value;
-      });
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [introStateOptions.GENCRED, introStateSetter]);
 
   return (
     <div
@@ -68,9 +83,7 @@ const IsLoading = ({ introStateOptions, introStateSetter, userId }) => {
 };
 
 IsLoading.propTypes = {
-  introStateOptions: PropTypes.string.isRequired,
-  introStateSetter: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
+  introStateOptions: PropTypes.object.isRequired,
 };
 
 export default IsLoading;

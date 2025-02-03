@@ -19,29 +19,25 @@ import Login from './views/login';
 import userInfo from './views/userInfo';
 import therapistInfo from './views/therapistInfo';
 import about from './views/about';
-
-{
-  /* TODO: Refactor and stop putting the same styling in every component lol */
-}
 const NotFound = () => (
   <div
     className="d-flex justify-content-center align-items-center"
     style={{ height: '100vh', width: '100vw' }}
   >
-    <h1>404: No Page Here Boss</h1>
+    <h1>404: No Page Here Boss 👷</h1>
   </div>
 );
 
 function App() {
   return (
-    <div>
+    <div style={{ minHeight: '100vh', minWidth: '100vw' }}>
       <Navbar />
       <Switch>
         <Route path="/" component={Main} />
         <Route path="/become-a-therapist" component={Application} />
         {/* <PrivateRoute
           path="/dashboard"
-          component={() => <Dashboard tableHeaders="header" />}
+          component={<Dashboard />}
         /> */}
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />

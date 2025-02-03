@@ -3,15 +3,14 @@ import { animationOptions } from '../styles/animations';
 
 const therapistInfo = () => {
   return (
-    <div className="container" style={{ margin: '15vh 5vw' }}>
-      <section style={{ margin: '0vh 0vw 30vh 0vw' }}>
-        <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
+    <div className="container" style={{ padding: '15vh 7.5vw' }}>
+      <section style={{ margin: '0vh 0vw 10vh 0vw' }}>
+        <h1 className="display-3 fw-bolder" id="dashboard-title">
           Additional Information | Therapists
         </h1>
-        <p className="text-center display-6"></p>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
+      <section>
         <motion.div
           {...animationOptions}
           className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
@@ -22,13 +21,17 @@ const therapistInfo = () => {
           <p className="text-center display-6">
             Online therapy can be a different experience compared to in-person
             sessions. Some clients may need help adjusting to a virtual setting,
-            and others may expect immediate availability. Setting clear
-            boundaries for response times, session lengths, and communication
-            outside of scheduled sessions is important to prevent burnout and
-            maintain a healthy work-life balance. Though this platform is not a
-            platform to host sessions, it is important to understand and
-            sympathize with any issues that the user may face with non face to
-            face appointments.
+            and others may expect immediate availability.
+            <br></br>
+            <br></br>
+            Setting clear boundaries for response times, session lengths, and
+            communication outside of scheduled sessions is important to prevent
+            burnout and maintain a healthy work-life balance.
+            <br></br>
+            <br></br>
+            Though this platform is not a platform to host sessions, it is
+            important to understand and sympathize with any issues that the user
+            may face with non face to face appointments.
           </p>
         </motion.div>
       </section>
@@ -73,13 +76,13 @@ const therapistInfo = () => {
         <h2 className="display-3 fw-bolder mb-5">
           Why join Chiryo instead of other sites?
         </h2>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 display-6">
           <ul>
-            <li>
+            <li className="mb-5">
               <b>Set Your Own Schedule</b> – Take on as many (or as few) clients
               as you like. Your time, your rules.
             </li>
-            <li>
+            <li className="mb-5">
               <b>Secure & Seamless</b> – Our platform is designed with privacy
               and security in mind, so both you and your clients can feel at
               ease.

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
+import { animationOptions3 } from '../styles/animations';
 import DatePicker from 'react-datepicker';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
@@ -52,16 +54,22 @@ const Dashboard = () => {
       style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
       {firstLogin && <Intro />}
-      <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
+      <motion.h1
+        {...animationOptions3}
+        className="display-3 fw-bolder mb-5"
+        id="dashboard-title"
+      >
         Dashboard | {currentPage + 1}
-      </h1>
-      <button
+      </motion.h1>
+      <motion.button
+        {...animationOptions3}
         className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
         onClick={() => getTherapists(userId)}
       >
         Request New Therapists
-      </button>
-      <div
+      </motion.button>
+      <motion.div
+        {...animationOptions3}
         className="chiryo_shadow"
         style={{
           overflow: 'hidden',
@@ -101,31 +109,19 @@ const Dashboard = () => {
                     />
                   </td>
                   <td>
-                    <div
-                      className="chiryo_secondary rounded"
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'start',
-                        alignItems: 'center',
-                        alignContent: 'center',
-                        gap: '5px',
-                      }}
-                    >
-                      <div style={{ display: 'block' }}>
-                        <DatePicker
-                          selected={row.time}
-                          onChange={(e) => {
-                            console.log(e.currentTarget.value);
-                            handleRowUpdate();
-                          }}
-                          showTimeSelect
-                          timeFormat="HH:mm"
-                          timeIntervals={15}
-                          timeCaption="time"
-                          dateFormat="Pp"
-                        />
-                      </div>
+                    <div style={{ display: 'block' }}>
+                      <DatePicker
+                        selected={row.time}
+                        onChange={(e) => {
+                          console.log(e.currentTarget.value);
+                          handleRowUpdate();
+                        }}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        timeCaption="time"
+                        dateFormat="Pp"
+                      />
                     </div>
                   </td>
                   <td>
@@ -202,7 +198,7 @@ const Dashboard = () => {
               ))}
           </tbody>
         </table>
-      </div>
+      </motion.div>
 
       <div className="container-fluid mt-5">
         <nav

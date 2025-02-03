@@ -1,10 +1,13 @@
+import { motion } from 'motion/react';
+import { animationOptions3 } from '../styles/animations';
 import Form from '../components/form';
 
 const Login = () => {
   return (
     <div className="chiryo_login_background" style={{ height: '100vh' }}>
-      <div
-        className="container-fluid main-container"
+      <motion.div
+        {...animationOptions3}
+        className="container-fluid"
         style={{
           width: '100%',
           minHeight: '80vh',
@@ -13,7 +16,7 @@ const Login = () => {
         }}
       >
         <Form formTitle={'Login'} />
-      </div>
+      </motion.div>
     </div>
   );
 };

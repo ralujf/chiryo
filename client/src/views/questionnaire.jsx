@@ -5,13 +5,14 @@ import {
   generateRandomUsername,
 } from '../api/generateData';
 import { motion } from 'motion/react';
-import { questionAniOptions } from '../styles/animations';
+import { animationOptions3, questionAniOptions } from '../styles/animations';
 import { QUESTIONS, PROMPTS } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
 import { registerUser } from '../api/crud';
 import quizSound from '../assets/correct.mp3';
+import { useCredentialStore } from '../state/state';
 
 const introStateOptions = {
   START: 'START',
@@ -22,15 +23,20 @@ const introStateOptions = {
 // TODO: Create a super compressed GIF of slow waves in the background for chill vibes
 
 const Questionnaire = () => {
-  // const { }
+  const {
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    introState,
+    setIntroState,
+    setUserId,
+  } = useCredentialStore((state) => state);
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [userDetails, setUserDetails] = useState({});
-  const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [introState, setIntroState] = useState(introStateOptions.START);
+  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // const [introState, setIntroState] = useState(introStateOptions.START);
   const textareaRef = useRef(null);
 
   const correctAudio = new Audio(quizSound);
@@ -53,6 +59,22 @@ const Questionnaire = () => {
       theme: 'light',
     });
 
+  const notifyError = () =>
+    toast.success(
+      'Oops - looks like something went wrong! Refresh and try again',
+      {
+        position: 'bottom-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        type: 'error',
+      },
+    );
+
   /**
    * @description - Generates a random username for a new user
    */
@@ -66,6 +88,9 @@ const Questionnaire = () => {
       introState === introStateOptions.START &&
       currentQuestionIndex < QUESTIONS.length - 1
     ) {
+      // if (answers[currentQuestionIndex].length >= 1) {
+      //   // TODO: refactor to allow them to go back should automatically load the saved question if question has been answered
+      // }
       setAnswers([
         ...answers,
         PROMPTS[currentQuestionIndex] + formResponse.get('answer'),
@@ -107,8 +132,12 @@ const Questionnaire = () => {
       location: location,
     });
     console.log('All questions answered:', answers);
-    setUserId(id);
-    setIntroState(introStateOptions.MATCH);
+    if (!id) {
+      notifyError();
+    } else {
+      setUserId(id || '');
+      setIntroState(introStateOptions.MATCH);
+    }
   };
 
   if (introState === introStateOptions.START) {
@@ -117,7 +146,6 @@ const Questionnaire = () => {
         className="container-fluid d-flex justify-content-center"
         style={{
           width: '100vw',
-          height: '175vh',
           maxWidth: '100%',
           minHeight: '100vh',
           padding: '15vh 5vw',
@@ -149,12 +177,15 @@ const Questionnaire = () => {
             {QUESTIONS[currentQuestionIndex]}
           </motion.p>
           {currentQuestionIndex === 0 && (
-            <small>
+            <motion.small {...animationOptions3}>
               It&apos;s okay! You can be honest, all your data will be encrypted
               and unreadable by anyone!
-            </small>
+            </motion.small>
           )}
-          <form
+          <motion.form
+            variants={questionAniOptions}
+            initial="hidden"
+            animate={animate ? 'hidden' : 'visible'}
             onSubmit={(e) => {
               correctAudio.play();
               e.preventDefault();
@@ -246,6 +277,17 @@ const Questionnaire = () => {
               data-cy="response"
               disabled={animate}
             />
+            {currentQuestionIndex > 0 && (
+              <button
+                type="button"
+                data-cy="back"
+                onClick={() =>
+                  setCurrentQuestionIndex(currentQuestionIndex - 1)
+                }
+              >
+                Back
+              </button>
+            )}
             <button
               type="submit"
               data-cy="submit-answer"
@@ -257,31 +299,28 @@ const Questionnaire = () => {
                 style={{ marginLeft: '10px' }}
               ></i>
             </button>
-          </form>
+          </motion.form>
         </div>
       </div>
     );
   } else if (introState === introStateOptions.MATCH) {
     return (
-      <div style={{ marginTop: '20vh' }}>
-        <IsLoading
-          introStateOptions={introStateOptions}
-          introStateSetter={setIntroState}
-          userId={userId}
-        />
+      <div style={{ paddingTop: '20vh' }}>
+        <IsLoading introStateOptions={introStateOptions} />
       </div>
     );
   } else if (introState === introStateOptions.GENCRED) {
     return (
       <div style={{ minHeight: '100vh' }}>
-        <div
+        <motion.div
+          {...animationOptions3}
           className="modal d-block show mt-5"
           tabIndex="-1"
           role="dialog"
           aria-labelledby="credsModal"
           aria-hidden="false"
         >
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog shadow" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title text-center" id="credsModal">
@@ -309,11 +348,18 @@ const Questionnaire = () => {
                   *******
                 </h5>
               </div>
-              <div className="modal-footer">
+              <div className="modal-footer d-flex justify-content-center">
+                <button
+                  style={{ backgroundColor: 'white', border: '2px solid' }}
+                  onClick={() => setIntroState(introStateOptions.START)}
+                  className="btn chiryo_rounded"
+                >
+                  Redo
+                </button>
                 <Link
                   href="/login"
                   type="button"
-                  className="btn chiryo_primary chiryo_rounded chiryo_button"
+                  className="btn chiryo_primary chiryo_rounded"
                   data-cy="login-link"
                 >
                   Login
@@ -321,7 +367,7 @@ const Questionnaire = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }

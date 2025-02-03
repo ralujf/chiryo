@@ -1,9 +1,14 @@
-.chiryo_primary,
+.chiryo_primary {
+  padding: 0.5em 1em !important;
+  border-color: rgb(135, 206, 235);
+  background-color: rgb(135, 206, 235) !important;
+}
+
 .chiryo_primary_active {
   padding: 0.5em 1em !important;
   border-color: rgb(135, 206, 235);
   background-color: rgb(135, 206, 235) !important;
-  transition: 0.2s ease-in-out !important;
+  /* transition: 0.2s ease-in-out; */
 }
 
 .chiryo_primary_action {
