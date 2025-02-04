@@ -18,10 +18,10 @@ const DashboardSidebar = (props) => {
         className="offcanvas offcanvas-start"
         tabIndex="-1"
         id="offcanvasSidebar"
-        aria-labelledby="offcanvasExampleLabel"
+        aria-labelledby="offcanvasUserLabel"
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="offcanvasExampleLabel">
+          <h5 className="offcanvas-title" id="offcanvasUserLabel">
             {username}&apos;s Profile
           </h5>
           <button
@@ -32,8 +32,13 @@ const DashboardSidebar = (props) => {
           ></button>
         </div>
         <div className="offcanvas-body">
-          {age}
-          {diagnosis}
+          <p>{age}</p>
+          <hr></hr>
+          <p>{diagnosis}</p>
+          <p>
+            This is placeholder text to see if the text will wrap when the text
+            is longer
+          </p>
           <button
             className="text-dark chiryo_rounded chiryo_primary_active mb-3"
             onClick={() => (window.location.href = `mailto:${email}`)}

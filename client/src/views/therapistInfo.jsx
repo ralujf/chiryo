@@ -59,7 +59,10 @@ const therapistInfo = () => {
       </section>
 
       <section style={{ margin: '30vh 0vw' }}>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+        <motion.div
+          {...animationOptions}
+          className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
+        >
           <h1 className="text-center display-4 fw-bolder mb-3">
             Client Privacy & Confidentiality
           </h1>
@@ -69,14 +72,17 @@ const therapistInfo = () => {
             still essential to follow GDPA/HIPAA (or relevant privacy laws in
             your region) when managing client data.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       <section style={{ margin: '30vh 0vw' }}>
         <h2 className="display-3 fw-bolder mb-5">
           Why join Chiryo instead of other sites?
         </h2>
-        <div className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 display-6">
+        <motion.div
+          {...animationOptions}
+          className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 display-6"
+        >
           <ul>
             <li className="mb-5">
               <b>Set Your Own Schedule</b> – Take on as many (or as few) clients
@@ -92,7 +98,7 @@ const therapistInfo = () => {
               area and provide accessible care to those who need it.
             </li>
           </ul>
-        </div>
+        </motion.div>
         <motion.p {...animationOptions} className="display-4 mt-5 mb-5">
           Signing up is simple, and we’re here to support you every step of the
           way. Join a community of professionals making therapy more accessible,

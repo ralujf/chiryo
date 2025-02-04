@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-// TODO: bootstrap messing up fix this at some  point
+
 const Navbar = () => {
   return (
     <nav
@@ -13,15 +13,19 @@ const Navbar = () => {
         <button
           className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarNavDropdown"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavDropdown"
           aria-controls="navbarNavDropdown"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNavDropdown">
+        <div
+          className="collapse navbar-collapse"
+          id="navbarNavDropdown"
+          aria-labelledby="navbarNavDropdown"
+        >
           <ul className="navbar-nav w-full" style={{ marginRight: 'auto' }}>
             <li className="nav-item">
               <Link

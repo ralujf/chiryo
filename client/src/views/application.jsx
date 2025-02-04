@@ -28,34 +28,38 @@ const Application = () => {
             >
               Requirements
             </motion.h1>
-            <div className="d-flex flex-row justify-content-evenly gap-5">
-              <motion.div
-                {...animationOptions3}
-                className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
-              >
-                <h2>You must have...</h2>
-                <ul>
-                  <li>Testimonials from previous clients</li>
-                  <li>
-                    Degree in field of Psychology, Nursing or other Mental
-                    Health/Social Work Studies
-                  </li>
-                  <li>Strong & demonstrable communication skills</li>
-                  <li>Professional Accreditation (BACP, NCS, UKCP)</li>
-                  <li>Good Vibes ☀️</li>
-                </ul>
-              </motion.div>
-              <motion.img
-                {...animationOptions3}
-                src={applicationImage}
-                className="sticky z-1"
-                alt="application image"
-                width={'35%'}
-              />
+            <div className="row">
+              <div className="col-md-6">
+                <motion.div
+                  {...animationOptions3}
+                  className="mb-3 mb-md-0 h-100 flex-grow-1 max-w-50 chiryo_rounded chiryo_primary p-3 p-md-5"
+                >
+                  <h2>You must have...</h2>
+                  <ul>
+                    <li>Testimonials from previous clients</li>
+                    <li>
+                      Degree in field of Psychology, Nursing or other Mental
+                      Health/Social Work Studies
+                    </li>
+                    <li>Strong & demonstrable communication skills</li>
+                    <li>Professional Accreditation (BACP, NCS, UKCP)</li>
+                    <li>Good Vibes ☀️</li>
+                  </ul>
+                </motion.div>
+              </div>
+              <div className="col-md-6">
+                <motion.img
+                  {...animationOptions3}
+                  src={applicationImage}
+                  className="z-1"
+                  alt="application image"
+                  width={'100%'}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="chiryo_rounded">
+          <div className="chiryo_rounded" style={{ margin: '30vh 0vw' }}>
             <motion.h1
               {...animationOptions3}
               className="display-3 fw-bolder mb-5"

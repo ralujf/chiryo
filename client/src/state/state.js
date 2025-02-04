@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 
 const useCredentialStore = create((set) => ({
-  userId: 'placeholderId',
+  userId: '',
   username: '',
   password: '',
-  role: 'therapist',
+  role: '',
   firstLogin: false,
   currentQuestionIndex: 0,
   answers: [],

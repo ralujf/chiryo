@@ -17,7 +17,9 @@ import { useCredentialStore } from '../state/state';
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [tableData, setTableData] = useState();
-  const { userId, role, firstLogin } = useCredentialStore((state) => state);
+  const { userId, role, email, phoneNumber, firstLogin } = useCredentialStore(
+    (state) => state,
+  );
   const pages = Array.from({ length: 5 }, (_, i) => i + 1);
 
   useEffect(() => {
@@ -85,7 +87,7 @@ const Dashboard = () => {
               <th className="chiryo_primary align-middle">Time</th>
               <th className="chiryo_primary align-middle">Meeting Point</th>
               <th className="chiryo_primary align-middle">
-                {role == 'therapist' ? 'Success' : 'Problem'}
+                {role == 'therapist' ? 'Success' : 'Status'}
               </th>
               <th className="chiryo_primary">
                 <button
@@ -112,20 +114,19 @@ const Dashboard = () => {
                     <div style={{ display: 'block' }}>
                       <DatePicker
                         selected={row.time}
-                        onChange={(e) => {
-                          console.log(e.currentTarget.value);
-                          handleRowUpdate();
-                        }}
                         showTimeSelect
                         timeFormat="HH:mm"
                         timeIntervals={15}
                         timeCaption="time"
                         dateFormat="Pp"
+                        onChange={(e) => {
+                          handleRowUpdate(e.currentTarget.value);
+                        }}
                       />
                     </div>
                   </td>
                   <td>
-                    <div className="d-flex flex-row">
+                    <div className="d-flex flex-row w-100">
                       <div className="dropdown">
                         <button
                           className="btn chiryo_secondary dropdown-toggle"
@@ -141,13 +142,37 @@ const Dashboard = () => {
                           aria-labelledby="dropdownMenuButton"
                         >
                           <li>
-                            <button className="dropdown-item">Virtual</button>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => {
+                                row.location = 'virtual';
+                                row.locationLink = email;
+                              }}
+                            >
+                              Virtual
+                            </button>
                           </li>
                           <li>
-                            <button className="dropdown-item">Phone</button>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => {
+                                row.location = 'phone';
+                                row.locationLink = phoneNumber;
+                              }}
+                            >
+                              Phone
+                            </button>
                           </li>
                           <li>
-                            <button className="dropdown-item">In-Person</button>
+                            <input
+                              type="text"
+                              className="dropdown-item"
+                              placeholder="Location..."
+                              onInput={(e) => {
+                                row.location = 'in-person';
+                                row.locationLink = e.currentTarget.value;
+                              }}
+                            ></input>
                           </li>
                         </ul>
                       </div>
@@ -155,41 +180,47 @@ const Dashboard = () => {
                         href={row.locationLink}
                         className="chiryo_secondary text-secondary rounded py-1 px-2"
                       >
-                        <i className="bi bi-person-video3"></i>
+                        {row.location.match(/^\d+$/) && (
+                          <i className="bi bi-telephone"></i>
+                        )}
+                        {row.location.match(/^https?:\/\//) && (
+                          <i className="bi bi-link-45deg"></i>
+                        )}
+                        {row.location.match(/google\.com\/maps/) && (
+                          <i className="bi bi-geo-alt"></i>
+                        )}
                       </a>
                     </div>
                   </td>
                   <td>
-                    <button
-                      className="chiryo_secondary text-secondary"
-                      style={{ height: 'fit-content' }}
-                    >
-                      <div
-                        className="d-flex flex-row justify-content-evenly"
-                        style={{ gap: '10px' }}
-                      >
-                        <p className="mb-0">
-                          {role === 'therapist' && (
-                            <div>
-                              {row.markResolvedTherapist ? 'Yes' : 'No'}
-                            </div>
-                          )}
-                          {role === 'user' && (
-                            <div> {row.markResolvedUser ? 'Yes' : 'No'}</div>
-                          )}
-                        </p>
-                        <i className="bi bi-arrow-repeat"></i>
-                      </div>
+                    <button className="chiryo_secondary text-secondary w-100 h-100">
+                      <p className="mb-0">
+                        {role === 'therapist' && (
+                          <>
+                            {row.markResolvedTherapist ? (
+                              <i className="bi bi-check-lg"></i>
+                            ) : (
+                              <i className="bi bi-x"></i>
+                            )}
+                          </>
+                        )}
+                        {role === 'user' && (
+                          <>
+                            {' '}
+                            {row.markResolvedUser ? (
+                              <i className="bi bi-check-lg"></i>
+                            ) : (
+                              <i className="bi bi-x"></i>
+                            )}
+                          </>
+                        )}
+                      </p>
                     </button>
                   </td>
-                  <td onKeyDown={() => removeRowFromTable(userId, rowIndex)}>
+                  <td>
                     <button
-                      className="btn btn-outline-secondary"
-                      style={{
-                        height: '100%',
-                        width: '100%',
-                      }}
-                      onClick={() => removeRowFromTable(userId, row)}
+                      className="btn btn-outline-secondary w-100 h-100"
+                      onClick={() => removeRowFromTable(userId, rowIndex)}
                     >
                       <i className="bi bi-trash"></i>
                     </button>
