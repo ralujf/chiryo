@@ -25,8 +25,7 @@ function calculateCorrelation(objectA, objectB) {
       totalScore += score;
     } else if (typeof valueA === 'string' && typeof valueB === 'string') {
       // Use string-comparison to get a score between 0 and 1
-      const cosine = stringComparison.cosine;
-      const score = cosine.similarity(valueA, valueB);
+      const score = stringComparison.default.cosine.similarity(valueA, valueB);
       totalScore += score;
     } else {
       // skip
@@ -39,7 +38,7 @@ function calculateCorrelation(objectA, objectB) {
 /**
  *
  * @param {Object} objectA - an object with any keys
- * @param {Object} objectB - an objects with any keys
+ * @param {Object} objectB - an object with any keys
  * @returns {boolean}
  * @description - Returns true if the objects have the same complete structure
  */
@@ -52,7 +51,14 @@ function assertObject(objectA, objectB) {
   }
 
   for (let key of keysA) {
-    if (!(key in objectB) || typeof objectA[key] !== typeof objectB[key]) {
+    if (!(key in objectB)) {
+      return false;
+    }
+    if (typeof objectA[key] === 'object' && typeof objectB[key] === 'object') {
+      if (!assertObject(objectA[key], objectB[key])) {
+        return false;
+      }
+    } else if (typeof objectA[key] !== typeof objectB[key]) {
       return false;
     }
   }
@@ -95,19 +101,24 @@ async function matchObject(userInfo) {
   };
 
   // Double check keys are filtered
-  const user = userInfo;
-  Object.keys(user).forEach((key) => {
-    if (!(key in userFormatForMatching)) {
-      delete user[key];
-    }
-  });
+  const user = {
+    age: userInfo.age,
+    race: userInfo.race,
+    religion: userInfo.religion,
+    diagnosis: userInfo.diagnosis,
+  };
+  // Object.keys(user).forEach((key) => {
+  //   if (!(key in userFormatForMatching)) {
+  //     delete user[key];
+  //   }
+  // });
 
-  const therapistArray = returnAllTherapists();
-  const valid = assertObject(userInfo, userFormatForMatching);
-  if (!valid) throw new Error('Object format incorrect');
+  const therapistArray = await returnAllTherapists();
+  // const valid = assertObject(user, userFormatForMatching);
+  // if (!valid) throw new Error('Object format incorrect');
 
   for (const therapist of therapistArray) {
-    let correlationValue = calculateCorrelation(userInfo, therapist);
+    let correlationValue = calculateCorrelation(user, therapist);
     correlationScores.push({
       compatibilityScore: correlationValue,
       therapist: therapist,

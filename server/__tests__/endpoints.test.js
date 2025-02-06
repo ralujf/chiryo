@@ -1,9 +1,9 @@
 const request = require('supertest');
 const app = require('../index');
-const { User } = require('../models/user');
-const { Application } = require('../models/application');
-const { Therapist } = require('../models/therapist');
-const { Dashboard } = require('../models/dashboard');
+const User = require('../models/user');
+const Application = require('../models/application');
+const Therapist = require('../models/therapist');
+const Dashboard = require('../models/dashboard');
 
 jest.mock('../models/user');
 jest.mock('../models/application');

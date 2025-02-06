@@ -4,8 +4,8 @@
   "description": "Backend API for Chiryo",
   "main": "index.js",
   "scripts": {
-    "tests": "node tests/tests.js",
-    "test:coverage": "jest --coverage",
+    "test": "jest",
+    "test:coverage": "jest --coverage --watchAll --detectOpenHandles",
     "start": "node index.js"
   },
   "author": "JonathanFajobi",
