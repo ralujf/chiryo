@@ -1,14 +1,14 @@
 const {
-  matchObject,
   calculateCorrelation,
   assertObject,
+  matchObject,
   returnAllTherapists,
 } = require('../utils/matchingAlgo');
 jest.mock('../utils/matchingAlgo', () => {
   const originalModule = jest.requireActual('../utils/matchingAlgo');
   return {
     ...originalModule,
-    returnAllTherapists: jest.fn(() => require('./data.json')),
+    returnAllTherapists: jest.fn(),
   };
 });
 // Mock the return all therapist anywhere that it is needed
@@ -46,10 +46,91 @@ describe('matching algorithm tests', () => {
     expect(result).toBe(false);
   });
 
-  // TODO: hard to test this because it requires internal functionality mocking
-  // test('match object to other objects based on correlation score', () => {
-  //   const result = matchObject(user);
-  //   expect(result.matches.length).toBeGreaterThan(0);
-  //   expect(result.diagnosis).toBe(user.diagnosis);
-  // });
+  test('matchObject returns correct matches and diagnosis', async () => {
+    const user = {
+      age: 25,
+      race: 'Asian',
+      religion: 'None',
+      diagnosis: 'Anxiety',
+    };
+
+    const therapists = [
+      { age: 30, race: 'Asian', religion: 'None', diagnosis: 'Anxiety' },
+      {
+        age: 40,
+        race: 'Caucasian',
+        religion: 'Christian',
+        diagnosis: 'Depression',
+      },
+    ];
+
+    const mockReturnAllTherapists = jest.fn().mockResolvedValue(therapists);
+
+    const result = await matchObject(user, mockReturnAllTherapists);
+
+    expect(result.diagnosis).toBe(user.diagnosis);
+    expect(result.matches.length).toBe(2);
+  });
+
+  test('matchObject handles no therapists', async () => {
+    const user = {
+      age: 25,
+      race: 'Asian',
+      religion: 'None',
+      diagnosis: 'Anxiety',
+    };
+
+    const mockReturnAllTherapists = jest.fn().mockResolvedValue([]);
+
+    const result = await matchObject(user, mockReturnAllTherapists);
+
+    expect(result.diagnosis).toBe(user.diagnosis);
+    expect(result.matches.length).toBe(0);
+  });
+
+  test('matchObject handles therapists with missing fields', async () => {
+    const user = {
+      age: 25,
+      race: 'Asian',
+      religion: 'None',
+      diagnosis: 'Anxiety',
+    };
+
+    const therapists = [
+      { age: 30, race: 'Asian', religion: 'None' },
+      {
+        age: 40,
+        race: 'Caucasian',
+        religion: 'Christian',
+        diagnosis: 'Depression',
+      },
+    ];
+
+    const mockReturnAllTherapists = jest.fn().mockResolvedValue(therapists);
+
+    const result = await matchObject(user, mockReturnAllTherapists);
+
+    expect(result.diagnosis).toBe(user.diagnosis);
+    expect(result.matches.length).toBe(2);
+  });
+
+  test('returnAllTherapists returns therapist data', async () => {
+    const therapists = [
+      { age: 30, race: 'Asian', religion: 'None', diagnosis: 'Anxiety' },
+      {
+        age: 40,
+        race: 'Caucasian',
+        religion: 'Christian',
+        diagnosis: 'Depression',
+      },
+    ];
+
+    require('../utils/matchingAlgo').returnAllTherapists.mockResolvedValue(
+      therapists,
+    );
+
+    const result = await returnAllTherapists();
+
+    expect(result).toEqual(therapists);
+  });
 });
