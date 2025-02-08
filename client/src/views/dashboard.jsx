@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
+import { ToastContainer, toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
@@ -13,22 +14,24 @@ import {
 } from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCredentialStore } from '../state/state';
-
+// TODO: update to return the total pages
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
+  // TODO: Make this only fetch on the page that the login redirects you to after,
+  // state is detected then snipe the user asap
   const { userId, role, email, phoneNumber, firstLogin } = useCredentialStore(
     (state) => state,
   );
-  const pages = Array.from({ length: 5 }, (_, i) => i + 1);
-
   useEffect(() => {
     let offset = currentPage;
     let newTableData;
     const updateData = () => {
       newTableData = loadTableData(userId, offset);
       console.log('Dashboard Data', newTableData);
-      setTableData(newTableData);
+      setTableData(newTableData.tableData);
+      setTotalPages(newTableData.total);
     };
     updateData();
   }, [currentPage, userId]);
@@ -50,12 +53,77 @@ const Dashboard = () => {
     updateRowFromTable(tableData[rowIndex]);
   };
 
+  const createMessage = (type) => {
+    switch (type) {
+      case 'Phone':
+        return 'Phone number was copied!';
+      case 'In-person':
+        return 'Location was copied';
+      case 'Virtual':
+        return 'Meeting link was copied!';
+      default:
+        return 'Unknown type';
+    }
+  };
+
+  const copyToClipBoard = async (value, type) => {
+    let message = createMessage(type);
+    console.log(type);
+    try {
+      await navigator.clipboard.writeText(value);
+      notify(message);
+    } catch (err) {
+      notifyError();
+      console.error('Could not copy text: ', err);
+    }
+  };
+
+  const notify = (msg) =>
+    toast.success(msg, {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+    });
+
+  const notifyError = () =>
+    toast.error(
+      'Oops - looks like something went wrong! Refresh and try again',
+      {
+        position: 'bottom-center',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: 'light',
+        type: 'error',
+      },
+    );
+
   return (
     <div
       className="container-fluid main-container"
       style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
     >
       {firstLogin && <Intro />}
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover
+        theme="light"
+      />
       <motion.h1
         {...animationOptions3}
         className="display-3 fw-bolder mb-5"
@@ -144,8 +212,12 @@ const Dashboard = () => {
                           <li>
                             <button
                               className="dropdown-item"
+                              onChange={(e) => {
+                                console.log('check');
+                                handleRowUpdate(e.currentTarget.value);
+                              }}
                               onClick={() => {
-                                row.location = 'virtual';
+                                row.location = 'Virtual';
                                 row.locationLink = email;
                               }}
                             >
@@ -156,7 +228,7 @@ const Dashboard = () => {
                             <button
                               className="dropdown-item"
                               onClick={() => {
-                                row.location = 'phone';
+                                row.location = 'Phone';
                                 row.locationLink = phoneNumber;
                               }}
                             >
@@ -169,7 +241,7 @@ const Dashboard = () => {
                               className="dropdown-item"
                               placeholder="Location..."
                               onInput={(e) => {
-                                row.location = 'in-person';
+                                row.location = 'In-person';
                                 row.locationLink = e.currentTarget.value;
                               }}
                             ></input>
@@ -177,23 +249,37 @@ const Dashboard = () => {
                         </ul>
                       </div>
                       <a
-                        href={row.locationLink}
+                        href={
+                          row.locationLink.match(/^https?:\/\//)
+                            ? `${row.locationLink}`
+                            : undefined
+                        }
+                        onClick={() =>
+                          copyToClipBoard(row.locationLink, row.location)
+                        }
                         className="chiryo_secondary text-secondary rounded py-1 px-2"
                       >
-                        {row.location.match(/^\d+$/) && (
+                        {row.locationLink.match(/^\d+$/) && (
                           <i className="bi bi-telephone"></i>
                         )}
-                        {row.location.match(/^https?:\/\//) && (
+                        {row.locationLink.match(/^https?:\/\//) && (
                           <i className="bi bi-link-45deg"></i>
                         )}
-                        {row.location.match(/google\.com\/maps/) && (
+                        {row.locationLink.match(/google\.com\/maps/) && (
                           <i className="bi bi-geo-alt"></i>
                         )}
                       </a>
                     </div>
                   </td>
                   <td>
-                    <button className="chiryo_secondary text-secondary w-100 h-100">
+                    <button
+                      className="chiryo_secondary text-secondary w-100 h-100"
+                      onClick={() => {
+                        if (role === 'therapist') {
+                        } else if (role === '') {
+                        }
+                      }}
+                    >
                       <p className="mb-0">
                         {role === 'therapist' && (
                           <>
@@ -249,28 +335,31 @@ const Dashboard = () => {
                 Previous
               </a>
             </li>
-            {pages.map((_, idx) => {
-              return (
-                <li className="page-item" key={idx}>
-                  <a
-                    className="page-link"
-                    onClick={() => {
-                      setCurrentPage(idx);
-                    }}
-                    href="#"
-                  >
-                    {idx + 1}
-                  </a>
-                </li>
-              );
-            })}
+            {Array.from({ length: totalPages }, (_, idx) => (
+              <li className="page-item" key={idx}>
+                <a
+                  className="page-link"
+                  onClick={() => {
+                    setCurrentPage(idx);
+                  }}
+                  href="#"
+                >
+                  {idx + 1}
+                </a>
+              </li>
+            ))}
             <li className="page-item">
               <a
                 href="#"
-                className="page-link"
-                disabled={currentPage === pages}
+                className={
+                  currentPage === totalPages - 1
+                    ? 'page-link disabled'
+                    : 'page-link'
+                }
+                disabled={currentPage === totalPages - 1}
                 onClick={() => {
-                  if (currentPage < pages) setCurrentPage(currentPage + 1);
+                  if (currentPage < totalPages - 1)
+                    setCurrentPage(currentPage + 1);
                 }}
               >
                 Next

@@ -7,9 +7,8 @@ const Stars = ({ number }) => {
   useEffect(() => {
     if (starRef.current) {
       const children = Array.from(starRef.current.children);
-      console.log(children);
-      children.slice(0, number).forEach((child, index) => {
-        console.log(`Child ${index + 1}:`, child);
+
+      children.slice(0, number).forEach((child) => {
         child.classList.remove('bi-star');
         child.classList.add('bi-star-fill');
       });

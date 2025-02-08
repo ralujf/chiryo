@@ -108,6 +108,14 @@ async function matchObject(userInfo, fetchTherapists = returnAllTherapists) {
     religion: userInfo.religion,
     diagnosis: userInfo.diagnosis,
   };
+
+  // Ensure none of the fields are null
+  for (let key in user) {
+    if (user[key] === null || user[key] === undefined) {
+      return;
+    }
+  }
+
   // Object.keys(user).forEach((key) => {
   //   if (!(key in userFormatForMatching)) {
   //     delete user[key];

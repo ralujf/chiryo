@@ -6,7 +6,7 @@ import {
 } from '../api/generateData';
 import { motion } from 'motion/react';
 import { animationOptions3, questionAniOptions } from '../styles/animations';
-import { QUESTIONS, PROMPTS } from '../api/questions';
+import { QUESTIONS, combinePrompts } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
@@ -21,6 +21,7 @@ const introStateOptions = {
 };
 
 // TODO: Create a super compressed GIF of slow waves in the background for chill vibes
+// TODO: Append the form question starters when the user has ended
 
 const Questionnaire = () => {
   const {
@@ -28,15 +29,17 @@ const Questionnaire = () => {
     setCurrentQuestionIndex,
     introState,
     setIntroState,
-    setUserId,
+    userId,
+    setUser,
+    username,
+    setUsername,
+    password,
+    setPassword,
   } = useCredentialStore((state) => state);
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [userDetails, setUserDetails] = useState({});
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // const [introState, setIntroState] = useState(introStateOptions.START);
+
   const textareaRef = useRef(null);
 
   const correctAudio = new Audio(quizSound);
@@ -60,11 +63,11 @@ const Questionnaire = () => {
     });
 
   const notifyError = () =>
-    toast.success(
-      'Oops - looks like something went wrong! Refresh and try again',
+    toast.error(
+      'Oops - looks like something went wrong! Refresh and try again 👍',
       {
         position: 'bottom-center',
-        autoClose: 2000,
+        autoClose: 3500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -86,15 +89,9 @@ const Questionnaire = () => {
   const handleAnswer = (formResponse) => {
     if (
       introState === introStateOptions.START &&
-      currentQuestionIndex < QUESTIONS.length - 1
+      currentQuestionIndex == QUESTIONS.length - 1
     ) {
-      // if (answers[currentQuestionIndex].length >= 1) {
-      //   // TODO: refactor to allow them to go back should automatically load the saved question if question has been answered
-      // }
-      setAnswers([
-        ...answers,
-        PROMPTS[currentQuestionIndex] + formResponse.get('answer'),
-      ]);
+      setAnswers([...answers, formResponse.get('answer')]);
       setAnimate(true);
 
       textareaRef.current.value = '';
@@ -102,7 +99,7 @@ const Questionnaire = () => {
       setTimeout(() => {
         setAnimate(false);
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      }, 1500);
+      }, 1150);
 
       notify();
     } else {
@@ -118,8 +115,12 @@ const Questionnaire = () => {
    * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
    */
   const handleOptionalForm = (formResponse) => {
+    const newAnswers = combinePrompts(answers);
+    setAnswers(newAnswers);
     setUserDetails(formResponse);
-    console.log(userDetails);
+    // for (var pair of formResponse.entries()) {
+    //   console.log(pair[0] + ', ' + pair[1]);
+    // }
     const { email, age, race, background, religion, location } = userDetails;
     const id = registerUser({
       username: username,
@@ -131,12 +132,13 @@ const Questionnaire = () => {
       religion: religion,
       location: location,
     });
-    console.log('All questions answered:', answers);
-    if (!id) {
-      notifyError();
-    } else {
-      setUserId(id || '');
+
+    setUser({ userId: id, role: 'user', firstLogin: true });
+
+    if (userId) {
       setIntroState(introStateOptions.MATCH);
+    } else {
+      notifyError();
     }
   };
 
@@ -148,12 +150,9 @@ const Questionnaire = () => {
           width: '100vw',
           maxWidth: '100%',
           minHeight: '100vh',
-          padding: '15vh 5vw',
+          padding: '20vh 5vw',
         }}
       >
-        {currentQuestionIndex < QUESTIONS.length && (
-          <Stars number={currentQuestionIndex} />
-        )}
         <ToastContainer
           position="bottom-center"
           autoClose={2000}
@@ -166,22 +165,25 @@ const Questionnaire = () => {
           pauseOnHover
           theme="light"
         />
+        {currentQuestionIndex < QUESTIONS.length && (
+          <Stars number={currentQuestionIndex} />
+        )}
         <div className="w-75">
-          <motion.p
+          <motion.div
             variants={questionAniOptions}
             initial="hidden"
             animate={animate ? 'hidden' : 'visible'}
-            className="display-3 fw-bolder mb-5"
-            data-cy="question"
           >
-            {QUESTIONS[currentQuestionIndex]}
-          </motion.p>
-          {currentQuestionIndex === 0 && (
-            <motion.small {...animationOptions3}>
-              It&apos;s okay! You can be honest, all your data will be encrypted
-              and unreadable by anyone!
-            </motion.small>
-          )}
+            <p className="display-3 fw-bolder mb-5" data-cy="question">
+              {QUESTIONS[currentQuestionIndex]}
+            </p>
+            {currentQuestionIndex === 0 && (
+              <small>
+                It&apos;s okay! You can be honest, all your data will be
+                encrypted and unreadable by anyone!
+              </small>
+            )}
+          </motion.div>
           <motion.form
             variants={questionAniOptions}
             initial="hidden"
@@ -265,40 +267,55 @@ const Questionnaire = () => {
                   data-cy="location"
                 />
                 <p>Anything else?</p>
+                <input
+                  placeholder="Enter any additional information..."
+                  type="text"
+                  name="additional"
+                  className="form-control mb-3"
+                  id="additionalInput"
+                  data-cy="additional"
+                />
               </div>
             )}
-            <textarea
-              ref={textareaRef}
-              className="chiryo_textarea"
-              type="text"
-              name="answer"
-              required
-              style={{ fontSize: '2rem' }}
-              data-cy="response"
-              disabled={animate}
-            />
-            {currentQuestionIndex > 0 && (
-              <button
-                type="button"
-                data-cy="back"
-                onClick={() =>
-                  setCurrentQuestionIndex(currentQuestionIndex - 1)
-                }
-              >
-                Back
-              </button>
+            {currentQuestionIndex < QUESTIONS.length && (
+              <textarea
+                ref={textareaRef}
+                className="chiryo_textarea"
+                type="text"
+                name="answer"
+                required={currentQuestionIndex !== QUESTIONS.length}
+                style={{ fontSize: '4rem' }}
+                data-cy="response"
+                disabled={animate}
+              />
             )}
-            <button
-              type="submit"
-              data-cy="submit-answer"
-              className="btn chiryo_primary chiryo_rounded mt-5 d-flex justify-content-center"
-            >
-              {currentQuestionIndex >= QUESTIONS.length ? 'Submit' : 'Next'}
-              <i
-                className="bi bi-arrow-right-square-fill"
-                style={{ marginLeft: '10px' }}
-              ></i>
-            </button>
+            <div className="d-flex justify-content-start gap-2">
+              {currentQuestionIndex > 0 && (
+                <button
+                  type="button"
+                  data-cy="back"
+                  className="chiryo_primary_active chiryo_rounded mt-5 d-flex justify-content-center"
+                  onClick={() => {
+                    setCurrentQuestionIndex(currentQuestionIndex - 1);
+                    textareaRef.current.value =
+                      answers[currentQuestionIndex - 1];
+                  }}
+                >
+                  Back
+                </button>
+              )}
+              <button
+                type="submit"
+                data-cy="submit-answer"
+                className="chiryo_primary_active chiryo_rounded mt-5 d-flex justify-content-center"
+              >
+                {currentQuestionIndex >= QUESTIONS.length ? 'Submit' : 'Next'}
+                <i
+                  className="bi bi-arrow-right-square-fill"
+                  style={{ marginLeft: '10px' }}
+                ></i>
+              </button>
+            </div>
           </motion.form>
         </div>
       </div>

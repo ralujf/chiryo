@@ -19,7 +19,7 @@ const Intro = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="stepModalToggleLabel">
-                Modal 1
+                Welcome to your dashboard!
               </h1>
               <button
                 type="button"
@@ -29,7 +29,9 @@ const Intro = () => {
               ></button>
             </div>
             <div className="modal-body">
-              Show a second modal and hide this one with the button below.
+              Great work on taking a step to improve your health! Here you will
+              find all of the stuff you need. This table put image her later Is
+              completely interactive.
             </div>
             <div className="modal-footer">
               <button
@@ -37,7 +39,7 @@ const Intro = () => {
                 data-bs-target="#stepModalToggle2"
                 data-bs-toggle="modal"
               >
-                Open second modal
+                Next
               </button>
             </div>
           </div>
@@ -54,7 +56,7 @@ const Intro = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="stepModalToggleLabel2">
-                Modal 2
+                How to use this?
               </h1>
               <button
                 type="button"
@@ -64,7 +66,12 @@ const Intro = () => {
               ></button>
             </div>
             <div className="modal-body">
-              Hide this modal and show the first with the button below.
+              You can choose the time of the meeting by clicking the time item
+              and setting your preferred time! All the other fields work the
+              same. If you no longer want to meet with a therapist, you can
+              remove them from the dashboard by clicking the trash icon. If you
+              think the therapist has resolved most of the problems you were
+              experiencing, update the status icon!
             </div>
             <div className="modal-footer">
               <button
@@ -80,7 +87,7 @@ const Intro = () => {
       </div>
       <button
         ref={modalRef}
-        className="btn btn-primary"
+        className="btn btn-primary d-none"
         data-bs-target="#stepModalToggle"
         data-bs-toggle="modal"
       >

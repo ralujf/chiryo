@@ -62,14 +62,14 @@ describe('Admin Routes', () => {
 describe('Dashboard Routes', () => {
   it('should fetch user dashboard', async () => {
     const token = jwt.sign({ id: 'userId' }, process.env.JWT_SECRET);
-    Dashboard.find.mockResolvedValueOnce([{ data: 'test' }]);
+    Dashboard.find.mockResolvedValueOnce([{ data: 'test', total: 1 }]);
     const response = await request(app)
       .get('/api/load-user-dashboard/')
       .set('Authorization', `Bearer ${token}`)
       .query({ offset: 1 })
       .send({ userId: '1', role: 'user' });
     expect(response.status).toBe(200);
-    expect(response.body).toEqual([{ data: 'test' }]);
+    expect(response.body).toEqual([{ data: 'test', total: 1 }]);
   });
 
   it('should delete a record', async () => {

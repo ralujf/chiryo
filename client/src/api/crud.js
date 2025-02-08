@@ -117,8 +117,8 @@ const loadTableData = (userId, offset) => {
         email: 'stevewatts@gmail.com',
         expertise: 'Couples',
       },
-      location: 'Virtual',
-      locationLink: '',
+      location: 'Phone',
+      locationLink: '07480144234',
       time: new Date(),
       diagnosis: 'Depression',
       markResolvedUser: false,
@@ -126,7 +126,10 @@ const loadTableData = (userId, offset) => {
     };
   });
 
-  return exampleArr.slice(offset * 10);
+  return {
+    tableData: exampleArr.slice(offset * 10),
+    total: exampleArr.length % 10,
+  };
 };
 /**
  *

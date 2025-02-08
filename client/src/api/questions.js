@@ -7,13 +7,15 @@ const QUESTIONS = [
 ];
 
 const PROMPTS = [
-  'I am feeling',
-  'The last time I had an episode was',
+  'I am feeling ',
+  'The last time I had an episode was ',
   '',
   '',
-  'My background is',
-  'In my free time I like to',
-  '',
+  'In my free time I like to ',
 ];
 
-export { QUESTIONS, PROMPTS };
+const combinePrompts = (answers) => {
+  return answers.map((answer, index) => `${PROMPTS[index]}${answer}`);
+};
+
+export { QUESTIONS, PROMPTS, combinePrompts };

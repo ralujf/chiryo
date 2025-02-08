@@ -8,9 +8,9 @@ const fetchDashboard = async (req, res) => {
     role === 'therapist' ? { 'therapist._id': userId } : { 'user._id': userId };
   if (userId && offset && offset > 0) {
     try {
-      const rows = await Dashboard.find(query).skip(offset).limit(5).exec();
+      const rows = await Dashboard.find(query).skip(offset).limit(10).exec();
       return rows.length
-        ? res.status(200).json(results)
+        ? res.status(200).json({ data: rows, total: rows.length % 10 })
         : res.status(200).send('No results found for this valid user');
     } catch (error) {
       return res.status(500).send('An error occurred with the submitted ID');
@@ -96,6 +96,7 @@ const insertToDashboard = async (req, res) => {
       expertise: therapist.expertise,
     },
     location: therapist.location || 'virtual',
+    locationLink: '',
     time: new Date(),
     diagnosis: data.diagnosis,
     markResolvedUser: therapist.markResolvedUser || false,
