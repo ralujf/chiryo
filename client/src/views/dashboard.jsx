@@ -20,9 +20,7 @@ const Dashboard = () => {
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
 
-  const { userId, role, email, phoneNumber, firstLogin } = useCredentialStore(
-    (state) => state,
-  );
+  const { userId, role, firstLogin } = useCredentialStore((state) => state);
   useEffect(() => {
     let offset = currentPage;
     let newTableData;
@@ -38,18 +36,17 @@ const Dashboard = () => {
   /**
    *
    * @param {number} rowIndex
-   * @param {Object} data
-   * @param {string} type - i.e. time, location, locationLink
+   * @param {Array<Object>} valueArr
+   * @param {Array<string>} keyArr - i.e. time, location, locationLink
    * @description - Update the state, then pass the newly updated state to an async function that will update the database
    */
-  const handleRowUpdate = (rowIndex, data, type) => {
+  const handleRowUpdate = (rowIndex, valueArr, keyArr) => {
     const updatedTableData = [...tableData];
-    updatedTableData[rowIndex] = {
-      ...updatedTableData[rowIndex],
-      [type]: data,
-    };
+    keyArr.forEach((key, index) => {
+      updatedTableData[rowIndex][key] = valueArr[index];
+    });
     setTableData(updatedTableData);
-    updateRowFromTable(tableData[rowIndex]);
+    updateRowFromTable(updatedTableData[rowIndex]);
   };
 
   const createMessage = (type) => {
@@ -188,8 +185,8 @@ const Dashboard = () => {
                         onChange={(e) => {
                           handleRowUpdate(
                             rowIndex,
-                            e.currentTarget.value,
-                            'time',
+                            [e.currentTarget.value],
+                            ['time'],
                           );
                         }}
                       />
@@ -214,13 +211,15 @@ const Dashboard = () => {
                           <li>
                             <button
                               className="dropdown-item"
-                              onClick={(e) => {
-                                row.location = 'Virtual';
-                                row.locationLink = email;
+                              onClick={() => {
+                                let sentMail =
+                                  role === 'therapist'
+                                    ? row.user.email
+                                    : row.therapist.email;
                                 handleRowUpdate(
                                   rowIndex,
-                                  e.currentTarget.value,
-                                  'location',
+                                  [sentMail, 'Virtual'],
+                                  ['locationLink', 'location'],
                                 );
                               }}
                             >
@@ -228,20 +227,20 @@ const Dashboard = () => {
                             </button>
                           </li>
                           <li>
-                            <button
+                            <input
+                              type="text"
                               className="dropdown-item"
+                              placeholder="Location..."
                               onClick={(e) => {
-                                row.location = 'Phone';
-                                row.locationLink = phoneNumber;
                                 handleRowUpdate(
                                   rowIndex,
-                                  e.currentTarget.value,
-                                  'location',
+                                  [e.currentTarget.value, 'Phone'],
+                                  ['locationLink', 'location'],
                                 );
                               }}
                             >
                               Phone
-                            </button>
+                            </input>
                           </li>
                           <li>
                             <input
@@ -249,12 +248,10 @@ const Dashboard = () => {
                               className="dropdown-item"
                               placeholder="Location..."
                               onInput={(e) => {
-                                row.location = 'In-person';
-                                row.locationLink = e.currentTarget.value;
                                 handleRowUpdate(
                                   rowIndex,
-                                  e.currentTarget.value,
-                                  'location',
+                                  [e.currentTarget.value, 'In-person'],
+                                  ['locationLink', 'location'],
                                 );
                               }}
                             ></input>
@@ -291,14 +288,14 @@ const Dashboard = () => {
                         if (role === 'therapist') {
                           handleRowUpdate(
                             rowIndex,
-                            !row.markResolvedTherapist,
-                            'markResolvedTherapist',
+                            [!row.markResolvedTherapist],
+                            ['markResolvedTherapist'],
                           );
                         } else if (role === 'user') {
                           handleRowUpdate(
                             rowIndex,
-                            !row.markResolvedUser,
-                            'markResolvedUser',
+                            [!row.markResolvedUser],
+                            ['markResolvedUser'],
                           );
                         }
                       }}
