@@ -14,13 +14,12 @@ import {
 } from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCredentialStore } from '../state/state';
-// TODO: update to return the total pages
+
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
-  // TODO: Make this only fetch on the page that the login redirects you to after,
-  // state is detected then snipe the user asap
+
   const { userId, role, email, phoneNumber, firstLogin } = useCredentialStore(
     (state) => state,
   );
@@ -159,8 +158,7 @@ const Dashboard = () => {
               </th>
               <th className="chiryo_primary">
                 <button
-                  className="btn chiryo_rounded chiryo_primary_action"
-                  style={{ width: '100%' }}
+                  className="btn chiryo_rounded chiryo_primary_action w-100"
                   onClick={() => clearTable(userId)}
                 >
                   {' '}
@@ -188,7 +186,11 @@ const Dashboard = () => {
                         timeCaption="time"
                         dateFormat="Pp"
                         onChange={(e) => {
-                          handleRowUpdate(e.currentTarget.value);
+                          handleRowUpdate(
+                            rowIndex,
+                            e.currentTarget.value,
+                            'time',
+                          );
                         }}
                       />
                     </div>
@@ -212,13 +214,14 @@ const Dashboard = () => {
                           <li>
                             <button
                               className="dropdown-item"
-                              onChange={(e) => {
-                                console.log('check');
-                                handleRowUpdate(e.currentTarget.value);
-                              }}
-                              onClick={() => {
+                              onClick={(e) => {
                                 row.location = 'Virtual';
                                 row.locationLink = email;
+                                handleRowUpdate(
+                                  rowIndex,
+                                  e.currentTarget.value,
+                                  'location',
+                                );
                               }}
                             >
                               Virtual
@@ -227,9 +230,14 @@ const Dashboard = () => {
                           <li>
                             <button
                               className="dropdown-item"
-                              onClick={() => {
+                              onClick={(e) => {
                                 row.location = 'Phone';
                                 row.locationLink = phoneNumber;
+                                handleRowUpdate(
+                                  rowIndex,
+                                  e.currentTarget.value,
+                                  'location',
+                                );
                               }}
                             >
                               Phone
@@ -243,6 +251,11 @@ const Dashboard = () => {
                               onInput={(e) => {
                                 row.location = 'In-person';
                                 row.locationLink = e.currentTarget.value;
+                                handleRowUpdate(
+                                  rowIndex,
+                                  e.currentTarget.value,
+                                  'location',
+                                );
                               }}
                             ></input>
                           </li>
@@ -276,7 +289,17 @@ const Dashboard = () => {
                       className="chiryo_secondary text-secondary w-100 h-100"
                       onClick={() => {
                         if (role === 'therapist') {
-                        } else if (role === '') {
+                          handleRowUpdate(
+                            rowIndex,
+                            !row.markResolvedTherapist,
+                            'markResolvedTherapist',
+                          );
+                        } else if (role === 'user') {
+                          handleRowUpdate(
+                            rowIndex,
+                            !row.markResolvedUser,
+                            'markResolvedUser',
+                          );
                         }
                       }}
                     >

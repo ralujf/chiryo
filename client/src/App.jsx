@@ -19,18 +19,16 @@ import Login from './views/login';
 import userInfo from './views/userInfo';
 import therapistInfo from './views/therapistInfo';
 import about from './views/about';
+
 const NotFound = () => (
-  <div
-    className="d-flex justify-content-center align-items-center"
-    style={{ height: '100vh', width: '100vw' }}
-  >
+  <div className="d-flex justify-content-center align-items-center vw-100 vh-100">
     <h1>404: No Page Here Boss 👷</h1>
   </div>
 );
 
 function App() {
   return (
-    <div style={{ minHeight: '100vh', minWidth: '100vw' }}>
+    <div className="min-vh-100 min-vw-100">
       <Navbar />
       <Switch>
         <Route path="/" component={Main} />

@@ -1,5 +1,7 @@
 import { useRef, useEffect } from 'react';
-// TODO: Example modal from docs, Update this with the actual introduction information when the project is done
+import tableImage from '../assets/left_table.png';
+import dropdownImage from '../assets/dropdown.png';
+
 const Intro = () => {
   const modalRef = useRef();
 
@@ -30,12 +32,16 @@ const Intro = () => {
             </div>
             <div className="modal-body">
               Great work on taking a step to improve your health! Here you will
-              find all of the stuff you need. This table put image her later Is
-              completely interactive.
+              find all of the stuff you need.
+              <br></br>
+              <img src={tableImage} width={'100%'} />
+              <br></br>
+              This table is completely interactive, the therapist you are paired
+              with can see your preferences.
             </div>
             <div className="modal-footer">
               <button
-                className="btn btn-primary"
+                className="btn chiryo_primary_active chiryo_rounded"
                 data-bs-target="#stepModalToggle2"
                 data-bs-toggle="modal"
               >
@@ -67,15 +73,21 @@ const Intro = () => {
             </div>
             <div className="modal-body">
               You can choose the time of the meeting by clicking the time item
-              and setting your preferred time! All the other fields work the
-              same. If you no longer want to meet with a therapist, you can
-              remove them from the dashboard by clicking the trash icon. If you
+              and setting your preferred time!
+              <br></br>
+              <img src={dropdownImage} width={'100%'} />
+              <br></br>
+              All the other fields work the same. If you no longer want to meet
+              with a therapist, you can remove them from the dashboard by
+              clicking the trash icon. If you
+              <br></br>
+              <br></br>
               think the therapist has resolved most of the problems you were
               experiencing, update the status icon!
             </div>
             <div className="modal-footer">
               <button
-                className="btn btn-primary"
+                className="btn chiryo_primary_active chiryo_rounded"
                 data-bs-target="#stepModalToggle"
                 data-bs-toggle="modal"
               >

@@ -102,6 +102,7 @@ const loadTableData = (userId, offset) => {
     offset,
   );
 
+  // console.log(result)
   // return result
   let exampleArr = Array.from({ length: 12 }, () => {
     return {

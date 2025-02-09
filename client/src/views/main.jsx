@@ -50,9 +50,9 @@ const Main = () => {
             {...animationOptions3}
             style={{
               position: 'absolute',
-              left: '40%',
-              top: '150%',
-              fontSize: '10em',
+              left: '25%',
+              top: '140%',
+              fontSize: '14.5rem',
               fontWeight: 'bolder',
             }}
           >

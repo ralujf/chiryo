@@ -13,6 +13,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { registerUser } from '../api/crud';
 import quizSound from '../assets/correct.mp3';
 import { useCredentialStore } from '../state/state';
+import { fetchJWT } from '../api/auth';
 
 const introStateOptions = {
   START: 'START',
@@ -20,11 +21,9 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
-// TODO: Create a super compressed GIF of slow waves in the background for chill vibes
-// TODO: Append the form question starters when the user has ended
-
 const Questionnaire = () => {
   const {
+    role,
     currentQuestionIndex,
     setCurrentQuestionIndex,
     introState,
@@ -118,38 +117,44 @@ const Questionnaire = () => {
     const newAnswers = combinePrompts(answers);
     setAnswers(newAnswers);
     setUserDetails(formResponse);
+    // CHECK
     // for (var pair of formResponse.entries()) {
     //   console.log(pair[0] + ', ' + pair[1]);
     // }
-    const { email, age, race, background, religion, location } = userDetails;
-    const id = registerUser({
-      username: username,
-      password: password,
-      email: email,
-      age: age,
-      race: race,
-      background: background,
-      religion: religion,
-      location: location,
-    });
+    // console.log (newAnswers)
+    const token = fetchJWT();
 
-    setUser({ userId: id, role: 'user', firstLogin: true });
-
-    if (userId) {
+    if (userId && token && role != 'therapist') {
       setIntroState(introStateOptions.MATCH);
     } else {
-      notifyError();
+      const { email, age, race, background, religion, location } = userDetails;
+      const id = registerUser({
+        username: username,
+        password: password,
+        email: email,
+        age: age,
+        race: race,
+        background: background,
+        religion: religion,
+        location: location,
+      });
+
+      setUser({ userId: id, role: 'user', firstLogin: true });
+
+      if (userId) {
+        setIntroState(introStateOptions.MATCH);
+      } else {
+        notifyError();
+      }
     }
   };
-
-  if (introState === introStateOptions.START) {
+  if (role === 'therapist') {
+    return <div>Therapist are not allowed to do this stuff..</div>;
+  } else if (introState === introStateOptions.START) {
     return (
       <div
-        className="container-fluid d-flex justify-content-center"
+        className="container-fluid vw-100 min-vh-100 d-flex justify-content-center"
         style={{
-          width: '100vw',
-          maxWidth: '100%',
-          minHeight: '100vh',
           padding: '20vh 5vw',
         }}
       >
@@ -328,7 +333,7 @@ const Questionnaire = () => {
     );
   } else if (introState === introStateOptions.GENCRED) {
     return (
-      <div style={{ minHeight: '100vh' }}>
+      <div className="min-vh-100">
         <motion.div
           {...animationOptions3}
           className="modal d-block show mt-5"

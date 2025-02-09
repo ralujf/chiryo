@@ -32,13 +32,11 @@ const DashboardSidebar = (props) => {
           ></button>
         </div>
         <div className="offcanvas-body">
-          <p>{age}</p>
+          <h5></h5>
+          <p>{age} years old</p>
           <hr></hr>
+          <h5>{username}&apos;s diagnosis</h5>
           <p>{diagnosis}</p>
-          <p>
-            This is placeholder text to see if the text will wrap when the text
-            is longer
-          </p>
           <button
             className="text-dark chiryo_rounded chiryo_primary_active mb-3"
             onClick={() => (window.location.href = `mailto:${email}`)}
