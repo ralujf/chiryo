@@ -14,6 +14,6 @@ router.get('/view-all-applicants', checkIdAdmin, viewApplications);
 
 router.post('/approve-therapist', checkIdAdmin, approveApplication);
 
-router.delete('/reject-therapist/:id', checkIdAdmin, rejectApplication);
+router.delete('/reject-therapist', checkIdAdmin, rejectApplication);
 
 module.exports = router;

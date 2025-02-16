@@ -10,9 +10,9 @@ const { generateJWT } = require('../middleware/auth');
 const router = express.Router();
 
 const registrationValidation = [
-  body('username').trim().isLength({ min: 3 }).escape(),
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 6 }).escape(),
+  body('user.username').trim().isLength({ min: 3 }).escape(),
+  body('user.email').isEmail().normalizeEmail(),
+  body('user.password').isLength({ min: 6 }).escape(),
 ];
 
 const loginValidation = [
@@ -27,8 +27,10 @@ router.post(
   loginValidation,
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
+    }
+    next();
   },
   login,
   generateJWT,
@@ -39,8 +41,11 @@ router.post(
   registrationValidation,
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
+      console.log(errors);
       return res.status(400).json({ errors: errors.array() });
+    }
+    next();
   },
   register,
 );
@@ -50,8 +55,10 @@ router.delete(
   loginValidation,
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
+    }
+    next();
   },
   deleteUser,
 );

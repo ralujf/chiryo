@@ -72,7 +72,7 @@ const returnAllTherapists = async () => {
     return therapists;
   } catch (error) {
     console.error(`Error fetching therapists: ${error}`);
-    throw new Error('Unable to fetch therapists');
+    return res.status(500).send('Internal server error: ' + error);
   }
 };
 

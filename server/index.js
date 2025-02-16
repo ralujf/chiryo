@@ -11,9 +11,9 @@ const applicationsRoute = require('./routes/enrol');
 const userRouter = require('./routes/user');
 const matchRouter = require('./routes/matching');
 const dashboardRouter = require('./routes/dashboard');
-const { validateJWT } = require('./middleware/auth');
 
 // Middleware
+const { validateJWT } = require('./middleware/auth');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/api', applicationsRoute);
@@ -21,21 +21,38 @@ app.use('/api', userRouter);
 app.use('/api', validateJWT, matchRouter);
 app.use('/api', validateJWT, dashboardRouter);
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+const startServer = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    mongoose
+      .connect(process.env.MONGO_URL)
+      .then(() => console.log('MongoDB connected'))
+      .catch((err) => console.log(err));
+  } else {
+    mongoose
+      .connect(process.env.MONGO_TEST)
+      .then(() => console.log('MongoDB connected to test'))
+      .catch((err) => console.log(err));
+  }
+};
 
-mongoose.connection.on('error', (err) => {
-  console.error(err);
-});
+const closeServer = async () => {
+  mongoose.disconnect();
+};
 
-mongoose.connection.on('disconnected', () => {
-  console.log('The server is disconnected');
-});
+startServer();
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connection.on('error', (err) => {
+    console.error(err);
+  });
 
-module.exports = app;
+  mongoose.connection.on('disconnected', () => {
+    console.log('The server is disconnected');
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = { app, startServer, closeServer };

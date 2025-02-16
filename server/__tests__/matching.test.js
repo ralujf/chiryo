@@ -11,7 +11,6 @@ jest.mock('../utils/matchingAlgo', () => {
     returnAllTherapists: jest.fn(),
   };
 });
-// Mock the return all therapist anywhere that it is needed
 
 describe('matching algorithm tests', () => {
   let user;

@@ -1,56 +1,63 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
-const saltRounds = 13;
-const register = (req, res) => {
-  // username, password, email, age, race, background, religion, location,
-  const { registrationInfo } = req.body;
+const register = async (req, res) => {
+  const user = req.body.user;
 
-  bcrypt.genSalt(saltRounds, function (err, salt) {
-    bcrypt.hash(registrationInfo.password, salt, function (err, hash) {
-      if (err) return res.status(500).send('Error salting' + err);
-      registrationInfo.password = hash;
-    });
-  });
-  const newUser = new User({ ...registrationInfo, firstLogin: false });
+  try {
+    const saltRounds = 13;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(user.password, salt);
+    user.password = hash;
 
-  newUser.save((err) => {
-    if (err) {
-      return res.status(500).send('Error registering new user');
-    }
+    const newUser = new User(user);
+    await newUser.save();
+
     return res.redirect('/login');
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Error registering new user: ' + err);
+  }
 };
 
 const login = async (req, res, next) => {
   const { username, password } = req.body;
 
+  if (!username) {
+    return res.status(400).send('Username is required');
+  }
+
+  if (!password) {
+    return res.status(400).send('Password is required');
+  }
+
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username }).exec();
+
     if (!user) {
-      return res.status(401).send('Authentication failed. User not found.');
+      return res.status(404).send('User not found');
     }
 
-    bcrypt.compare(password, user.password, function (err, result) {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Error registering new user');
-      }
-      if (!result)
-        return res.status(401).send('Authentication failed. Wrong password.');
-    });
+    const result = await bcrypt.compare(password, user.password);
 
-    res.id = user._id;
-    next();
+    if (result) {
+      res.locals.username = user.username;
+      res.locals._id = user.toObject()._id;
+      console.log('ID of logged in user: ' + res.locals._id);
+      return next();
+    } else {
+      return res.status(401).send('Authentication failed. Wrong password.');
+    }
   } catch (err) {
-    return res.status(500).send('Error logging in user');
+    console.error(err);
+    return res.status(500).send('Error during authentication: ' + err);
   }
 };
 
 const logout = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    return res.status(200).send('Logout successful' + token);
+    return res.status(200).send('Logout successful');
   } catch (err) {
     return res.status(500).send('Error logging out user');
   }
@@ -60,21 +67,22 @@ const deleteUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username }).exec();
     if (!user) {
-      return res.status(401).send('User not found');
+      return res.status(404).send('User not found');
     }
-
-    if (user.password === password) {
-      await user.deleteOne().exec();
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      await User.deleteOne(user).exec();
       return res.status(200).send('Successfully removed account');
     }
 
     return res
       .status(401)
       .send('There was something wrong with the entered credentials');
-  } catch (error) {
-    return res.status(500).send(`There was an error: ${error}`);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(`There was an error: ${err}`);
   }
 };
 

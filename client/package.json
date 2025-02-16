@@ -8,8 +8,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "vitest",
+    "test:all": "vitest && cy:test",
     "coverage": "vitest run --coverage",
     "cy:open": "cypress open",
+    "cy:test": "cypress run --headless --browser edge --record",
     "preview": "vite preview"
   },
   "dependencies": {

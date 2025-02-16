@@ -1,0 +1,102 @@
+[
+  {
+    "username": "test",
+    "email": "test@test.com",
+    "password": "password",
+    "age": "22",
+    "race": "Black",
+    "religion": "Christianity",
+    "problem": "I am feeling tired. I have nothing to look forward to.",
+    "firstLogin": true
+  },
+  {
+    "username": "user1",
+    "email": "user1@example.com",
+    "password": "password1",
+    "age": "25",
+    "race": "White",
+    "religion": "Atheism",
+    "problem": "Insomnia",
+    "firstLogin": false
+  },
+  {
+    "username": "user2",
+    "email": "user2@example.com",
+    "password": "password2",
+    "age": "30",
+    "race": "Asian",
+    "religion": "Buddhism",
+    "problem": "Anxiety",
+    "firstLogin": true
+  },
+  {
+    "username": "user3",
+    "email": "user3@example.com",
+    "password": "password3",
+    "age": "28",
+    "race": "Hispanic",
+    "religion": "Islam",
+    "problem": "Depression",
+    "firstLogin": false
+  },
+  {
+    "username": "user4",
+    "email": "user4@example.com",
+    "password": "password4",
+    "age": "35",
+    "race": "Black",
+    "religion": "Christianity",
+    "problem": "Back Pain",
+    "firstLogin": true
+  },
+  {
+    "username": "user5",
+    "email": "user5@example.com",
+    "password": "password5",
+    "age": "40",
+    "race": "White",
+    "religion": "Judaism",
+    "problem": "Migraines",
+    "firstLogin": false
+  },
+  {
+    "username": "user6",
+    "email": "user6@example.com",
+    "password": "password6",
+    "age": "45",
+    "race": "Asian",
+    "religion": "Hinduism",
+    "problem": "Arthritis",
+    "firstLogin": true
+  },
+  {
+    "username": "user7",
+    "email": "user7@example.com",
+    "password": "password7",
+    "age": "50",
+    "race": "Hispanic",
+    "religion": "Sikhism",
+    "problem": "Diabetes",
+    "firstLogin": false
+  },
+  {
+    "username": "user8",
+    "email": "user8@example.com",
+    "password": "password8",
+    "age": "55",
+    "race": "Black",
+    "religion": "Christianity",
+    "problem": "Hypertension",
+    "firstLogin": true
+  },
+  {
+    "username": "user9",
+    "email": "user9@example.com",
+    "password": "password9",
+    "age": "60",
+    "race": "White",
+    "religion": "Atheism",
+    "problem": "Asthma",
+    "firstLogin": false
+  }
+]

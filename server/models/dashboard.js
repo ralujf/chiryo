@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
+const User = require('./user');
+const Therapist = require('./therapist');
 
 const Schema = mongoose.Schema;
 
 const DashboardSchema = new Schema(
   {
+    _id: {
+      type: Schema.Types.ObjectId,
+      auto: true,
+    },
     user: {
       type: new Schema({
-        _id: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'User' },
         username: String,
         email: String,
       }),
@@ -14,7 +20,7 @@ const DashboardSchema = new Schema(
     },
     therapist: {
       type: new Schema({
-        _id: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'Therapist' },
         firstName: String,
         lastName: String,
         email: String,

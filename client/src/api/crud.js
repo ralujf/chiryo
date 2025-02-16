@@ -38,24 +38,22 @@ function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
   return url;
 }
 
-const handleRequest =
-  (method, url, data = null, params = null) =>
-  async () => {
-    try {
-      const response = await axios({
-        method,
-        url,
-        data,
-        params,
-        headers: {
-          Authorization: fetchJWT(),
-        },
-      });
-      return response.data;
-    } catch (error) {
-      errorLog(error);
-    }
-  };
+const handleRequest = async (method, url, data = null, params = null) => {
+  try {
+    const response = await axios({
+      method,
+      url,
+      data,
+      params,
+      headers: {
+        Authorization: fetchJWT(),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    errorLog(error);
+  }
+};
 
 const loginUser = async (userData) => {
   try {
@@ -72,20 +70,11 @@ const logoutUserRedirect = () => {
   window.location.href = '/';
 };
 
-const registerUser = (userData) => {
-  const result = handleRequest(
-    'post',
-    createURL({ baseURL: REGISTER_URL }),
-    userData,
-  );
-  return result;
-};
+const registerUser = (userData) =>
+  handleRequest('post', createURL({ baseURL: REGISTER_URL }), userData);
 
 const deleteUser = (userId) =>
-  handleRequest(
-    'delete',
-    createURL({ baseURL: DELETE_USER_URL, userId: userId }),
-  );
+  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
 
 /**
  *
@@ -94,44 +83,43 @@ const deleteUser = (userId) =>
  * @returns {types.TableRow[]}
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
-const loadTableData = (userId, offset) => {
-  let result = handleRequest(
+const loadTableData = async (userId, offset) => {
+  const result = await handleRequest(
     'post',
-    createURL({ baseURL: GET_TABLE_URL, userId: userId }),
+    createURL({ baseURL: GET_TABLE_URL, userId }),
     null,
-    offset,
+    { offset },
   );
 
   // console.log(result)
   // return result
-  let exampleArr = Array.from({ length: 12 }, () => {
-    return {
-      user: {
-        _id: 'sLS9S*(£a3L',
-        username: 'UnlawfulGod',
-        email: 'ralphdaveysss@gmail.com',
-      },
-      therapist: {
-        _id: 'ie*234£39)23!',
-        firstName: 'Steve',
-        lastName: 'Watts',
-        email: 'stevewatts@gmail.com',
-        expertise: 'Couples',
-      },
-      location: 'Phone',
-      locationLink: '07480144234',
-      time: new Date(),
-      diagnosis: 'Depression',
-      markResolvedUser: false,
-      markResolvedTherapist: false,
-    };
-  });
+  const exampleArr = Array.from({ length: 12 }, () => ({
+    user: {
+      _id: 'sLS9S*(£a3L',
+      username: 'UnlawfulGod',
+      email: 'ralphdaveysss@gmail.com',
+    },
+    therapist: {
+      _id: 'ie*234£39)23!',
+      firstName: 'Steve',
+      lastName: 'Watts',
+      email: 'stevewatts@gmail.com',
+      expertise: 'Couples',
+    },
+    location: 'Phone',
+    locationLink: '07480144234',
+    time: new Date(),
+    diagnosis: 'Depression',
+    markResolvedUser: false,
+    markResolvedTherapist: false,
+  }));
 
   return {
     tableData: exampleArr.slice(offset * 10),
     total: exampleArr.length % 10,
   };
 };
+
 /**
  *
  * @param {string} userId
@@ -140,11 +128,7 @@ const loadTableData = (userId, offset) => {
  * @description - finds and dereferences a specific row from a specific users view, does not delete data
  */
 const removeRowFromTable = (userId, rowData) =>
-  handleRequest(
-    'put',
-    createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
-    rowData,
-  );
+  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId }), rowData);
 
 /**
  *
@@ -171,19 +155,14 @@ const updateRowFromTable = (userId, rowData) =>
  * @returns {types.Therapist[]}
  * @description - Return the therapists that the user has matched with in ranked order of perceived compatibility
  */
-const getTherapists = (userData) => {
+const getTherapists = async (userData) => {
   const { id } = userData;
   if (!id) return null;
 
-  const response = handleRequest(
+  return handleRequest(
     'get',
     createURL({ baseURL: POST_SYMPTOMS_URL, userData }),
   );
-  return response;
-  // return [
-  //   { id: 1, therapist: 'John Doe', otherDetails: 'Details' },
-  //   { id: 2, therapist: 'Jane Smith', otherDetails: 'More Details' },
-  // ];
 };
 
 /**

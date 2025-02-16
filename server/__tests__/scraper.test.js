@@ -1,45 +1,63 @@
-const scraper = require('../scraper');
-const axios = require('axios');
-jest.mock('axios');
+const scraper = require('../controller/scraper');
+const puppeteer = require('puppeteer');
+
+jest.mock('puppeteer');
 
 describe('scraper', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('should fetch data successfully', async () => {
-    const mockData = { data: 'mockData' };
-    axios.get.mockResolvedValue(mockData);
+  test('should scrape therapists successfully', async () => {
+    const mockPage = {
+      goto: jest.fn(),
+      evaluate: jest.fn().mockResolvedValue([
+        {
+          firstName: 'John',
+          lastName: 'Doe',
+          phoneNumber: '1234567890',
+          password: 'test_password',
+          expertise: 'Anxiety',
+          location: 'London',
+        },
+      ]),
+      click: jest.fn(),
+    };
 
-    const result = await scraper.fetchData('http://example.com');
-    expect(result).toBe('mockData');
-    expect(axios.get).toHaveBeenCalledWith('http://example.com');
-  });
+    const mockBrowser = {
+      newPage: jest.fn().mockResolvedValue(mockPage),
+      close: jest.fn(),
+    };
 
-  test('should handle fetch data error', async () => {
-    axios.get.mockRejectedValue(new Error('Network Error'));
+    puppeteer.launch.mockResolvedValue(mockBrowser);
 
-    await expect(scraper.fetchData('http://example.com')).rejects.toThrow(
-      'Network Error',
+    const result = await scraper.scrapeTherapists();
+    expect(result).toEqual([
+      {
+        firstName: 'John',
+        lastName: 'Doe',
+        phoneNumber: '1234567890',
+        password: 'test_password',
+        expertise: 'Anxiety',
+        location: 'London',
+      },
+    ]);
+    expect(mockBrowser.newPage).toHaveBeenCalled();
+    expect(mockPage.goto).toHaveBeenCalledWith(expect.any(String), {
+      waitUntil: 'domcontentloaded',
+    });
+    expect(mockPage.evaluate).toHaveBeenCalled();
+    expect(mockPage.click).toHaveBeenCalledWith(
+      '.page-btn.button-element.page-btn',
     );
-    expect(axios.get).toHaveBeenCalledWith('http://example.com');
+    expect(mockBrowser.close).toHaveBeenCalled();
   });
 
-  test('should process data correctly', () => {
-    const data = 'some raw data';
-    const processedData = scraper.processData(data);
-    expect(processedData).toBe('expected processed data');
-  });
+  test('should handle error during scraping', async () => {
+    puppeteer.launch.mockRejectedValue(new Error('Failed to launch browser'));
 
-  test('should handle empty data in processData', () => {
-    const data = '';
-    const processedData = scraper.processData(data);
-    expect(processedData).toBe('expected result for empty data');
-  });
-
-  test('should handle null data in processData', () => {
-    const data = null;
-    const processedData = scraper.processData(data);
-    expect(processedData).toBe('expected result for null data');
+    await expect(scraper.scrapeTherapists()).rejects.toThrow(
+      'Failed to launch browser',
+    );
   });
 });
