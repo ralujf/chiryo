@@ -14,8 +14,16 @@ const PROMPTS = [
   'In my free time I like to ',
 ];
 
-const combinePrompts = (answers) => {
-  return answers.map((answer, index) => `${PROMPTS[index]}${answer}`);
+const createProblem = (answers) => {
+  return answers
+    .reduce((acc, answer, index) => {
+      let trimmedAnswer = `${PROMPTS[index]}${answer}`.trim();
+      if (!/[.!?]$/.test(trimmedAnswer)) {
+        trimmedAnswer += '.';
+      }
+      return acc + ' ' + trimmedAnswer;
+    }, '')
+    .trim();
 };
 
-export { QUESTIONS, PROMPTS, combinePrompts };
+export { QUESTIONS, PROMPTS, createProblem };

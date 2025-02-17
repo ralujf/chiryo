@@ -6,7 +6,7 @@ import {
 } from '../api/generateData';
 import { motion } from 'motion/react';
 import { animationOptions3, questionAniOptions } from '../styles/animations';
-import { QUESTIONS, combinePrompts } from '../api/questions';
+import { QUESTIONS, createProblem } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
 import { ToastContainer, toast } from 'react-toastify';
@@ -88,7 +88,7 @@ const Questionnaire = () => {
   const handleAnswer = (formResponse) => {
     if (
       introState === introStateOptions.START &&
-      currentQuestionIndex == QUESTIONS.length - 1
+      currentQuestionIndex <= QUESTIONS.length - 1
     ) {
       setAnswers([...answers, formResponse.get('answer')]);
       setAnimate(true);
@@ -114,19 +114,19 @@ const Questionnaire = () => {
    * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
    */
   const handleOptionalForm = (formResponse) => {
-    const newAnswers = combinePrompts(answers);
-    setAnswers(newAnswers);
-    setUserDetails(formResponse);
+    const PROBLEM = createProblem(answers);
+    const USER_DETAILS = JSON.stringify(Object.fromEntries(formResponse));
+    setUserDetails(USER_DETAILS);
     // CHECK
-    // for (var pair of formResponse.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1]);
-    // }
-    // console.log (newAnswers)
+    console.log(PROBLEM);
+    console.log(USER_DETAILS);
     const token = fetchJWT();
 
     if (userId && token && role != 'therapist') {
+      // For reusability, if the user already exists, do not create another
       setIntroState(introStateOptions.MATCH);
     } else {
+      // New User
       const { email, age, race, background, religion, location } = userDetails;
       const id = registerUser({
         username: username,
@@ -137,11 +137,11 @@ const Questionnaire = () => {
         background: background,
         religion: religion,
         location: location,
+        problem: PROBLEM,
       });
 
-      setUser({ userId: id, role: 'user', firstLogin: true });
-
       if (userId) {
+        setUser({ userId: id, role: 'user', firstLogin: true });
         setIntroState(introStateOptions.MATCH);
       } else {
         notifyError();
