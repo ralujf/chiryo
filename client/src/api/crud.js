@@ -83,13 +83,13 @@ const deleteUser = (userId) =>
  * @returns {types.TableRow[]}
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
-const loadTableData = async (userId, offset) => {
-  const result = await handleRequest(
-    'post',
-    createURL({ baseURL: GET_TABLE_URL, userId }),
-    null,
-    { offset },
-  );
+const loadTableData = (userId, offset) => {
+  // const result = handleRequest(
+  //   'post',
+  //   createURL({ baseURL: GET_TABLE_URL, userId }),
+  //   null,
+  //   { offset },
+  // );
 
   // console.log(result)
   // return result

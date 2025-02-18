@@ -55,7 +55,7 @@ describe('sign up process', () => {
     cy.get('[data-cy="email"]').type('test@gmail.com');
     cy.get('[data-cy="age"]').type('25');
     cy.get('[data-cy="race"]').select('black');
-    cy.get('[data-cy="ethnic-background"]').select('european');
+    cy.get('[data-cy="background"]').select('european');
     cy.get('[data-cy="religion"]').select('other');
     cy.get('[data-cy="location"]').select('London');
 

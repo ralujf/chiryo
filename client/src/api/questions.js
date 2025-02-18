@@ -17,6 +17,7 @@ const PROMPTS = [
 const createProblem = (answers) => {
   return answers
     .reduce((acc, answer, index) => {
+      if (typeof answer != 'string') answer = String(answer);
       let trimmedAnswer = `${PROMPTS[index]}${answer}`.trim();
       if (!/[.!?]$/.test(trimmedAnswer)) {
         trimmedAnswer += '.';

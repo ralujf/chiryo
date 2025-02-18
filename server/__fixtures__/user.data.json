@@ -6,7 +6,9 @@
     "age": "22",
     "race": "Black",
     "religion": "Christianity",
-    "problem": "I am feeling tired. I have nothing to look forward to.",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling I am feeling slow and tired. The last time I had an episode was I few weeks ago I got very angry at someone. I feel alone almost all the time. I don't have many people to talk to as I live alone. Peace and quiet. In my free time I like to I like to play video games and go for night walks.",
     "firstLogin": true
   },
   {
@@ -16,7 +18,9 @@
     "age": "25",
     "race": "White",
     "religion": "Atheism",
-    "problem": "Insomnia",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling slow and tired. The last time I had a breadkdown was I few weeks ago at work, I dropped to the ground. I don't feel alone, but I do not think about it much. I don't have many people to talk to outside of work, but I work long hours. Energy and no longer wanting to feel tired. In my free time I like to read.",
     "firstLogin": false
   },
   {
@@ -26,7 +30,9 @@
     "age": "30",
     "race": "Asian",
     "religion": "Buddhism",
-    "problem": "Anxiety",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling nervous and paranoid, like someone is watching me. I have episodes all the time, people call me crazy. I can hear voices . I feel alone almost all the time, people are weird they are trying to kill me. I don't want to interact with people trying to kill me, I feel uncomfortable around others and prefer to spend time alone. Peace and quiet. In my free time I like to I like to play video games and go for night walks.",
     "firstLogin": true
   },
   {
@@ -36,7 +42,9 @@
     "age": "28",
     "race": "Hispanic",
     "religion": "Islam",
-    "problem": "Depression",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling sad, and a little hopeless its hard to keep going like this. I dont know what an episode is. Sometimes I cry but often I don't even fee l like i have the enrgy for it. I can hear voices. I feel alone. I don't want to interact with people, i don;t wwant to be seen I just want help. I feel down. Peace and happiness. In my free time I like to do nothing, I dont really hace the energy for anything anyway",
     "firstLogin": false
   },
   {
@@ -46,7 +54,9 @@
     "age": "35",
     "race": "Black",
     "religion": "Christianity",
-    "problem": "Back Pain",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling anxious and almost dizzy. I frequently have headaches. I have episodes all the time, I had time off work and still felt the same. I do not feel alone, I am usually working and around people. I prefer to spend time with family and coworkers. I would like quiet. In my free time I usually work, or am around family.",
     "firstLogin": true
   },
   {
@@ -56,7 +66,9 @@
     "age": "40",
     "race": "White",
     "religion": "Judaism",
-    "problem": "Migraines",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling . I have episodes . I feel   I feel uncomfortable  In my free time .",
     "firstLogin": false
   },
   {
@@ -66,7 +78,9 @@
     "age": "45",
     "race": "Asian",
     "religion": "Hinduism",
-    "problem": "Arthritis",
+    "location": "",
+    "additional": "",
+    "problem": "",
     "firstLogin": true
   },
   {
@@ -76,7 +90,9 @@
     "age": "50",
     "race": "Hispanic",
     "religion": "Sikhism",
-    "problem": "Diabetes",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling fine. I do not have episodes often. I dont feel alone, I am usually with friends but sometimes I feel empty. I would like to feel better. In my free time I enjoy playing volleyball and playing with friends",
     "firstLogin": false
   },
   {
@@ -86,7 +102,9 @@
     "age": "55",
     "race": "Black",
     "religion": "Christianity",
-    "problem": "Hypertension",
+    "location": "",
+    "additional": "",
+    "problem": "98230498823958^%83279%76ERRORNEOUS INPUT TEST",
     "firstLogin": true
   },
   {
@@ -96,7 +114,9 @@
     "age": "60",
     "race": "White",
     "religion": "Atheism",
-    "problem": "Asthma",
+    "location": "",
+    "additional": "",
+    "problem": "I am feeling anxious. I do not really have episodes. I do not feel alone ever, I have a good social life. I would like to get the repetitive thoughts out of my head. In my free time I enjoy playing paddle with friends",
     "firstLogin": false
   }
 ]

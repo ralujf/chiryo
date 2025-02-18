@@ -3,7 +3,7 @@ import { Link } from 'wouter';
 import {
   generateRandomPassword,
   generateRandomUsername,
-} from '../api/generateData';
+} from '../api/generateUser';
 import { motion } from 'motion/react';
 import { animationOptions3, questionAniOptions } from '../styles/animations';
 import { QUESTIONS, createProblem } from '../api/questions';
@@ -117,7 +117,7 @@ const Questionnaire = () => {
     const PROBLEM = createProblem(answers);
     const USER_DETAILS = JSON.stringify(Object.fromEntries(formResponse));
     setUserDetails(USER_DETAILS);
-    // CHECK
+
     console.log(PROBLEM);
     console.log(USER_DETAILS);
     const token = fetchJWT();
@@ -240,8 +240,8 @@ const Questionnaire = () => {
                   <option value="other">Other</option>
                 </select>
                 <select
-                  name="ethnicBackground"
-                  data-cy="ethnic-background"
+                  name="background"
+                  data-cy="background"
                   className="form-control mb-3"
                 >
                   <option value="">Select Ethnic Background</option>

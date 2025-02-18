@@ -23,10 +23,9 @@ const Dashboard = () => {
   const { userId, role, firstLogin } = useCredentialStore((state) => state);
   useEffect(() => {
     let offset = currentPage;
-    let newTableData;
     const updateData = () => {
-      newTableData = loadTableData(userId, offset);
-      console.log('Dashboard Data', newTableData);
+      const newTableData = loadTableData(userId, offset);
+      console.log('Dashboard Data:', newTableData);
       setTableData(newTableData.tableData);
       setTotalPages(newTableData.total);
     };
@@ -230,7 +229,7 @@ const Dashboard = () => {
                             <input
                               type="text"
                               className="dropdown-item"
-                              placeholder="Location..."
+                              placeholder="Phone Num..."
                               onClick={(e) => {
                                 handleRowUpdate(
                                   rowIndex,
@@ -238,9 +237,7 @@ const Dashboard = () => {
                                   ['locationLink', 'location'],
                                 );
                               }}
-                            >
-                              Phone
-                            </input>
+                            ></input>
                           </li>
                           <li>
                             <input
