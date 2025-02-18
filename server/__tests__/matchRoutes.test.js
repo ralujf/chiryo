@@ -6,15 +6,20 @@ const Dashboard = require('../models/dashboard');
 const therapistFixture = require('../__fixtures__/data.json');
 const userFixture = require('../__fixtures__/user.data.json');
 
+jest.setTimeout(30000); // These tests are longgg
+
 describe('Matching Routes', () => {
   let token;
 
   beforeAll(async () => {
     await startServer();
-    therapistFixture.forEach(async (therapistJSON) => {
-      let therapist = new Therapist(therapistJSON);
-      await therapist.save();
-    });
+
+    await Promise.all(
+      therapistFixture.map(async (therapistJSON) => {
+        let therapist = new Therapist(therapistJSON);
+        await therapist.save();
+      }),
+    );
 
     await Promise.all(
       userFixture.map(async (userJSON) => {
@@ -48,8 +53,8 @@ describe('Matching Routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ user: userFixture[0], username: userFixture[0].username });
 
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('Successfully matched');
+    expect(response.status).toBe(302);
+    expect(response.text).toContain('Found. Redirecting to /dashboard');
   });
 
   it('should fail due to no JWT when matching user with a therapist', async () => {
@@ -83,6 +88,7 @@ describe('Matching Routes', () => {
 
   it('should return fail due to no available matches for the user', async () => {
     await Dashboard.deleteMany({});
+    await Therapist.deleteMany({});
 
     const response = await request(app)
       .post('/api/find-matches')

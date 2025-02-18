@@ -92,7 +92,7 @@ const returnAllTherapists = async () => {
  * @returns {CorrelationScore[]} - Matches: Ranking of the therapists, Diagnosis: The users diagnosis
  * @description - Return matches and diagnosis of the user by taking a users information, i.e. age, race, diagnosis, religion and use these features to match them with a therapist
  */
-async function matchObject(userInfo, fetchTherapists = returnAllTherapists) {
+async function matchObject(userInfo) {
   const correlationScores = [];
   const userFormatForMatching = {
     age: '',
@@ -122,7 +122,7 @@ async function matchObject(userInfo, fetchTherapists = returnAllTherapists) {
   //   }
   // });
 
-  const therapistArray = await fetchTherapists();
+  const therapistArray = await returnAllTherapists();
   // const valid = assertObject(user, userFormatForMatching);
   // if (!valid) throw new Error('Object format incorrect');
 

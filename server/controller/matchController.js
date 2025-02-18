@@ -3,11 +3,11 @@ const {
   HarmCategory,
   HarmBlockThreshold,
 } = require('@google/generative-ai');
+const User = require('../models/user');
+const { matchObject } = require('../utils/matchingAlgo');
 
-const matchObject = require('../utils/matchingAlgo');
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
-const User = require('../models/user');
 
 const model = genAI.getGenerativeModel({
   model: 'gemini-1.5-flash',
@@ -64,8 +64,8 @@ async function run(data) {
   });
 
   const result = await chatSession.sendMessage(data);
-  console.log(result.response.text());
-  return result.response.text();
+  const diagnosis = await result.response.text();
+  return JSON.parse(diagnosis);
 }
 
 const matchUserWithTherapist = async (req, res, next) => {
@@ -79,18 +79,23 @@ const matchUserWithTherapist = async (req, res, next) => {
 
   const { age, race, religion, problem } = user;
 
-  const response = run(problem);
+  const response = await run(problem);
+  console.log(response);
+  if (!response.diagnosis) {
+    return res.status(500).send('Failed to diagnose user');
+  }
 
   const userForMatching = {
     age: age,
     race: race,
     religion: religion,
-    diagnosis: response?.diagnosis[0].name,
+    diagnosis: response?.diagnosis[response.diagnosis.length - 1].name,
   };
 
   try {
     // output format: { matches: [therapist1, therapist2, therapist3], diagnosis: userForMatching.diagnosis }
     let output = await matchObject(userForMatching);
+    console.log(output);
     res.locals.matches = output;
     return next();
   } catch (error) {
