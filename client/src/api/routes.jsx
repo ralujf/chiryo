@@ -1,6 +1,6 @@
 import { Route, Redirect } from 'wouter';
 
-// @cbbfcd : wouter issues #223
+// attribution @cbbfcd : wouter issues #223
 function PrivateRoute(props, Component) {
   const renderChildren = () =>
     localStorage.getItem('jwtToken') ? (

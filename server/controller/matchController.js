@@ -69,7 +69,6 @@ async function run(data) {
 }
 
 const matchUserWithTherapist = async (req, res, next) => {
-  // TODO: Erase these at some point, the user is already saved somewhere
   const { user } = req.body;
   const currentUser = await User.findOne({ username: user.username }).exec();
 
@@ -93,13 +92,12 @@ const matchUserWithTherapist = async (req, res, next) => {
   };
 
   try {
-    // output format: { matches: [therapist1, therapist2, therapist3], diagnosis: userForMatching.diagnosis }
     let output = await matchObject(userForMatching);
     console.log(output);
     res.locals.matches = output;
     return next();
-  } catch (error) {
-    console.error(`There has been an unexpected error: ${error}`);
+  } catch (err) {
+    console.error(`There has been an unexpected error: ${err}`);
     return res.status(500).send('Server error, matching unsuccessful');
   }
 };

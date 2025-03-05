@@ -112,6 +112,19 @@ const Application = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="number" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    required
+                    type="password"
+                    className="form-control"
+                    id="password"
+                    {...register('password', { required: false })}
+                  />
+                  {errors.age && <span>This field is required</span>}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="number" className="form-label">
                     Age
                   </label>
                   <input

@@ -96,6 +96,7 @@ describe('User Routes', () => {
       .send({
         username: userFixture[0].username,
         password: userFixture[0].password,
+        role: 'user',
       });
 
     expect(response.status).toBe(200);
@@ -106,7 +107,11 @@ describe('User Routes', () => {
     const response = await request(app)
       .delete('/api/delete-user-account')
       .set('Authorization', `Bearer ${token}`)
-      .send({ username: userFixture[1].username, password: 'wrongpassword' });
+      .send({
+        username: userFixture[1].username,
+        password: 'wrongpassword',
+        role: 'user',
+      });
 
     expect(response.status).toBe(401);
   });
@@ -115,7 +120,7 @@ describe('User Routes', () => {
     const response = await request(app)
       .delete('/api/delete-user-account')
       .set('Authorization', `Bearer ${token}`)
-      .send({ username: 'nonexistent', password: 'password' });
+      .send({ username: 'nonexistent', password: 'password', role: 'user' });
 
     expect(response.status).toBe(404);
   });

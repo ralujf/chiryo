@@ -63,6 +63,12 @@ const TherapistSchema = new Schema(
       required: false,
       unique: false,
     },
+    role: {
+      type: String,
+      required: false,
+      default: 'therapist',
+      immutable: true,
+    },
   },
   { timestamps: true },
 );

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Therapist = require('../models/therapist');
 
 /**
  *
@@ -9,17 +10,27 @@ const User = require('../models/user');
  */
 const generateJWT = async (req, res) => {
   const username = res.locals.username;
+  let user;
   try {
-    const user = await User.find({ username: username });
-    if (!user) return res.status(404).send(`This user does not exist`);
+    user = await User.find({ username: username });
+
+    if (!user) {
+      user = await Therapist.find({ username: username });
+    }
+
+    if (!user) {
+      return res.status(404).send(`This user does not exist`);
+    }
+
+    const role = user.role;
 
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
-    return res.status(200).send({ message: 'Login successful', token });
+    return res.status(200).send({ message: 'Login successful', token, role });
   } catch (error) {
-    return res.status(500).send(`There was an error ${error}`);
+    return res.status(500).send(`There was an error ${err}`);
   }
 };
 
@@ -33,16 +44,23 @@ const validateJWT = async (req, res, next) => {
     return res.status(403).send('Invalid token, user not authenticated');
   }
 
+  let user;
   try {
-    const user = await User.find({ username: username });
+    user = await User.find({ username: username });
+
+    if (!user) {
+      user = await Therapist.find({ username: username });
+    }
+
     if (!user) {
       return res.status(404).send(`This user does not exist`);
     }
+
     res.locals.user = user;
 
     return next();
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).send('Cannot find user');
   }
 };

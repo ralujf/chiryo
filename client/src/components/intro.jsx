@@ -1,8 +1,9 @@
 import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import tableImage from '../assets/left_table.png';
 import dropdownImage from '../assets/dropdown.png';
 
-const Intro = () => {
+const Intro = ({ role }) => {
   const modalRef = useRef();
 
   useEffect(() => {
@@ -31,13 +32,33 @@ const Intro = () => {
               ></button>
             </div>
             <div className="modal-body">
-              Great work on taking a step to improve your health! Here you will
-              find all of the stuff you need.
+              {role === 'user' ? (
+                <>
+                  Great work on taking a step to improve your health! Here you
+                  will find all of the stuff you need.
+                </>
+              ) : (
+                <>
+                  Great work on taking a step into helping people through
+                  Chiryo! Here you will find all of the stuff you need to get
+                  started.
+                </>
+              )}
               <br></br>
               <img src={tableImage} width={'100%'} />
               <br></br>
-              This table is completely interactive, the therapist you are paired
-              with can see your preferences.
+              {role === 'user' ? (
+                <>
+                  This table is completely interactive, the therapist you are
+                  paired with can see your preferences.
+                </>
+              ) : (
+                <>
+                  This table is completely interactive, the clients you are
+                  paired with can see your preferences. If you have none yet,
+                  don&apos;t worry! The right match will show up.
+                </>
+              )}
             </div>
             <div className="modal-footer">
               <button
@@ -77,13 +98,29 @@ const Intro = () => {
               <br></br>
               <img src={dropdownImage} width={'100%'} />
               <br></br>
-              All the other fields work the same. If you no longer want to meet
-              with a therapist, you can remove them from the dashboard by
-              clicking the trash icon. If you
+              {role === 'user' ? (
+                <>
+                  All the other fields work the same. If you no longer want to
+                  meet with a therapist, you can remove them from the dashboard
+                  by clicking the trash icon.
+                </>
+              ) : (
+                <>
+                  All the other fields work the same. If you do not believe you
+                  are fitting well with the client, you can remove them from the
+                  dashboard by clicking the trash icon.
+                </>
+              )}
               <br></br>
               <br></br>
-              think the therapist has resolved most of the problems you were
-              experiencing, update the status icon!
+              {role === 'user' ? (
+                <>
+                  If you think the therapist has resolved most of the problems
+                  you were experiencing, update the status icon!
+                </>
+              ) : (
+                <>If the client is happy the status icon will show this!</>
+              )}
             </div>
             <div className="modal-footer">
               <button
@@ -91,7 +128,7 @@ const Intro = () => {
                 data-bs-target="#stepModalToggle"
                 data-bs-toggle="modal"
               >
-                Back to first
+                Back
               </button>
             </div>
           </div>
@@ -107,6 +144,10 @@ const Intro = () => {
       </button>
     </>
   );
+};
+
+Intro.propTypes = {
+  role: PropTypes.string.isRequired,
 };
 
 export default Intro;

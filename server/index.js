@@ -23,12 +23,12 @@ app.use('/api', validateJWT, dashboardRouter);
 
 const startServer = async () => {
   if (process.env.NODE_ENV === 'production') {
-    mongoose
+    await mongoose
       .connect(process.env.MONGO_URL)
       .then(() => console.log('MongoDB connected'))
       .catch((err) => console.log(err));
   } else {
-    mongoose
+    await mongoose
       .connect(process.env.MONGO_TEST)
       .then(() => console.log('MongoDB connected to test'))
       .catch((err) => console.log(err));

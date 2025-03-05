@@ -6,6 +6,7 @@ const fetchDashboard = async (req, res) => {
   const { offset = 0 } = req.params;
   const { userId, role } = req.body;
   const parsedOffset = parseInt(offset, 10);
+
   if (isNaN(parsedOffset)) {
     return res.status(400).send('Invalid offset value');
   }
@@ -14,15 +15,20 @@ const fetchDashboard = async (req, res) => {
     return res.status(400).send('Invalid userId');
   }
 
-  const query =
-    role === 'therapist' ? { 'therapist._id': userId } : { 'user._id': userId };
+  if (role === 'therapist') {
+    query = { 'therapist._id': userId };
+  } else if (role === 'user') {
+    query = { 'user._id': userId };
+  } else {
+    return res.status(400).send('Invalid user role');
+  }
 
   try {
     const rows = await Dashboard.find(query).skip(offset).limit(10).exec();
     return rows.length
       ? res.status(200).json({ data: rows, total: rows.length })
       : res.status(200).send('No results found for this valid user');
-  } catch (error) {
+  } catch (err) {
     return res.status(500).send('An error occurred with the submitted ID');
   }
 };
@@ -43,7 +49,7 @@ const deleteRecord = async (req, res) => {
         'user._id': userId,
         'therapist._id': therapistId,
       },
-      { $set: { 'user._id': null } },
+      { $set: { 'user._id': null, 'therapist._id': null } },
     );
 
     if (result.modifiedCount > 0) {
@@ -51,8 +57,8 @@ const deleteRecord = async (req, res) => {
     } else {
       return res.status(404).send('No records found to update');
     }
-  } catch (error) {
-    console.error('Error updating records:', error);
+  } catch (err) {
+    console.error('Error updating records:', err);
     return res.status(500).send('An error occurred while updating records');
   }
 };
@@ -65,10 +71,18 @@ const deleteAllRecords = async (req, res) => {
       return res.status(400).send('Invalid ObjectId');
     }
 
-    const query =
-      role === 'user' ? { 'user._id': userId } : { 'therapist._id': userId };
+    let query;
+
+    if (role === 'therapist') {
+      query = { 'therapist._id': userId };
+    } else if (role === 'user') {
+      query = { 'user._id': userId };
+    } else {
+      return res.status(400).send('Invalid user role');
+    }
+
     const result = await Dashboard.updateMany(query, {
-      $set: { 'user._id': null },
+      $set: { 'user._id': null, 'therapist._id': null },
     });
 
     if (result.modifiedCount > 0) {
@@ -76,8 +90,8 @@ const deleteAllRecords = async (req, res) => {
     } else {
       return res.status(404).send('No records found to update');
     }
-  } catch (error) {
-    console.error('Error updating records:', error);
+  } catch (err) {
+    console.error('Error updating records:', err);
     return res.status(500).send('An error occurred while updating records');
   }
 };
@@ -106,7 +120,7 @@ const updateRecord = async (req, res) => {
     }
 
     return res.status(404).send('No row found');
-  } catch (error) {
+  } catch (err) {
     return res.status(500).send('An error occurred with the submitted ID');
   }
 };
@@ -128,6 +142,7 @@ const insertToDashboard = async (req, res) => {
     },
     therapist: {
       _id: therapist._id,
+      username: therapist.username,
       firstName: therapist.firstName,
       lastName: therapist.lastName,
       expertise: therapist.expertise,

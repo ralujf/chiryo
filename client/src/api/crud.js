@@ -84,23 +84,24 @@ const deleteUser = (userId) =>
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
 const loadTableData = (userId, offset) => {
-  // const result = handleRequest(
-  //   'post',
-  //   createURL({ baseURL: GET_TABLE_URL, userId }),
-  //   null,
-  //   { offset },
-  // );
+  const result = handleRequest(
+    'post',
+    createURL({ baseURL: GET_TABLE_URL, userId }),
+    null,
+    { offset },
+  );
 
   // console.log(result)
   // return result
   const exampleArr = Array.from({ length: 12 }, () => ({
     user: {
       _id: 'sLS9S*(£a3L',
-      username: 'UnlawfulGod',
+      username: 'Username',
       email: 'ralphdaveysss@gmail.com',
     },
     therapist: {
       _id: 'ie*234£39)23!',
+      username: 'SteveWatts',
       firstName: 'Steve',
       lastName: 'Watts',
       email: 'stevewatts@gmail.com',
@@ -178,6 +179,8 @@ const sendApplication = (applicationData) =>
     applicationData,
   );
 
+const updateProfileInfo = (profileData) => {};
+
 export {
   registerUser,
   deleteUser,
@@ -189,4 +192,5 @@ export {
   updateRowFromTable,
   getTherapists,
   sendApplication,
+  updateProfileInfo,
 };

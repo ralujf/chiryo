@@ -126,13 +126,15 @@ const Dashboard = () => {
       >
         Dashboard | {currentPage + 1}
       </motion.h1>
-      <motion.button
-        {...animationOptions3}
-        className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
-        onClick={() => getTherapists(userId)}
-      >
-        Request New Therapists
-      </motion.button>
+      {role === 'therapist' && (
+        <motion.button
+          {...animationOptions3}
+          className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
+          onClick={() => getTherapists(userId)}
+        >
+          Request New Therapists
+        </motion.button>
+      )}
       <motion.div
         {...animationOptions3}
         className="chiryo_shadow"
@@ -173,7 +175,7 @@ const Dashboard = () => {
                     />
                   </td>
                   <td>
-                    <div style={{ display: 'block' }}>
+                    <div className="block">
                       <DatePicker
                         selected={row.time}
                         showTimeSelect
@@ -239,10 +241,10 @@ const Dashboard = () => {
                               }}
                             ></input>
                           </li>
-                          <li>
+                          <li className="d-flex align-items-center">
                             <input
                               type="text"
-                              className="dropdown-item"
+                              className="dropdown-item w-75"
                               placeholder="Location..."
                               onInput={(e) => {
                                 handleRowUpdate(
@@ -252,6 +254,14 @@ const Dashboard = () => {
                                 );
                               }}
                             ></input>
+                            <a
+                              href="https://www.google.co.uk/maps/"
+                              rel="external"
+                              target="_blank"
+                              className="ms-2 h-auto w-auto"
+                            >
+                              <i className="bi bi-geo-alt text-black h-auto w-auto"></i>
+                            </a>
                           </li>
                         </ul>
                       </div>

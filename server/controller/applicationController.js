@@ -1,11 +1,17 @@
 const Application = require('../models/application');
 const Therapist = require('../models/therapist');
-const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const { scrapeTherapists } = require('./scraper');
 
 const handleApplication = async (req, res) => {
   try {
     const { applicationInformation } = req.body;
+
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(applicationInformation.password, salt);
+    applicationInformation.password = hash;
+
     const application = new Application(applicationInformation);
     await application.save();
     return res.status(200).send('Application Submitted');

@@ -14,11 +14,13 @@ import Application from './views/application';
 import Dashboard from './views/dashboard';
 import Questionnaire from './views/questionnaire';
 import Login from './views/login';
+import Profile from './views/profile';
 
 // Stateless pages
 import userInfo from './views/userInfo';
 import therapistInfo from './views/therapistInfo';
 import about from './views/about';
+import ScrollToTop from './components/scrollToTop';
 
 const NotFound = () => (
   <div className="d-flex justify-content-center align-items-center vw-100 vh-100">
@@ -30,13 +32,21 @@ function App() {
   return (
     <div className="min-vh-100 min-vw-100">
       <Navbar />
+      <ScrollToTop />
       <Switch>
         <Route path="/" component={Main} />
         <Route path="/become-a-therapist" component={Application} />
-        {/* <PrivateRoute
+        {/* 
+        <PrivateRoute
           path="/dashboard"
           component={<Dashboard />}
-        /> */}
+        /> 
+          <PrivateRoute
+          path="/profile"
+          component={<Profile />}
+        /> 
+        
+        */}
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />
