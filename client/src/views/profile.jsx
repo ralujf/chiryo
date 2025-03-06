@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { updateProfileInfo } from '../api/crud';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Profile = () => {
   const {
@@ -8,7 +9,36 @@ const Profile = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => updateProfileInfo(data);
+  const onSubmitUpdate = async (data) => {
+    const response = await updateProfileInfo(data);
+    console.log(response);
+    notifyError(response);
+  };
+
+  const onSubmitChangePass = async (data) => {
+    const response = await updateProfileInfo(data);
+    console.log(response);
+    notifyError(response);
+  };
+
+  const onSubmitDelete = async (data) => {
+    const response = await updateProfileInfo(data);
+    console.log(response);
+    notifyError(response);
+  };
+
+  const notifyError = (error) =>
+    toast.error('Oops - looks like something went wrong! ' + error, {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+      type: 'error',
+    });
 
   return (
     <>
@@ -16,10 +46,22 @@ const Profile = () => {
         className="container-fluid"
         style={{ minHeight: '80vh', padding: '15vh 7.5vw' }}
       >
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover
+          theme="light"
+        />
         <div className="chiryo_rounded mb-5">
           <h1 className="display-3 fw-bolder mb-5">Profile Information</h1>
           <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmitUpdate)}>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">
                   Username
@@ -118,6 +160,64 @@ const Profile = () => {
               >
                 Update Profile
               </button>
+            </form>
+          </div>
+
+          <h1>Change Password</h1>
+          <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
+            <form onSubmit={handleSubmit(onSubmitChangePass)}>
+              <div className="mb-3">
+                <label htmlFor="OldPassword" className="form-label">
+                  Old Password
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="OldPassword"
+                  {...register('OldPassword', { required: true })}
+                />
+                {errors.OldPassword && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label className="fw-bold">Password</label>
+                <input
+                  type="password"
+                  className="mb-3 w-50"
+                  {...register('Password', {
+                    required: 'Password is required',
+                  })}
+                />
+                {errors.Password && <span>{errors.Password.message}</span>}
+              </div>
+              <input
+                type="submit"
+                value={'Change Password'}
+                className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
+                style={{ width: 'fit-content' }}
+              />
+            </form>
+          </div>
+
+          <h1>Delete My Account</h1>
+          <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
+            <form onSubmit={handleSubmit(onSubmitDelete)}>
+              <div className="mb-3">
+                <label className="fw-bold">Password</label>
+                <input
+                  type="password"
+                  className="mb-3 w-50"
+                  {...register('Password', {
+                    required: 'Password is required',
+                  })}
+                />
+                {errors.Password && <span>{errors.Password.message}</span>}
+              </div>
+              <input
+                type="submit"
+                value={'Delete My Account'}
+                className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
+                style={{ width: 'fit-content' }}
+              />
             </form>
           </div>
         </div>

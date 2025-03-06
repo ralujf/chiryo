@@ -1,10 +1,10 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { useForm } from 'react-hook-form';
+import { ToastContainer, toast } from 'react-toastify';
 import applicationImage from '../assets/chiryohero-application.png';
 import { sendApplication } from '../api/crud';
 
-// TODO: Refactor to use same form
 const Application = () => {
   const {
     register,
@@ -12,7 +12,24 @@ const Application = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => sendApplication(data);
+  const onSubmit = async (data) => {
+    const response = await sendApplication(data);
+    console.log(response);
+    notifyError(response);
+  };
+
+  const notifyError = (error) =>
+    toast.error('Oops - looks like something went wrong! ' + error, {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+      type: 'error',
+    });
 
   return (
     <>
@@ -20,6 +37,18 @@ const Application = () => {
         className="container-fluid"
         style={{ minHeight: '80vh', padding: '15vh 7.5vw' }}
       >
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover
+          theme="light"
+        />
         <div className="justify-content-evenly chiryo_rounded mb-5">
           <div>
             <motion.h1

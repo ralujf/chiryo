@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Switch, Route } from 'wouter';
-// import { PrivateRoute } from './api/routes';
+import { PrivateRoute } from './api/routes';
 
 import Navbar from './components/navbar';
 import Footer from './components/footer';
@@ -36,17 +36,8 @@ function App() {
       <Switch>
         <Route path="/" component={Main} />
         <Route path="/become-a-therapist" component={Application} />
-        {/* 
-        <PrivateRoute
-          path="/dashboard"
-          component={<Dashboard />}
-        /> 
-          <PrivateRoute
-          path="/profile"
-          component={<Profile />}
-        /> 
-        
-        */}
+        <PrivateRoute path="/dashboard" component={<Dashboard />} />
+        <PrivateRoute path="/profile" component={<Profile />} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />

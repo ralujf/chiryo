@@ -42,8 +42,8 @@ const Admin = () => {
     }
   };
 
-  const notify = (msg) =>
-    toast.success(msg, {
+  const notify = () =>
+    toast.success('Success!', {
       position: 'bottom-center',
       autoClose: 2000,
       hideProgressBar: false,
@@ -55,20 +55,17 @@ const Admin = () => {
     });
 
   const notifyError = () =>
-    toast.error(
-      'Oops - looks like something went wrong! Refresh and try again',
-      {
-        position: 'bottom-center',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        type: 'error',
-      },
-    );
+    toast.error('Error', {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+      type: 'error',
+    });
 
   return (
     <div

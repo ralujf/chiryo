@@ -37,7 +37,6 @@ const Questionnaire = () => {
   } = useCredentialStore((state) => state);
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
-  const [userDetails, setUserDetails] = useState({});
 
   const textareaRef = useRef(null);
 
@@ -79,10 +78,14 @@ const Questionnaire = () => {
 
   /**
    * @description - Generates a random username for a new user
+   * @returns - User credentials (password and username)
    */
   const updateGlobalCredentials = () => {
-    setUsername(generateRandomUsername());
-    setPassword(generateRandomPassword());
+    const username = generateRandomUsername();
+    const password = generateRandomPassword();
+    setUsername(username);
+    setPassword(password);
+    return { username, password };
   };
 
   const handleAnswer = (formResponse) => {
@@ -102,9 +105,9 @@ const Questionnaire = () => {
 
       notify();
     } else {
+      console.log('Check');
       // Completion State
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      updateGlobalCredentials();
     }
   };
 
@@ -113,38 +116,42 @@ const Questionnaire = () => {
    * @param {Object} formResponse
    * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
    */
-  const handleOptionalForm = (formResponse) => {
+  const handleOptionalForm = async (formResponse) => {
+    const { username, password } = updateGlobalCredentials();
     const PROBLEM = createProblem(answers);
-    const USER_DETAILS = JSON.stringify(Object.fromEntries(formResponse));
-    setUserDetails(USER_DETAILS);
-
-    console.log(PROBLEM);
-    console.log(USER_DETAILS);
+    const USER_DETAILS = JSON.parse(
+      JSON.stringify(Object.fromEntries(formResponse)),
+    );
     const token = fetchJWT();
 
     if (userId && token && role != 'therapist') {
-      // For reusability, if the user already exists, do not create another
+      // If the user already exists, do not create another
       setIntroState(introStateOptions.MATCH);
     } else {
       // New User
-      const { email, age, race, background, religion, location } = userDetails;
-      const id = registerUser({
-        username: username,
-        password: password,
-        email: email,
-        age: age,
-        race: race,
-        background: background,
-        religion: religion,
-        location: location,
-        problem: PROBLEM,
+      const { email, age, race, background, religion, location } = USER_DETAILS;
+      const response = await registerUser({
+        data: {
+          username: username,
+          password: password,
+          email: email,
+          age: age,
+          race: race,
+          background: background,
+          religion: religion,
+          location: location,
+          problem: PROBLEM,
+        },
       });
 
-      if (userId) {
-        setUser({ userId: id, role: 'user', firstLogin: true });
-        setIntroState(introStateOptions.MATCH);
+      if (response.errors === null && response.id) {
+        const user = { userId: response.id, role: 'user', firstLogin: true };
+        await setUser(user);
+        setTimeout(() => {
+          setIntroState(introStateOptions.MATCH);
+        }, 2500);
       } else {
-        notifyError();
+        notifyError(response.errors);
       }
     }
   };
@@ -226,6 +233,7 @@ const Questionnaire = () => {
                   max="100"
                   className="form-control mb-3"
                   data-cy="age"
+                  required
                 />
                 <select
                   name="race"
@@ -270,6 +278,7 @@ const Questionnaire = () => {
                   className="form-control mb-3"
                   id="locationInput"
                   data-cy="location"
+                  required
                 />
                 <p>Anything else?</p>
                 <input

@@ -3,26 +3,30 @@ const User = require('../models/user');
 const Therapist = require('../models/therapist');
 
 const register = async (req, res) => {
-  const user = req.body.user;
+  const user = req.body.data;
 
   try {
     const saltRounds = 13;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
+    // TODO: Add Check if there is a user with the same details
 
     const newUser = new User(user);
     await newUser.save();
-
-    return res.redirect('/login');
+    // TODO: Update tests this was changed from a redirect to a regular return
+    // return res.redirect('/login');
+    return res.status(201).json({ id: newUser._id, errors: null });
   } catch (err) {
     console.error(err);
-    return res.status(500).send('Error registering new user: ' + err);
+    return res
+      .status(500)
+      .json({ id: null, errors: 'Error registering new user: ' + err });
   }
 };
 
 const login = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body.data;
 
   if (!username) {
     return res.status(400).send('Username is required');
@@ -34,13 +38,14 @@ const login = async (req, res, next) => {
 
   try {
     let user = await User.findOne({ username: username }).exec();
-
+    console.error(user);
     if (!user) {
       user = await Therapist.findOne({ username: username }).exec();
     }
 
     if (!user) {
-      return res.status(404).send('User not found');
+      console.log('HELllo');
+      // return res.status(404).send('User not found');
     }
 
     const result = await bcrypt.compare(password, user.password);
@@ -69,7 +74,7 @@ const logout = async (req, res) => {
 };
 // TODO: Requires test cases
 const updateUserDetails = async (req, res) => {
-  const { userInformation } = req.body;
+  const { userInformation } = req.body.data;
   const { username, password } = userInformation;
 
   try {
@@ -108,7 +113,7 @@ const updateUserDetails = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password, role } = req.body.data;
 
   if (role === 'therapist') {
     try {

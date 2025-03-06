@@ -69,7 +69,7 @@ async function run(data) {
 }
 
 const matchUserWithTherapist = async (req, res, next) => {
-  const { user } = req.body;
+  const { user } = req.body.data;
   const currentUser = await User.findOne({ username: user.username }).exec();
 
   if (!currentUser) {

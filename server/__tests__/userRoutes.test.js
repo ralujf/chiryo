@@ -46,7 +46,7 @@ describe('User Routes', () => {
         },
       });
 
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(201);
   });
 
   it('should fail to register a user with invalid data format (email wrong)', async () => {

@@ -5,7 +5,7 @@ const { scrapeTherapists } = require('./scraper');
 
 const handleApplication = async (req, res) => {
   try {
-    const { applicationInformation } = req.body;
+    const { applicationInformation } = req.body.data;
 
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
@@ -55,7 +55,7 @@ const viewApplications = async (req, res, next) => {
 
 const approveApplication = async (req, res, next) => {
   try {
-    const { applicationInformation } = req.body;
+    const { applicationInformation } = req.body.data;
     const therapist = new Therapist(applicationInformation);
     await therapist.save();
 
@@ -69,7 +69,7 @@ const approveApplication = async (req, res, next) => {
 
 const rejectApplication = async (req, res, next) => {
   try {
-    const { applicantEmail } = req.body;
+    const { applicantEmail } = req.body.data;
     const result = await Application.findOneAndDelete({
       email: applicantEmail,
     });

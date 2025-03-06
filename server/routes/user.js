@@ -11,14 +11,14 @@ const { generateJWT } = require('../middleware/auth');
 const router = express.Router();
 
 const registrationValidation = [
-  body('user.username').trim().isLength({ min: 3 }).escape(),
-  body('user.email').isEmail().normalizeEmail(),
-  body('user.password').isLength({ min: 6 }).escape(),
+  body('data.username').exists(),
+  body('data.email').isEmail().normalizeEmail(),
+  body('data.password').isLength({ min: 6 }).escape(),
 ];
-
+// Inputs updated
 const loginValidation = [
-  body('username').trim().isLength({ min: 3 }).escape(),
-  body('password').isLength({ min: 6 }).escape(),
+  body('data.username').trim().isLength({ min: 3 }).escape(),
+  body('data.password').isLength({ min: 6 }).escape(),
 ];
 
 router.post('/logout', logout);
@@ -27,6 +27,7 @@ router.post(
   '/login',
   loginValidation,
   (req, res, next) => {
+    console.log('Recieved');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -43,7 +44,6 @@ router.post(
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(errors);
       return res.status(400).json({ errors: errors.array() });
     }
     next();
@@ -51,7 +51,7 @@ router.post(
   register,
 );
 
-// TODO: Testing
+// TODO: Testing Required
 router.patch('/update', updateUserDetails);
 
 router.delete(

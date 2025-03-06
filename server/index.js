@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +15,7 @@ const dashboardRouter = require('./routes/dashboard');
 
 // Middleware
 const { validateJWT } = require('./middleware/auth');
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/api', applicationsRoute);

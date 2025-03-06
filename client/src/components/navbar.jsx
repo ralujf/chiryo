@@ -1,6 +1,8 @@
 import { Link } from 'wouter';
+import { useCredentialStore } from '../state/state';
 
 const Navbar = () => {
+  const { userId } = useCredentialStore((state) => state.userId);
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
@@ -76,15 +78,28 @@ const Navbar = () => {
               </div>
             </li>
 
-            <li className="nav-item">
-              <Link
-                className="nav-link"
-                to="/dashboard"
-                style={{ color: 'darkgrey' }}
-              >
-                Dashboard
-              </Link>
-            </li>
+            {userId && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    to="/dashboard"
+                    style={{ color: 'darkgrey' }}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    to="/profile"
+                    style={{ color: 'darkgrey' }}
+                  >
+                    Profile
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
 
           <Link

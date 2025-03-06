@@ -5,17 +5,26 @@ const useCredentialStore = create((set) => ({
   username: '',
   password: '',
   role: '',
-  firstLogin: true,
+  firstLogin: null,
   currentQuestionIndex: 0,
   answers: [],
   introState: 'START',
   setUser: (user) =>
-    set({ userId: user.id, role: user.role, firstLogin: user.firstLogin }),
-  setUsername: (username) => set({ username }),
-  setPassword: (password) => set({ password }),
+    set((state) => {
+      console.log(user.userId);
+      return {
+        ...state,
+        userId: user.userId,
+        role: user.role,
+        firstLogin: user.firstLogin,
+      };
+    }),
+  setUsername: (username) => set((state) => ({ ...state, username })),
+  setPassword: (password) => set((state) => ({ ...state, password })),
   setCurrentQuestionIndex: (number) =>
-    set(() => ({ currentQuestionIndex: number })),
-  setIntroState: (introValue) => set({ introState: introValue }),
+    set((state) => ({ ...state, currentQuestionIndex: number })),
+  setIntroState: (introValue) =>
+    set((state) => ({ ...state, introState: introValue })),
 }));
 
 export { useCredentialStore };

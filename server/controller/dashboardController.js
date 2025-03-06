@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const fetchDashboard = async (req, res) => {
   const { offset = 0 } = req.params;
-  const { userId, role } = req.body;
+  const { userId, role } = req.body.data;
   const parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
@@ -35,7 +35,7 @@ const fetchDashboard = async (req, res) => {
 
 const deleteRecord = async (req, res) => {
   try {
-    const { userId, therapistId } = req.body;
+    const { userId, therapistId } = req.body.data;
 
     if (
       !mongoose.Types.ObjectId.isValid(userId) ||
@@ -65,7 +65,7 @@ const deleteRecord = async (req, res) => {
 
 const deleteAllRecords = async (req, res) => {
   try {
-    const { role, userId } = req.body;
+    const { role, userId } = req.body.data;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).send('Invalid ObjectId');
@@ -98,7 +98,7 @@ const deleteAllRecords = async (req, res) => {
 
 const updateRecord = async (req, res) => {
   try {
-    const { userId, therapistId, rowData } = req.body;
+    const { userId, therapistId, rowData } = req.body.data;
 
     if (
       !mongoose.Types.ObjectId.isValid(userId) ||
@@ -126,7 +126,7 @@ const updateRecord = async (req, res) => {
 };
 
 const insertToDashboard = async (req, res) => {
-  const { user } = req.body;
+  const { user } = req.body.data;
   const data = res.locals.matches;
 
   const currentUser = await User.findOne({ username: user.username }).exec();

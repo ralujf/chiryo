@@ -25,7 +25,7 @@ function errorLog(error) {
     console.error('Error message:', error.message);
   }
   console.error('Error config:', error.config);
-  throw error;
+  return error.response.statusText;
 }
 
 function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
@@ -40,31 +40,42 @@ function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
 }
 
 const handleRequest = async (method, url, data = null, params = null) => {
-  try {
-    const response = await axios({
-      method,
-      url,
-      data,
-      params,
-      headers: {
-        Authorization: fetchJWT(),
-      },
-    });
+  const requestConfig = {
+    method: method,
+    url: url,
+    data: data,
+    params: params,
+    headers: {
+      Authorization: fetchJWT(),
+    },
+  };
 
+  console.log('Request Config:', requestConfig);
+
+  try {
+    const response = await axios(requestConfig);
     console.log(response);
     return response.data;
   } catch (error) {
-    errorLog(error);
+    const statusMessage = errorLog(error);
+    return statusMessage;
   }
 };
 
 const loginUser = async (userData) => {
+  const requestConfig = {
+    url: LOGIN_URL,
+    data: userData,
+  };
+
   try {
-    const response = await axios.post(LOGIN_URL, userData);
+    const response = await axios.post(requestConfig);
     storeJWT(response.headers['authorization']);
+    console.log(response.data);
     return response.data;
   } catch (error) {
-    errorLog(error);
+    const statusMessage = errorLog(error);
+    return statusMessage;
   }
 };
 
@@ -74,13 +85,24 @@ const logoutUserRedirect = () => {
 };
 
 const registerUser = (userData) =>
-  handleRequest('post', createURL({ baseURL: REGISTER_URL }), userData);
+  handleRequest('post', REGISTER_URL, userData);
 
 const deleteUser = (userId) =>
   handleRequest(
     'delete',
     createURL({ baseURL: DELETE_USER_URL, userId: userId }),
   );
+
+/**
+ *
+ * @param {types.Applicant} profileData
+ * @returns
+ * @description - Update details of any user
+ */
+const updateProfileInfo = (profileData) =>
+  handleRequest('patch', UPDATE_PROFILE_URL, profileData);
+
+const updatePassword = () => {};
 
 /**
  *
@@ -97,34 +119,34 @@ const loadTableData = (userId, offset) => {
     { offset },
   );
 
-  // console.log(result)
-  // return result
-  const exampleArr = Array.from({ length: 12 }, () => ({
-    user: {
-      _id: 'sLS9S*(£a3L',
-      username: 'Username',
-      email: 'ralphdaveysss@gmail.com',
-    },
-    therapist: {
-      _id: 'ie*234£39)23!',
-      username: 'SteveWatts',
-      firstName: 'Steve',
-      lastName: 'Watts',
-      email: 'stevewatts@gmail.com',
-      expertise: 'Couples',
-    },
-    location: 'Phone',
-    locationLink: '07480144234',
-    time: new Date(),
-    diagnosis: 'Depression',
-    markResolvedUser: false,
-    markResolvedTherapist: false,
-  }));
+  console.log(result);
+  return result;
+  // const exampleArr = Array.from({ length: 12 }, () => ({
+  //   user: {
+  //     _id: 'sLS9S*(£a3L',
+  //     username: 'Username',
+  //     email: 'ralphdaveysss@gmail.com',
+  //   },
+  //   therapist: {
+  //     _id: 'ie*234£39)23!',
+  //     username: 'SteveWatts',
+  //     firstName: 'Steve',
+  //     lastName: 'Watts',
+  //     email: 'stevewatts@gmail.com',
+  //     expertise: 'Couples',
+  //   },
+  //   location: 'Phone',
+  //   locationLink: '07480144234',
+  //   time: new Date(),
+  //   diagnosis: 'Depression',
+  //   markResolvedUser: false,
+  //   markResolvedTherapist: false,
+  // }));
 
-  return {
-    tableData: exampleArr.slice(offset * 10),
-    total: exampleArr.length % 10,
-  };
+  // return {
+  //   tableData: exampleArr.slice(offset * 10),
+  //   total: exampleArr.length % 10,
+  // };
 };
 
 /**
@@ -187,24 +209,7 @@ const getTherapists = async (userData) => {
  * @description - Post an applicants details to the database to be ported into a HR system and reviewed
  */
 const sendApplication = (applicationData) =>
-  handleRequest(
-    'post',
-    createURL({ baseURL: APPLICATION_URL }),
-    applicationData,
-  );
-
-/**
- *
- * @param {types.Applicant} profileData
- * @returns
- * @description - Update details of any user
- */
-const updateProfileInfo = (profileData) =>
-  handleRequest(
-    'patch',
-    createURL({ baseURL: UPDATE_PROFILE_URL }),
-    profileData,
-  );
+  handleRequest('post', APPLICATION_URL, applicationData);
 
 const fetchApplicants = () => {};
 const rejectApplicant = () => {};
@@ -215,6 +220,7 @@ export {
   deleteUser,
   loginUser,
   logoutUserRedirect,
+  updatePassword,
   loadTableData,
   removeRowFromTable,
   clearTable,

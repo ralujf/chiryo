@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import Form from '../components/form';
+import { loginUser } from '../api/crud';
 
 const Login = () => {
   return (
@@ -15,7 +16,7 @@ const Login = () => {
           margin: '0vh 5vw',
         }}
       >
-        <Form formTitle={'Login'} />
+        <Form formTitle={'Login'} method={loginUser} submissionText="Login" />
       </motion.div>
     </div>
   );

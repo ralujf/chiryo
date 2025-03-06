@@ -8,10 +8,15 @@ const Stars = ({ number }) => {
     if (starRef.current) {
       const children = Array.from(starRef.current.children);
 
-      children.slice(0, number).forEach((child) => {
-        child.classList.remove('bi-star');
-        child.classList.add('bi-star-fill');
-      });
+      for (let i = 0; i < children.length; i++) {
+        if (i < number) {
+          children[i].classList.remove('bi-star');
+          children[i].classList.add('bi-star-fill');
+        } else {
+          children[i].classList.remove('bi-star-fill');
+          children[i].classList.add('bi-star');
+        }
+      }
     }
   }, [number]);
 
