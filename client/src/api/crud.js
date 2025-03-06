@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  UPDATE_PROFILE_URL,
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,
@@ -49,6 +50,8 @@ const handleRequest = async (method, url, data = null, params = null) => {
         Authorization: fetchJWT(),
       },
     });
+
+    console.log(response);
     return response.data;
   } catch (error) {
     errorLog(error);
@@ -74,7 +77,10 @@ const registerUser = (userData) =>
   handleRequest('post', createURL({ baseURL: REGISTER_URL }), userData);
 
 const deleteUser = (userId) =>
-  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL, userId }));
+  handleRequest(
+    'delete',
+    createURL({ baseURL: DELETE_USER_URL, userId: userId }),
+  );
 
 /**
  *
@@ -86,7 +92,7 @@ const deleteUser = (userId) =>
 const loadTableData = (userId, offset) => {
   const result = handleRequest(
     'post',
-    createURL({ baseURL: GET_TABLE_URL, userId }),
+    createURL({ baseURL: GET_TABLE_URL, userId: userId }),
     null,
     { offset },
   );
@@ -129,7 +135,11 @@ const loadTableData = (userId, offset) => {
  * @description - finds and dereferences a specific row from a specific users view, does not delete data
  */
 const removeRowFromTable = (userId, rowData) =>
-  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId }), rowData);
+  handleRequest(
+    'put',
+    createURL({ baseURL: REMOVE_ROW_URL, userId: userId }),
+    rowData,
+  );
 
 /**
  *
@@ -138,7 +148,7 @@ const removeRowFromTable = (userId, rowData) =>
  * @description - Removes the users reference to be able to retrieve data
  */
 const clearTable = (userId) =>
-  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId }));
+  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId: userId }));
 
 /**
  *
@@ -148,7 +158,11 @@ const clearTable = (userId) =>
  * @description - Update a specific item of a specific record by overwriting with new row data
  */
 const updateRowFromTable = (userId, rowData) =>
-  handleRequest('put', createURL({ baseURL: UPDATE_ROW_URL, userId }), rowData);
+  handleRequest(
+    'put',
+    createURL({ baseURL: UPDATE_ROW_URL, userId: userId }),
+    rowData,
+  );
 
 /**
  *
@@ -162,7 +176,7 @@ const getTherapists = async (userData) => {
 
   return handleRequest(
     'get',
-    createURL({ baseURL: POST_SYMPTOMS_URL, userData }),
+    createURL({ baseURL: POST_SYMPTOMS_URL, userId: id }),
   );
 };
 
@@ -179,7 +193,22 @@ const sendApplication = (applicationData) =>
     applicationData,
   );
 
-const updateProfileInfo = (profileData) => {};
+/**
+ *
+ * @param {types.Applicant} profileData
+ * @returns
+ * @description - Update details of any user
+ */
+const updateProfileInfo = (profileData) =>
+  handleRequest(
+    'patch',
+    createURL({ baseURL: UPDATE_PROFILE_URL }),
+    profileData,
+  );
+
+const fetchApplicants = () => {};
+const rejectApplicant = () => {};
+const acceptApplicant = () => {};
 
 export {
   registerUser,
@@ -193,4 +222,7 @@ export {
   getTherapists,
   sendApplication,
   updateProfileInfo,
+  fetchApplicants,
+  rejectApplicant,
+  acceptApplicant,
 };

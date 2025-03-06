@@ -31,10 +31,22 @@ const fillExternal = async (req, res) => {
 };
 
 const viewApplications = async (req, res, next) => {
+  const { offset = 0 } = req.params;
+
+  const parsedOffset = parseInt(offset, 10);
+
+  if (isNaN(parsedOffset)) {
+    return res.status(400).send('Invalid offset value');
+  }
+
   try {
-    const therapists = await Application.find({}).sort({ createdAt: 1 }).exec();
-    console.log(therapists);
-    return res.status(200).json(therapists);
+    const applicants = await Application.find({})
+      .skip(offset)
+      .sort({ createdAt: 1 })
+      .limit(10)
+      .exec();
+    console.log(applicants);
+    return res.status(200).json({ data: applicants, total: applicants.length });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Server side error occurred');

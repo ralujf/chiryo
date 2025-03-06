@@ -9,6 +9,14 @@ import Main from '../views/main';
 import TherapistInfo from '../views/therapistInfo';
 import UserInfo from '../views/userInfo';
 import Questionnaire from '../views/questionnaire';
+import Profile from '../views/profile';
+
+describe('Profile form test', () => {
+  test('if it display the profile page', () => {
+    const snapshot = <Profile />;
+    expect(snapshot).matchSnapshot();
+  });
+});
 
 describe('Application form tests', () => {
   test('if it displays the application form for therapists to apply', () => {

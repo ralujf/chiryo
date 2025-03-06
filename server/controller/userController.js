@@ -67,14 +67,43 @@ const logout = async (req, res) => {
     return res.status(500).send('Error logging out user');
   }
 };
-
+// TODO: Requires test cases
 const updateUserDetails = async (req, res) => {
   const { userInformation } = req.body;
+  const { username, password } = userInformation;
 
   try {
-    // TD
+    let user = await User.findOne({ username }).exec();
+    let role = 'user';
+
+    if (!user) {
+      user = await Therapist.findOne({ username }).exec();
+      role = 'therapist';
+    }
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(403).send('Incorrect password');
+    }
+
+    const updateRes =
+      role === 'therapist'
+        ? await Therapist.updateOne({ username }, userInformation)
+        : await User.updateOne({ username }, userInformation);
+
+    if (updateRes.modifiedCount === 0) {
+      return res.status(500).send('Failed to update');
+    }
+
+    return res.status(200).send('User details updated successfully');
   } catch (err) {
-    // TD
+    console.error(err);
+    return res.status(500).send('Unable to update information: ' + err);
   }
 };
 

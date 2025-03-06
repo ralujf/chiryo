@@ -19,8 +19,8 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
-
   const { userId, role, firstLogin } = useCredentialStore((state) => state);
+
   useEffect(() => {
     let offset = currentPage;
     const updateData = () => {

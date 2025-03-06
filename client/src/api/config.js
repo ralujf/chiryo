@@ -5,6 +5,7 @@ const API_URL = import.meta.env.PROD
 const REGISTER_URL = '/register';
 const LOGIN_URL = '/login';
 const LOGOUT_URL = '/logout';
+const UPDATE_PROFILE_URL = '/update';
 
 const DELETE_USER_URL = '/delete-user';
 
@@ -18,6 +19,7 @@ const APPLICATION_URL = '/therapist-application';
 
 export {
   API_URL,
+  UPDATE_PROFILE_URL,
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,

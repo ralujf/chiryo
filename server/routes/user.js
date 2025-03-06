@@ -5,6 +5,7 @@ const {
   logout,
   register,
   deleteUser,
+  updateUserDetails,
 } = require('../controller/userController');
 const { generateJWT } = require('../middleware/auth');
 const router = express.Router();
@@ -49,6 +50,9 @@ router.post(
   },
   register,
 );
+
+// TODO: Testing
+router.patch('/update', updateUserDetails);
 
 router.delete(
   '/delete-user-account',
