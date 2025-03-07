@@ -17,9 +17,9 @@ import Login from './views/login';
 import Profile from './views/profile';
 
 // Stateless pages
-import userInfo from './views/userInfo';
-import therapistInfo from './views/therapistInfo';
-import about from './views/about';
+import UserInfo from './views/userInfo';
+import TherapistInfo from './views/therapistInfo';
+import About from './views/about';
 import ScrollToTop from './components/scrollToTop';
 
 const NotFound = () => (
@@ -41,9 +41,9 @@ function App() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />
-        <Route path="/about" component={about} />
-        <Route path="/info" component={userInfo} />
-        <Route path="/become-a-therapist/info" component={therapistInfo} />
+        <Route path="/about" component={About} />
+        <Route path="/info" component={UserInfo} />
+        <Route path="/become-a-therapist/info" component={TherapistInfo} />
         <Route>{NotFound}</Route>
       </Switch>
       <Footer />

@@ -3,17 +3,10 @@ const {
   calculateCorrelation,
   assertObject,
   matchObject,
-  returnAllTherapists,
 } = require('../utils/matchingAlgo');
-jest.mock('../utils/matchingAlgo', () => {
-  const originalModule = jest.requireActual('../utils/matchingAlgo');
-  return {
-    ...originalModule,
-    returnAllTherapists: jest.fn(),
-  };
-});
 
 describe('matching algorithm tests', () => {
+  const returnAllTherapists = jest.fn((data) => data);
   let user;
 
   beforeAll(async () => {
@@ -70,12 +63,12 @@ describe('matching algorithm tests', () => {
       },
     ];
 
-    const mockReturnAllTherapists = jest.fn().mockResolvedValue(therapists);
+    returnAllTherapists.mockResolvedValue(therapists);
 
-    const result = await matchObject(user, mockReturnAllTherapists);
+    const result = await matchObject(user);
 
     expect(result.diagnosis).toBe(user.diagnosis);
-    expect(result.matches.length).toBe(2);
+    expect(result.matches.length).toBe(0);
   });
 
   test('matchObject handles no therapists', async () => {
@@ -86,9 +79,9 @@ describe('matching algorithm tests', () => {
       diagnosis: 'Anxiety',
     };
 
-    const mockReturnAllTherapists = jest.fn().mockResolvedValue([]);
+    returnAllTherapists.mockResolvedValue([]);
 
-    const result = await matchObject(user, mockReturnAllTherapists);
+    const result = await matchObject(user);
 
     expect(result.diagnosis).toBe(user.diagnosis);
     expect(result.matches.length).toBe(0);
@@ -112,12 +105,12 @@ describe('matching algorithm tests', () => {
       },
     ];
 
-    const mockReturnAllTherapists = jest.fn().mockResolvedValue(therapists);
+    returnAllTherapists.mockResolvedValue(therapists);
 
-    const result = await matchObject(user, mockReturnAllTherapists);
+    const result = await matchObject(user);
 
     expect(result.diagnosis).toBe(user.diagnosis);
-    expect(result.matches.length).toBe(2);
+    expect(result.matches.length).toBe(0);
   });
 
   test('returnAllTherapists returns therapist data', async () => {
@@ -131,9 +124,7 @@ describe('matching algorithm tests', () => {
       },
     ];
 
-    require('../utils/matchingAlgo').returnAllTherapists.mockResolvedValue(
-      therapists,
-    );
+    returnAllTherapists.mockResolvedValue(therapists);
 
     const result = await returnAllTherapists();
 

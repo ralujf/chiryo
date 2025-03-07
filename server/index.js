@@ -20,12 +20,12 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/api', (req, res, next) => {
+app.use('/api', (_, __, next) => {
   console.log('STATUS: Active');
   next();
 });
 
-app.post('/check', (req, res, next) => {
+app.post('/check', (_, res, next) => {
   return res.status(200).send({
     message: 'SUCCESS',
     id: 'CHECK',

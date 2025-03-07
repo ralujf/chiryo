@@ -4,7 +4,7 @@ import { animationOptions3 } from '../styles/animations';
 import { ToastContainer, toast } from 'react-toastify';
 import DashboardSidebar from '../components/dashboardSidebar';
 import { fetchApplicants, acceptApplicant, rejectApplicant } from '../api/crud';
-// TODO: Test cases
+
 const Admin = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState();
