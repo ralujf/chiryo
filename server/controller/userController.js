@@ -183,8 +183,6 @@ const deleteUser = async (req, res) => {
       return res.status(200).send('Successfully removed account');
     }
 
-    console.error(isMatch);
-    console.error(password);
     return res
       .status(401)
       .send('There was something wrong with the entered credentials');

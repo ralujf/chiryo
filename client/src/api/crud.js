@@ -9,6 +9,13 @@ import {
   UPDATE_ROW_URL,
   POST_SYMPTOMS_URL,
   APPLICATION_URL,
+  GET_APPLICATIONS_URL,
+  ACCEPT_APPLICATION_URL,
+  REJECT_APPLICATION_URL,
+  NEW_PASS_URL,
+  LOGOUT_URL,
+  REMOVE_ALL_URL,
+  SCRAPE_URL,
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
 // eslint-disable-next-line no-unused-vars
@@ -55,6 +62,9 @@ const handleRequest = async (method, url, data = null, params = null) => {
 
   try {
     const response = await axios(requestConfig);
+    if (response.headers['authorization']) {
+      storeJWT(response.headers['authorization']);
+    }
     console.log(response);
     return response.data;
   } catch (error) {
@@ -63,28 +73,14 @@ const handleRequest = async (method, url, data = null, params = null) => {
   }
 };
 
-const loginUser = async (userData) => {
-  const requestConfig = {
-    url: LOGIN_URL,
-    data: userData,
-  };
-
-  console.log(requestConfig);
-
-  try {
-    const response = await axios.post(requestConfig);
-    storeJWT(response.headers['authorization']);
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    const statusMessage = errorLog(error);
-    return statusMessage;
-  }
-};
+const loginUser = async (userData) =>
+  handleRequest('post', LOGIN_URL, userData);
 
 const logoutUserRedirect = () => {
+  const message = handleRequest('post', LOGOUT_URL);
   localStorage.removeItem('jwtToken');
   window.location.href = '/';
+  return message;
 };
 
 const registerUser = (userData) =>
@@ -105,7 +101,8 @@ const deleteUser = (userId) =>
 const updateProfileInfo = (profileData) =>
   handleRequest('patch', UPDATE_PROFILE_URL, profileData);
 
-const updatePassword = () => {};
+const updatePassword = (profileData) =>
+  handleRequest('patch', NEW_PASS_URL, profileData);
 
 /**
  *
@@ -173,7 +170,7 @@ const removeRowFromTable = (userId, rowData) =>
  * @description - Removes the users reference to be able to retrieve data
  */
 const clearTable = (userId) =>
-  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL, userId: userId }));
+  handleRequest('put', createURL({ baseURL: REMOVE_ALL_URL, userId: userId }));
 
 /**
  *
@@ -215,11 +212,22 @@ const sendApplication = (applicationData) =>
   handleRequest('post', APPLICATION_URL, applicationData);
 
 // ADMIN ONLY
-const fetchApplicants = () => {};
-const rejectApplicant = () => {};
-const acceptApplicant = () => {};
+const fetchApplicants = (offset) =>
+  handleRequest(
+    'get',
+    createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
+  );
+
+const acceptApplicant = (data) =>
+  handleRequest('post', ACCEPT_APPLICATION_URL, data);
+
+const rejectApplicant = (data) =>
+  handleRequest('delete', REJECT_APPLICATION_URL, data);
+
+const searchForTherapists = () => handleRequest('get', SCRAPE_URL);
 
 export {
+  searchForTherapists,
   registerUser,
   deleteUser,
   loginUser,

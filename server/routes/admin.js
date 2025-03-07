@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/search-for-therapist', findTherapistsExternal);
 
-router.get('/view-all-applicants', viewApplications);
+router.get('/view-all-applicants/:offset', viewApplications);
 
 router.post('/approve-applicant', approveApplication);
 

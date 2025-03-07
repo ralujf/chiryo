@@ -6,7 +6,7 @@ const REGISTER_URL = `${API_URL}/register`;
 const LOGIN_URL = `${API_URL}/login`;
 const LOGOUT_URL = `${API_URL}/logout`;
 const UPDATE_PROFILE_URL = `${API_URL}/update-profile`;
-const NEW_PROFILE_URL = `${API_URL}/update-password`;
+const NEW_PASS_URL = `${API_URL}/update-password`;
 const DELETE_USER_URL = `${API_URL}/delete-user-account`;
 
 const POST_SYMPTOMS_URL = `${API_URL}/matching/find-matches`;
@@ -21,10 +21,13 @@ const REJECT_APPLICATION_URL = `${API_URL}/admin/reject-applicant`;
 const ACCEPT_APPLICATION_URL = `${API_URL}/admin/approve-applicant`;
 const GET_APPLICATIONS_URL = `${API_URL}/admin/view-all-applicants`;
 
+const SCRAPE_URL = `${API_URL}/admin/search-for-therapist`;
+
 export {
   API_URL,
+  SCRAPE_URL,
   UPDATE_PROFILE_URL,
-  NEW_PROFILE_URL,
+  NEW_PASS_URL,
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,
