@@ -13,10 +13,29 @@ const Application = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const response = await sendApplication(data);
-    console.log(response);
-    notifyError(response);
+    const pdfFile = data.pdfInformation[0];
+    const pdfBlob = new Blob([pdfFile], { type: pdfFile.type });
+    const formData = { ...data, pdfInformation: pdfBlob.bytes };
+
+    const response = await sendApplication({ data: formData });
+    if (response === 'Application Submitted') {
+      notify(response);
+    } else {
+      notifyError(response);
+    }
   };
+
+  const notify = (message) =>
+    toast.success('Success! ' + message, {
+      position: 'bottom-center',
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: 'light',
+    });
 
   const notifyError = (error) =>
     toast.error('Oops - looks like something went wrong! ' + error, {
@@ -140,7 +159,7 @@ const Application = () => {
                   {errors.email && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="number" className="form-label">
+                  <label htmlFor="password" className="form-label">
                     Password
                   </label>
                   <input
@@ -150,10 +169,10 @@ const Application = () => {
                     id="password"
                     {...register('password', { required: false })}
                   />
-                  {errors.age && <span>This field is required</span>}
+                  {errors.password && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="number" className="form-label">
+                  <label htmlFor="age" className="form-label">
                     Age
                   </label>
                   <input
@@ -166,27 +185,44 @@ const Application = () => {
                   />
                   {errors.age && <span>This field is required</span>}
                 </div>
+
                 <div className="mb-3">
-                  <label htmlFor="ethnicBackground" className="form-label">
+                  <label htmlFor="background" className="form-label">
                     Ethnic Background
                   </label>
                   <select
                     className="form-select"
-                    id="ethnicBackground"
-                    {...register('ethnicBackground', { required: true })}
+                    id="background"
+                    {...register('background', { required: true })}
                   >
                     <option value="">Select Ethnic Background</option>
                     <option value="asian">Asian</option>
-                    <option value="black">Black</option>
-                    <option value="white">White</option>
+                    <option value="black british">Black British</option>
+                    <option value="black african">Black African</option>
+                    <option value="white british">White British</option>
                     <option value="hispanic">Hispanic</option>
                     <option value="nativeAmerican">Native American</option>
                     <option value="pacificIslander">Pacific Islander</option>
                     <option value="other">Other</option>
                   </select>
-                  {errors.ethnicBackground && (
-                    <span>This field is required</span>
-                  )}
+                  {errors.background && <span>This field is required</span>}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="race" className="form-label">
+                    Race
+                  </label>
+                  <select
+                    className="form-select"
+                    id="race"
+                    {...register('race', { required: true })}
+                  >
+                    <option value="">Select Race</option>
+                    <option value="asian">Asian</option>
+                    <option value="black">Black</option>
+                    <option value="white">White</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.race && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="religion" className="form-label">
@@ -248,30 +284,43 @@ const Application = () => {
                   {errors.credentials && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="postgraduateDegree" className="form-label">
-                    Postgraduate Degree
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="postgraduateDegree"
-                    {...register('postgraduateDegree', { required: true })}
-                  />
-                  {errors.postgraduateDegree && (
-                    <span>This field is required</span>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="resume" className="form-label">
+                  <label htmlFor="pdfInformation" className="form-label">
                     Upload Resume
                   </label>
                   <input
                     type="file"
                     className="form-control"
-                    id="resume"
-                    {...register('resume', { required: true })}
+                    id="pdfInformation"
+                    {...register('pdfInformation', { required: true })}
                   />
-                  {errors.resume && <span>This field is required</span>}
+                  {errors.pdfInformation && <span>This field is required</span>}
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="location" className="form-label">
+                    Location
+                  </label>
+                  <select
+                    className="form-select"
+                    id="location"
+                    {...register('location', { required: true })}
+                  >
+                    <option value="">Select Location</option>
+                    <option value="london">London</option>
+                    <option value="manchester">Manchester</option>
+                    <option value="birmingham">Birmingham</option>
+                    <option value="leeds">Leeds</option>
+                    <option value="glasgow">Glasgow</option>
+                    <option value="liverpool">Liverpool</option>
+                    <option value="edinburgh">Edinburgh</option>
+                    <option value="bristol">Bristol</option>
+                    <option value="sheffield">Sheffield</option>
+                    <option value="newcastle">Newcastle</option>
+                    <option value="nottingham">Nottingham</option>
+                    <option value="cardiff">Cardiff</option>
+                    <option value="leicester">Leicester</option>
+                    <option value="brighton">Brighton</option>
+                  </select>
+                  {errors.location && <span>This field is required</span>}
                 </div>
                 <button
                   type="submit"

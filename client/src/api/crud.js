@@ -51,6 +51,7 @@ const handleRequest = async (method, url, data = null, params = null) => {
   };
 
   console.log('Request Config:', requestConfig);
+  console.log(data);
 
   try {
     const response = await axios(requestConfig);
@@ -67,6 +68,8 @@ const loginUser = async (userData) => {
     url: LOGIN_URL,
     data: userData,
   };
+
+  console.log(requestConfig);
 
   try {
     const response = await axios.post(requestConfig);
@@ -211,6 +214,7 @@ const getTherapists = async (userData) => {
 const sendApplication = (applicationData) =>
   handleRequest('post', APPLICATION_URL, applicationData);
 
+// ADMIN ONLY
 const fetchApplicants = () => {};
 const rejectApplicant = () => {};
 const acceptApplicant = () => {};

@@ -1,3 +1,4 @@
+const { closeServer, startServer } = require('..');
 const {
   calculateCorrelation,
   assertObject,
@@ -15,13 +16,19 @@ jest.mock('../utils/matchingAlgo', () => {
 describe('matching algorithm tests', () => {
   let user;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    await startServer();
+
     user = {
       age: 25,
       race: 'Asian',
       religion: 'None',
       diagnosis: 'Anxiety',
     };
+  });
+
+  afterAll(() => {
+    closeServer();
   });
 
   test('calculating correlation between two objects', () => {

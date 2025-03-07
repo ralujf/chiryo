@@ -3,9 +3,13 @@ const Therapist = require('../models/therapist');
 const bcrypt = require('bcrypt');
 const { scrapeTherapists } = require('./scraper');
 
-const handleApplication = async (req, res) => {
+const sendApplication = async (req, res) => {
   try {
-    const { applicationInformation } = req.body.data;
+    const applicationInformation = req.body.data;
+    console.log(applicationInformation.password);
+    if (!applicationInformation.password) {
+      return res.status(500).json({ message: 'Incorrect format' + err });
+    }
 
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
@@ -20,7 +24,7 @@ const handleApplication = async (req, res) => {
   }
 };
 
-const fillExternal = async (req, res) => {
+const findTherapistsExternal = async (req, res) => {
   try {
     const arr = await scrapeTherapists();
     arr.forEach((therapist) => therapist.save());
@@ -32,7 +36,6 @@ const fillExternal = async (req, res) => {
 
 const viewApplications = async (req, res, next) => {
   const { offset = 0 } = req.params;
-
   const parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
@@ -45,7 +48,7 @@ const viewApplications = async (req, res, next) => {
       .sort({ createdAt: 1 })
       .limit(10)
       .exec();
-    console.log(applicants);
+
     return res.status(200).json({ data: applicants, total: applicants.length });
   } catch (err) {
     console.error(err);
@@ -69,9 +72,9 @@ const approveApplication = async (req, res, next) => {
 
 const rejectApplication = async (req, res, next) => {
   try {
-    const { applicantEmail } = req.body.data;
+    const applicantEmail = req.body.data;
     const result = await Application.findOneAndDelete({
-      email: applicantEmail,
+      email: applicantEmail.email,
     });
 
     if (!result) {
@@ -87,9 +90,9 @@ const rejectApplication = async (req, res, next) => {
 };
 
 module.exports = {
-  handleApplication,
+  sendApplication,
   viewApplications,
   approveApplication,
   rejectApplication,
-  fillExternal,
+  findTherapistsExternal,
 };

@@ -54,8 +54,12 @@ const ApplicationSchema = new Schema(
       required: true,
       unique: false,
     },
-    pdfInformation: {
+    credentials: {
       type: String,
+      required: false,
+    },
+    pdfInformation: {
+      type: Buffer,
       required: false,
     },
   },

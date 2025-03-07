@@ -5,21 +5,26 @@ const API_URL = import.meta.env.PROD
 const REGISTER_URL = `${API_URL}/register`;
 const LOGIN_URL = `${API_URL}/login`;
 const LOGOUT_URL = `${API_URL}/logout`;
-const UPDATE_PROFILE_URL = `${API_URL}/update`;
+const UPDATE_PROFILE_URL = `${API_URL}/update-profile`;
+const NEW_PROFILE_URL = `${API_URL}/update-password`;
+const DELETE_USER_URL = `${API_URL}/delete-user-account`;
 
-const DELETE_USER_URL = `${API_URL}/delete-user`;
+const POST_SYMPTOMS_URL = `${API_URL}/matching/find-matches`;
 
-const POST_SYMPTOMS_URL = `${API_URL}/find-matches`;
+const GET_TABLE_URL = `${API_URL}/dashboard/load-user-dashboard`;
+const REMOVE_ALL_URL = `${API_URL}/dashboard/delete-table`;
+const REMOVE_ROW_URL = `${API_URL}/dashboard/delete-row`;
+const UPDATE_ROW_URL = `${API_URL}/dashboard/add-field`;
 
-const GET_TABLE_URL = `${API_URL}/load-user-dashboard`;
-const REMOVE_ROW_URL = `${API_URL}/delete-row`;
-const UPDATE_ROW_URL = `${API_URL}/update-field`;
-
-const APPLICATION_URL = `${API_URL}/therapist-application`;
+const APPLICATION_URL = `${API_URL}/apply`;
+const REJECT_APPLICATION_URL = `${API_URL}/admin/reject-applicant`;
+const ACCEPT_APPLICATION_URL = `${API_URL}/admin/approve-applicant`;
+const GET_APPLICATIONS_URL = `${API_URL}/admin/view-all-applicants`;
 
 export {
   API_URL,
   UPDATE_PROFILE_URL,
+  NEW_PROFILE_URL,
   REGISTER_URL,
   DELETE_USER_URL,
   LOGIN_URL,
@@ -28,5 +33,9 @@ export {
   POST_SYMPTOMS_URL,
   REMOVE_ROW_URL,
   UPDATE_ROW_URL,
+  REMOVE_ALL_URL,
   APPLICATION_URL,
+  REJECT_APPLICATION_URL,
+  ACCEPT_APPLICATION_URL,
+  GET_APPLICATIONS_URL,
 };

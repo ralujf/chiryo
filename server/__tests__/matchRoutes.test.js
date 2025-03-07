@@ -24,16 +24,20 @@ describe('Matching Routes', () => {
     await Promise.all(
       userFixture.map(async (userJSON) => {
         await request(app).post('/api/register').send({
-          user: userJSON,
+          data: userJSON,
         });
       }),
     );
 
-    // wait till all users are dded to login to get the token
-    const loginResponse = await request(app).post('/api/login').send({
-      username: userFixture[0].username,
-      password: userFixture[0].password,
-    });
+    // wait till all users are added to login to get the token
+    const loginResponse = await request(app)
+      .post('/api/login')
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: userFixture[0].password,
+        },
+      });
 
     token = loginResponse.body.token;
   });
@@ -49,9 +53,11 @@ describe('Matching Routes', () => {
 
   it('should match user with a therapist', async () => {
     const response = await request(app)
-      .post('/api/find-matches')
+      .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
-      .send({ user: userFixture[0], username: userFixture[0].username });
+      .send({
+        data: { user: userFixture[0], username: userFixture[0].username },
+      });
 
     expect(response.status).toBe(302);
     expect(response.text).toContain('Found. Redirecting to /dashboard');
@@ -59,8 +65,10 @@ describe('Matching Routes', () => {
 
   it('should fail due to no JWT when matching user with a therapist', async () => {
     const response = await request(app)
-      .post('/api/find-matches')
-      .send({ user: userFixture[0], username: userFixture[0].username });
+      .post('/api/matching/find-matches')
+      .send({
+        data: { user: userFixture[0], username: userFixture[0].username },
+      });
 
     expect(response.status).toBe(403);
     expect(response.text).toContain('Invalid token, user not authenticated');
@@ -68,9 +76,11 @@ describe('Matching Routes', () => {
 
   it('should fail due to JWT validation, no auth token', async () => {
     const response = await request(app)
-      .post('/api/find-matches')
+      .post('/api/matching/find-matches')
       .set('Authorization', `Bearer Fake Token`)
-      .send({ user: userFixture[0], username: userFixture[0].username });
+      .send({
+        data: { user: userFixture[0], username: userFixture[0].username },
+      });
 
     expect(response.status).toBe(403);
     expect(response.text).toContain('Invalid token, user not authenticated');
@@ -78,9 +88,9 @@ describe('Matching Routes', () => {
 
   it('should fail due to JWT validation, no user', async () => {
     const response = await request(app)
-      .post('/api/find-matches')
+      .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
-      .send({ user: {}, username: userFixture[0].username });
+      .send({ data: { user: {}, username: userFixture[0].username } });
 
     expect(response.status).toBe(404);
     expect(response.text).toContain('No user found for this ID');
@@ -91,9 +101,11 @@ describe('Matching Routes', () => {
     await Therapist.deleteMany({});
 
     const response = await request(app)
-      .post('/api/find-matches')
+      .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
-      .send({ user: userFixture[0], username: userFixture[0].username });
+      .send({
+        data: { user: userFixture[0], username: userFixture[0].username },
+      });
 
     expect(response.status).toBe(500);
     expect(response.text).toContain('Unable to return matches');

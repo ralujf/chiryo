@@ -1,15 +1,17 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 
-const Form = ({ formTitle, method, submissionText }) => {
+const Form = ({ formTitle, submissionMethod, submissionText }) => {
+  const [passwordType, setPasswordType] = useState('password');
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    const response = await method(data);
+    const response = await submissionMethod(data);
     console.log(response);
     notifyError(response);
   };
@@ -45,9 +47,9 @@ const Form = ({ formTitle, method, submissionText }) => {
       <form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
         <label className="fw-bold">Username</label>
         <input
-          className="mb-3 w-50"
+          className="mb-3 w-100 rounded"
           placeholder="Username"
-          {...register('Username', {
+          {...register('username', {
             required: 'Username is required',
             maxLength: {
               value: 50,
@@ -59,14 +61,29 @@ const Form = ({ formTitle, method, submissionText }) => {
             },
           })}
         />
-        {errors.Username && <span>{errors.Username.message}</span>}
-        <label className="fw-bold">Password</label>
+        {errors.username && <span>{errors.username.message}</span>}
+        <span>
+          <label className="d-inline fw-bold">Password</label>
+          <p
+            className="w-fit bg-transparent d-inline mx-2"
+            onClick={() => {
+              if (passwordType === 'text') {
+                setPasswordType('password');
+              } else if (passwordType === 'password') {
+                setPasswordType('text');
+              }
+            }}
+          >
+            <i className="bi bi-eye-fill"></i>
+          </p>
+        </span>
         <input
-          type="password"
-          className="mb-3 w-50"
-          {...register('Password', { required: 'Password is required' })}
+          type={passwordType}
+          placeholder="********"
+          className="mb-3 w-100 rounded"
+          {...register('password', { required: 'Password is required' })}
         />
-        {errors.Password && <span>{errors.Password.message}</span>}
+        {errors.password && <span>{errors.password.message}</span>}
         <input
           type="submit"
           value={submissionText}
@@ -80,7 +97,7 @@ const Form = ({ formTitle, method, submissionText }) => {
 
 Form.propTypes = {
   formTitle: PropTypes.string.isRequired,
-  method: PropTypes.func,
+  submissionMethod: PropTypes.func,
   submissionText: PropTypes.string.isRequired,
 };
 

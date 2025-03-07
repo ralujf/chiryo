@@ -2,20 +2,23 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Therapist = require('../models/therapist');
 
-const register = async (req, res) => {
+const registerUser = async (req, res) => {
   const user = req.body.data;
 
   try {
+    const existingUser = await User.findOne({ username: user.username }).exec();
+    if (existingUser) {
+      return res.status(400).json({ errors: 'Username already exists' });
+    }
+
     const saltRounds = 13;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
-    // TODO: Add Check if there is a user with the same details
 
     const newUser = new User(user);
     await newUser.save();
-    // TODO: Update tests this was changed from a redirect to a regular return
-    // return res.redirect('/login');
+
     return res.status(201).json({ id: newUser._id, errors: null });
   } catch (err) {
     console.error(err);
@@ -25,7 +28,7 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   const { username, password } = req.body.data;
 
   if (!username) {
@@ -38,14 +41,14 @@ const login = async (req, res, next) => {
 
   try {
     let user = await User.findOne({ username: username }).exec();
-    console.error(user);
+    console.log(user);
     if (!user) {
       user = await Therapist.findOne({ username: username }).exec();
     }
+    console.log(user);
 
     if (!user) {
-      console.log('HELllo');
-      // return res.status(404).send('User not found');
+      return res.status(404).send('User not found');
     }
 
     const result = await bcrypt.compare(password, user.password);
@@ -53,6 +56,7 @@ const login = async (req, res, next) => {
     if (result) {
       res.locals.username = user.username;
       res.locals._id = user.toObject()._id;
+
       console.log('ID of logged in user: ' + res.locals._id);
       return next();
     } else {
@@ -64,17 +68,24 @@ const login = async (req, res, next) => {
   }
 };
 
-const logout = async (req, res) => {
+const logoutUser = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(400).send('Authorization header is required');
+    }
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(400).send('Token is required');
+    }
     return res.status(200).send('Logout successful');
   } catch (err) {
     return res.status(500).send('Error logging out user');
   }
 };
-// TODO: Requires test cases
-const updateUserDetails = async (req, res) => {
-  const { userInformation } = req.body.data;
+
+const updateUser = async (req, res) => {
+  const userInformation = req.body.data;
   const { username, password } = userInformation;
 
   try {
@@ -89,6 +100,8 @@ const updateUserDetails = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
+
+    console.error(password);
 
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -105,6 +118,8 @@ const updateUserDetails = async (req, res) => {
       return res.status(500).send('Failed to update');
     }
 
+    console.log(user.password);
+
     return res.status(200).send('User details updated successfully');
   } catch (err) {
     console.error(err);
@@ -112,48 +127,78 @@ const updateUserDetails = async (req, res) => {
   }
 };
 
-const deleteUser = async (req, res) => {
-  const { username, password, role } = req.body.data;
+const updatePassword = async (req, res) => {
+  const { username, oldPassword, newPassword, role } = req.body.data;
 
-  if (role === 'therapist') {
-    try {
-      const user = await Therapist.findOne({ username: username }).exec();
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        await Therapist.deleteOne(user).exec();
-        return res.status(200).send('Successfully removed account');
-      }
+  try {
+    const user =
+      role === 'therapist'
+        ? await Therapist.findOne({ username }).exec()
+        : await User.findOne({ username }).exec();
 
-      return res
-        .status(401)
-        .send('There was something wrong with the entered credentials');
-    } catch (err) {
-      console.error(err);
-      return res.status(500).send(`There was an error: ${err}`);
+    if (!user) {
+      return res.status(404).send('User not found');
     }
-  } else if (role === 'user') {
-    try {
-      const user = await User.findOne({ username: username }).exec();
-      if (!user) {
-        return res.status(404).send('User not found');
-      }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        await User.deleteOne(user).exec();
-        return res.status(200).send('Successfully removed account');
-      }
+    console.error(oldPassword);
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
 
-      return res
-        .status(401)
-        .send('There was something wrong with the entered credentials');
-    } catch (err) {
-      console.error(err);
-      return res.status(500).send(`There was an error: ${err}`);
+    if (isMatch) {
+      const saltRounds = 13;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hash = await bcrypt.hash(newPassword, salt);
+
+      user.password = hash;
+      await user.save();
+      return res.status(200).send('Password updated successfully');
     }
+
+    return res
+      .status(401)
+      .send('There was something wrong with the entered credentials');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(`There was an error: ${err}`);
   }
 };
 
-module.exports = { register, login, logout, deleteUser, updateUserDetails };
+const deleteUser = async (req, res) => {
+  const { username, password, role } = req.body.data;
+
+  try {
+    const user =
+      role === 'therapist'
+        ? await Therapist.findOne({ username }).exec()
+        : await User.findOne({ username }).exec();
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+      await (role === 'therapist' ? Therapist : User)
+        .deleteOne({ username })
+        .exec();
+      return res.status(200).send('Successfully removed account');
+    }
+
+    console.error(isMatch);
+    console.error(password);
+    return res
+      .status(401)
+      .send('There was something wrong with the entered credentials');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(`There was an error: ${err}`);
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  deleteUser,
+  updateUser,
+  updatePassword,
+};

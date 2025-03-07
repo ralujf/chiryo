@@ -10,15 +10,19 @@ describe('User Routes', () => {
     await startServer();
     userFixture.forEach(async (userJSON) => {
       await request(app).post('/api/register').send({
-        user: userJSON,
+        data: userJSON,
       });
     });
 
     // Login to get the token
-    const loginResponse = await request(app).post('/api/login').send({
-      username: userFixture[0].username,
-      password: userFixture[0].password,
-    });
+    const loginResponse = await request(app)
+      .post('/api/login')
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: userFixture[0].password,
+        },
+      });
 
     token = loginResponse.body.token;
   });
@@ -34,7 +38,7 @@ describe('User Routes', () => {
     const response = await request(app)
       .post('/api/register')
       .send({
-        user: {
+        data: {
           username: 'test2',
           email: 'test2@test.com',
           password: 'password',
@@ -47,13 +51,14 @@ describe('User Routes', () => {
       });
 
     expect(response.status).toBe(201);
+    expect(response.body.id).not.toBe(null);
   });
 
   it('should fail to register a user with invalid data format (email wrong)', async () => {
     const response = await request(app)
       .post('/api/register')
       .send({
-        user: {
+        data: {
           username: 'valid-user',
           email: 'invalid-email',
           password: 'validpassword',
@@ -65,10 +70,14 @@ describe('User Routes', () => {
   });
 
   it('should login a user', async () => {
-    const response = await request(app).post('/api/login').send({
-      username: userFixture[0].username,
-      password: userFixture[0].password,
-    });
+    const response = await request(app)
+      .post('/api/login')
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: userFixture[0].password,
+        },
+      });
 
     expect(response.status).toBe(200);
   });
@@ -76,7 +85,12 @@ describe('User Routes', () => {
   it('should fail to login a user with wrong password', async () => {
     const response = await request(app)
       .post('/api/login')
-      .send({ username: userFixture[5].username, password: 'wrongpassword' });
+      .send({
+        data: {
+          username: userFixture[5].username,
+          password: 'wrongpassword',
+        },
+      });
 
     expect(response.status).toBe(401);
   });
@@ -84,9 +98,78 @@ describe('User Routes', () => {
   it('should fail to login a non-existent user', async () => {
     const response = await request(app)
       .post('/api/login')
-      .send({ username: 'nonexistent', password: 'password' });
+      .send({
+        data: {
+          username: 'nonexistent',
+          password: 'password',
+        },
+      });
 
     expect(response.status).toBe(404);
+  });
+
+  it('should update user profile', async () => {
+    const response = await request(app)
+      .patch('/api/update-profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: userFixture[0].password,
+          email: 'newemail@test.com',
+        },
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('User details updated successfully');
+  });
+
+  it('should fail to update user profile with wrong password', async () => {
+    const response = await request(app)
+      .patch('/api/update-profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: 'wrongpassword',
+          email: 'newemail@test.com',
+        },
+      });
+
+    expect(response.status).toBe(403);
+  });
+
+  it('should update user password', async () => {
+    const response = await request(app)
+      .patch('/api/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[5].username,
+          oldPassword: userFixture[5].password,
+          newPassword: 'newpassword',
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Password updated successfully');
+  });
+
+  it('should fail to update user password with wrong old password', async () => {
+    const response = await request(app)
+      .patch('/api/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          oldPassword: 'wrongpassword',
+          newPassword: 'newpassword',
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(401);
   });
 
   it('should delete a user, if it exists', async () => {
@@ -94,9 +177,11 @@ describe('User Routes', () => {
       .delete('/api/delete-user-account')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        username: userFixture[0].username,
-        password: userFixture[0].password,
-        role: 'user',
+        data: {
+          username: userFixture[6].username,
+          password: userFixture[6].password,
+          role: 'user',
+        },
       });
 
     expect(response.status).toBe(200);
@@ -108,9 +193,11 @@ describe('User Routes', () => {
       .delete('/api/delete-user-account')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        username: userFixture[1].username,
-        password: 'wrongpassword',
-        role: 'user',
+        data: {
+          username: userFixture[1].username,
+          password: 'wrongpassword',
+          role: 'user',
+        },
       });
 
     expect(response.status).toBe(401);
@@ -120,7 +207,13 @@ describe('User Routes', () => {
     const response = await request(app)
       .delete('/api/delete-user-account')
       .set('Authorization', `Bearer ${token}`)
-      .send({ username: 'nonexistent', password: 'password', role: 'user' });
+      .send({
+        data: {
+          username: 'nonexistent',
+          password: 'password',
+          role: 'user',
+        },
+      });
 
     expect(response.status).toBe(404);
   });
@@ -137,6 +230,6 @@ describe('User Routes', () => {
   it('should fail to logout a user without token', async () => {
     const response = await request(app).post('/api/logout');
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
   });
 });

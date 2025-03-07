@@ -28,7 +28,7 @@ describe('Admin Routes', () => {
     const response = await request(app)
       .post('/api/apply')
       .send({
-        applicationInformation: {
+        data: {
           firstName: 'applytest',
           lastName: 'Tone',
           email: 'applytest@example.com',
@@ -57,36 +57,40 @@ describe('Admin Routes', () => {
     };
     const response = await request(app)
       .post('/api/apply')
-      .send({ applicationInformation: invalidApplicationInformation });
+      .send({
+        data: { applicationInformation: invalidApplicationInformation },
+      });
 
     expect(response.status).toBe(500);
   });
 
   it('should view all applications', async () => {
     const response = await request(app)
-      .get('/api/view-all-applicants')
+      .get('/api/admin/view-all-applicants')
       .set('Authorization', `Bearer ${token}`)
-      .send({ adminID: process.env.ADMIN });
+      .send({ data: { adminID: process.env.ADMIN } });
 
     expect(response.status).toBe(200);
-    expect(response.body.length).toBeGreaterThan(0);
+    expect(response.body.data.length).toBeGreaterThan(0);
   });
 
   it('view all applications without token', async () => {
     const response = await request(app)
-      .get('/api/view-all-applicants')
-      .send({ adminID: process.env.ADMIN });
+      .get('/api/admin/view-all-applicants')
+      .send({ data: { adminID: process.env.ADMIN } });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(403);
   });
 
   it('should approve an application', async () => {
     const response = await request(app)
-      .post('/api/approve-therapist')
+      .post('/api/admin/approve-applicant')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        applicationInformation: therapistsData[1],
-        adminID: process.env.ADMIN,
+        data: {
+          applicationInformation: therapistsData[1],
+          adminID: process.env.ADMIN,
+        },
       });
 
     expect(response.status).toBe(201);
@@ -99,11 +103,13 @@ describe('Admin Routes', () => {
       email: 'invalid-email',
     };
     const response = await request(app)
-      .post('/api/approve-therapist')
+      .post('/api/admin/approve-applicant')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        applicationInformation: invalidApplicationInformation,
-        adminID: process.env.ADMIN,
+        data: {
+          applicationInformation: invalidApplicationInformation,
+          adminID: process.env.ADMIN,
+        },
       });
 
     expect(response.status).toBe(500);
@@ -111,11 +117,13 @@ describe('Admin Routes', () => {
 
   it('should reject an application', async () => {
     const response = await request(app)
-      .delete(`/api/reject-therapist`)
+      .delete(`/api/admin/reject-applicant`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        applicantEmail: therapistsData[2].email,
-        adminID: process.env.ADMIN,
+        data: {
+          email: therapistsData[2].email,
+          adminID: process.env.ADMIN,
+        },
       });
 
     expect(response.status).toBe(200);
@@ -124,11 +132,13 @@ describe('Admin Routes', () => {
 
   it('should fail to reject a non-existent application', async () => {
     const response = await request(app)
-      .delete('/api/reject-therapist')
+      .delete('/api/admin/reject-applicant')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        applicantEmail: 'nonexistent@example.com',
-        adminID: process.env.ADMIN,
+        data: {
+          email: 'nonexistent@example.com',
+          adminID: process.env.ADMIN,
+        },
       });
 
     expect(response.status).toBe(404);
@@ -136,12 +146,110 @@ describe('Admin Routes', () => {
 
   it('should fail to reject a due to no admin ID', async () => {
     const response = await request(app)
-      .delete('/api/reject-therapist')
+      .delete('/api/admin/reject-applicant')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        applicantEmail: therapistsData[3].email,
+        data: {
+          email: therapistsData[3].email,
+        },
       });
 
     expect(response.status).toBe(403);
+  });
+
+  it('should handle application submission with invalid password', async () => {
+    const response = await request(app)
+      .post('/api/apply')
+      .send({
+        data: {
+          firstName: 'applytest',
+          lastName: 'Tone',
+          email: 'applytest@example.com',
+          phoneNumber: '',
+          password: '',
+          age: 35,
+          race: 'African American',
+          background: 'Social Work',
+          religion: 'Islam',
+          location: 'Los Angeles, CA',
+          expertise: 'Psychodynamic Therapy',
+          yoe: 7,
+          reviews: [],
+        },
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.body.message).toContain('Incorrect format');
+  });
+
+  it('should handle invalid offset in view applications', async () => {
+    const response = await request(app)
+      .get('/api/admin/view-all-applicants?offset=invalid')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          adminID: process.env.ADMIN,
+        },
+      });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should handle server error in view applications', async () => {
+    jest.spyOn(Application, 'find').mockImplementationOnce(() => {
+      throw new Error('Server side error occurred');
+    });
+
+    const response = await request(app)
+      .get('/api/admin/view-all-applicants')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          adminID: process.env.ADMIN,
+        },
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Server side error occurred');
+  });
+
+  it('should handle server error in approve application', async () => {
+    jest.spyOn(Therapist.prototype, 'save').mockImplementationOnce(() => {
+      throw new Error('Server side error occurred');
+    });
+
+    const response = await request(app)
+      .post('/api/admin/approve-applicant')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          applicationInformation: therapistsData[1],
+          adminID: process.env.ADMIN,
+        },
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe('Server side error occurred');
+  });
+
+  it('should handle server error in reject application', async () => {
+    jest.spyOn(Application, 'findOneAndDelete').mockImplementationOnce(() => {
+      throw new Error('Server was unable to delete user from database');
+    });
+
+    const response = await request(app)
+      .delete('/api/admin/reject-applicant')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          email: therapistsData[2].email,
+          adminID: process.env.ADMIN,
+        },
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.text).toBe(
+      'Server was unable to delete user from database',
+    );
   });
 });

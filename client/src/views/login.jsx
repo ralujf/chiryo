@@ -1,22 +1,24 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
-import Form from '../components/form';
 import { loginUser } from '../api/crud';
+import Form from '../components/form';
 
 const Login = () => {
   return (
-    <div className="chiryo_login_background" style={{ height: '100vh' }}>
+    <div className="chiryo_login_background vh-100">
       <motion.div
         {...animationOptions3}
-        className="container-fluid"
+        className="container-fluid w-100 min-vh-75"
         style={{
-          width: '100%',
-          minHeight: '80vh',
           padding: '15vh 0vw',
           margin: '0vh 5vw',
         }}
       >
-        <Form formTitle={'Login'} method={loginUser} submissionText="Login" />
+        <Form
+          formTitle={'Login'}
+          submissionMethod={loginUser}
+          submissionText="Login"
+        />
       </motion.div>
     </div>
   );

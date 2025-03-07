@@ -49,9 +49,9 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .get('/api/load-user-dashboard/0')
+      .get('/api/dashboard/load-user-dashboard/0')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId, role: 'user' });
+      .send({ data: { userId, role: 'user' } });
 
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBeGreaterThan(0);
@@ -59,9 +59,9 @@ describe('Dashboard Routes', () => {
 
   it('should fail to fetch user dashboard with invalid offset', async () => {
     const response = await request(app)
-      .get('/api/load-user-dashboard/invalid')
+      .get('/api/dashboard/load-user-dashboard/invalid')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId, role: 'user' });
+      .send({ data: { userId, role: 'user' } });
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('Invalid offset value');
@@ -78,9 +78,9 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/delete-row')
+      .put('/api/dashboard/delete-row')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId, therapistId });
+      .send({ data: { userId, therapistId } });
 
     expect(response.status).toBe(200);
     expect(response.text).toBe('Records updated successfully');
@@ -88,9 +88,9 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete due to non-existent userId', async () => {
     const response = await request(app)
-      .put('/api/delete-row')
+      .put('/api/dashboard/delete-row')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId: '67b9904733b91379fcb743ae', therapistId });
+      .send({ data: { userId: '67b9904733b91379fcb743ae', therapistId } });
 
     expect(response.status).toBe(404);
     expect(response.text).toBe('No records found to update');
@@ -98,9 +98,9 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete a non-existent record due to invalid userId', async () => {
     const response = await request(app)
-      .put('/api/delete-row')
+      .put('/api/dashboard/delete-row')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId: 'nonexistent', therapistId });
+      .send({ data: { userId: 'nonexistent', therapistId } });
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('Invalid ObjectId');
@@ -117,9 +117,9 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/delete-table')
+      .put('/api/dashboard/delete-table')
       .set('Authorization', `Bearer ${token}`)
-      .send({ role: 'user', userId });
+      .send({ data: { role: 'user', userId } });
 
     expect(response.status).toBe(200);
     expect(response.text).toBe('Records updated successfully');
@@ -127,9 +127,9 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete all records for non-existent user', async () => {
     const response = await request(app)
-      .put('/api/delete-table')
+      .put('/api/dashboard/delete-table')
       .set('Authorization', `Bearer ${token}`)
-      .send({ role: 'user', userId: 'nonexistent' });
+      .send({ data: { role: 'user', userId: 'nonexistent' } });
 
     expect(response.status).toBe(400);
     expect(response.text).toBe('Invalid ObjectId');
@@ -137,9 +137,9 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete all records for non-existent user', async () => {
     const response = await request(app)
-      .put('/api/delete-table')
+      .put('/api/dashboard/delete-table')
       .set('Authorization', `Bearer ${token}`)
-      .send({ role: 'user', userId: '67b9904733b91379fcb743ae' });
+      .send({ data: { role: 'user', userId: '67b9904733b91379fcb743ae' } });
 
     expect(response.status).toBe(404);
     expect(response.text).toBe('No records found to update');
@@ -156,9 +156,11 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/add-field')
+      .put('/api/dashboard/add-field')
       .set('Authorization', `Bearer ${token}`)
-      .send({ userId, therapistId, rowData: { diagnosis: 'updated' } });
+      .send({
+        data: { userId, therapistId, rowData: { diagnosis: 'updated' } },
+      });
 
     expect(response.status).toBe(200);
     expect(response.text).toBe('Row deleted successfully');
@@ -166,12 +168,14 @@ describe('Dashboard Routes', () => {
 
   it('should fail to update a non-existent record', async () => {
     const response = await request(app)
-      .put('/api/add-field')
+      .put('/api/dashboard/add-field')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        userId: 'nonexistent',
-        therapistId,
-        rowData: { diagnosis: 'updated' },
+        data: {
+          userId: 'nonexistent',
+          therapistId,
+          rowData: { diagnosis: 'updated' },
+        },
       });
 
     expect(response.status).toBe(400);
@@ -180,12 +184,14 @@ describe('Dashboard Routes', () => {
 
   it('should fail to update a non-existent but valid objectId', async () => {
     const response = await request(app)
-      .put('/api/add-field')
+      .put('/api/dashboard/add-field')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        userId: '67b9904733b91379fcb743ae',
-        therapistId,
-        rowData: { diagnosis: 'updated' },
+        data: {
+          userId: '67b9904733b91379fcb743ae',
+          therapistId,
+          rowData: { diagnosis: 'updated' },
+        },
       });
 
     expect(response.status).toBe(404);
