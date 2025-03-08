@@ -11,7 +11,7 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     formState: { errors },
   } = useForm();
   const onSubmit = async (data) => {
-    const response = await submissionMethod(data);
+    const response = await submissionMethod({ data: data });
     console.log(response);
     notifyError(response);
   };
