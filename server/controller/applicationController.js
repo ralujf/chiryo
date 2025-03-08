@@ -1,6 +1,7 @@
 const Application = require('../models/application');
 const Therapist = require('../models/therapist');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 const { scrapeTherapists } = require('./scraper');
 
 const sendApplication = async (req, res) => {
@@ -63,6 +64,32 @@ const approveApplication = async (req, res, next) => {
     await therapist.save();
 
     await Application.findOneAndDelete({ email: applicationInformation.email });
+    const adminEmail = 'chiryohelp@gmail.com';
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: adminEmail,
+        pass: process.env.ADMINPASS,
+      },
+    });
+
+    const mailOptions = {
+      from: adminEmail,
+      // Need to remember to turn this off and not actually send to real therapists lol
+      from: adminEmail,
+      // to: applicationInformation.email,
+      subject: 'You are now part of Chiryo!',
+      text: '',
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).send('An error occurred: ' + error);
+      } else {
+        console.log('SENT:' + info.response);
+      }
+    });
+
     return res.status(201).send('Applicant accepted!');
   } catch (err) {
     console.error(err);
