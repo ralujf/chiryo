@@ -20,6 +20,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Debugging
 app.use('/api', (_, __, next) => {
   console.log('STATUS: Active');
   next();
@@ -35,8 +36,7 @@ app.post('/check', (_, res, next) => {
 app.use('/api', applicationsRouter);
 app.use('/api', userRouter);
 
-app.use('/api/admin', checkIdAdmin, adminRouter);
-
+app.use('/api/admin', validateJWT, checkIdAdmin, adminRouter);
 app.use('/api/matching', validateJWT, matchRouter);
 app.use('/api/dashboard', validateJWT, dashboardRouter);
 

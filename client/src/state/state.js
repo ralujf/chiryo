@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 const useCredentialStore = create((set) => ({
   userId: '',
+  adminId: null,
   username: '',
   password: '',
   role: '',
@@ -10,10 +11,9 @@ const useCredentialStore = create((set) => ({
   answers: [],
   introState: 'START',
   setUser: (user) =>
-    set((state) => {
-      console.log(user.userId);
+    set(() => {
       return {
-        ...state,
+        adminId: user.adminId ? user.adminId : null,
         userId: user.userId,
         role: user.role,
         firstLogin: user.firstLogin,

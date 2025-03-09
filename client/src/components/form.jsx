@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
+import { useCredentialStore } from '../state/state';
 import PropTypes from 'prop-types';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
@@ -10,9 +11,12 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const setUser = useCredentialStore((state) => state.setUser);
+
   const onSubmit = async (data) => {
     const response = await submissionMethod({ data: data });
     console.log(response);
+    setUser(...response.userSubset);
     notifyError(response);
   };
 

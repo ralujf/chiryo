@@ -4,6 +4,12 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
+    adminId: {
+      type: String,
+      required: false,
+      default: null,
+      immutable: true,
+    },
     username: {
       type: String,
       required: true,

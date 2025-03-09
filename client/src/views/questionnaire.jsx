@@ -148,8 +148,9 @@ const Questionnaire = () => {
         const user = { userId: response.id, role: 'user', firstLogin: true };
         await setUser(user);
         setTimeout(() => {
+          // Wait for zustand to update global store
           setIntroState(introStateOptions.MATCH);
-        }, 2500);
+        }, 1500);
       } else {
         notifyError(response.errors);
       }

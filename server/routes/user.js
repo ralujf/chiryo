@@ -7,6 +7,7 @@ const {
   deleteUser,
   updateUser,
   updatePassword,
+  setFirstLogin,
 } = require('../controller/userController');
 const { generateJWT } = require('../middleware/auth');
 const router = express.Router();
@@ -80,6 +81,8 @@ router.patch(
   },
   updateUser,
 );
+
+router.patch('/set-first-login', setFirstLogin);
 
 router.patch(
   '/update-password',

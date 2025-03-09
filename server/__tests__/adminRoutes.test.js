@@ -2,23 +2,41 @@ const request = require('supertest');
 const { app, startServer, closeServer } = require('../index');
 const Application = require('../models/application');
 const Therapist = require('../models/therapist');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const therapistsData = require('../__fixtures__/data.json');
 
 describe('Admin Routes', () => {
   let token;
+  let username = 'adminUser';
+
   beforeAll(async () => {
     await startServer();
     therapistsData.forEach(async (therapistJSON) => {
       const item = new Application(therapistJSON);
       item.save();
     });
-    token = jwt.sign({ adminId: process.env.ADMIN }, process.env.JWT_SECRET);
+    const user = {
+      adminId: process.env.ADMIN,
+      username: 'adminUser',
+      email: 'example@example.com',
+      password: 'securepassword123',
+      age: 25,
+    };
+    const admin = new User(user);
+    admin.save();
+    token = jwt.sign(
+      { email: 'example@example.com', username },
+      process.env.JWT_SECRET,
+    );
+
+    console.error(token);
   });
 
   afterAll(async () => {
     await Application.deleteMany({});
     await Therapist.deleteMany({});
+    await User.deleteMany({});
     setTimeout(() => {
       closeServer();
     }, 6500);
@@ -66,9 +84,9 @@ describe('Admin Routes', () => {
 
   it('should view all applications', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants')
+      .get('/api/admin/view-all-applicants/0')
       .set('Authorization', `Bearer ${token}`)
-      .send({ data: { adminID: process.env.ADMIN } });
+      .send({ data: { adminId: process.env.ADMIN, username } });
 
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBeGreaterThan(0);
@@ -76,8 +94,8 @@ describe('Admin Routes', () => {
 
   it('view all applications without token', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants')
-      .send({ data: { adminID: process.env.ADMIN } });
+      .get('/api/admin/view-all-applicants/0')
+      .send({ data: { adminId: process.env.ADMIN, username } });
 
     expect(response.status).toBe(403);
   });
@@ -89,7 +107,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           applicationInformation: therapistsData[1],
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -108,7 +127,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           applicationInformation: invalidApplicationInformation,
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -122,7 +142,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           email: therapistsData[2].email,
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -137,7 +158,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           email: 'nonexistent@example.com',
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -151,6 +173,7 @@ describe('Admin Routes', () => {
       .send({
         data: {
           email: therapistsData[3].email,
+          username,
         },
       });
 
@@ -160,6 +183,7 @@ describe('Admin Routes', () => {
   it('should handle application submission with invalid password', async () => {
     const response = await request(app)
       .post('/api/apply')
+      .set('Authorization', `Bearer ${token}`)
       .send({
         data: {
           firstName: 'applytest',
@@ -182,13 +206,14 @@ describe('Admin Routes', () => {
     expect(response.body.message).toContain('Incorrect format');
   });
 
-  it('should handle invalid offset in view applications', async () => {
+  it('should fail with invalid offset in view applications', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants?offset=invalid')
+      .get('/api/admin/view-all-applicants/invalid')
       .set('Authorization', `Bearer ${token}`)
       .send({
         data: {
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -201,11 +226,12 @@ describe('Admin Routes', () => {
     });
 
     const response = await request(app)
-      .get('/api/admin/view-all-applicants')
+      .get('/api/admin/view-all-applicants/0')
       .set('Authorization', `Bearer ${token}`)
       .send({
         data: {
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -224,7 +250,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           applicationInformation: therapistsData[1],
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 
@@ -243,7 +270,8 @@ describe('Admin Routes', () => {
       .send({
         data: {
           email: therapistsData[2].email,
-          adminID: process.env.ADMIN,
+          adminId: process.env.ADMIN,
+          username,
         },
       });
 

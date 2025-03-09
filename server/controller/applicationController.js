@@ -37,15 +37,15 @@ const findTherapistsExternal = async (req, res) => {
 
 const viewApplications = async (req, res, next) => {
   const { offset = 0 } = req.params;
-  const parsedOffset = parseInt(offset, 10);
+  let parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
-    return res.status(400).send('Invalid offset value');
+    parsedOffset = 0;
   }
 
   try {
     const applicants = await Application.find({})
-      .skip(offset)
+      .skip(parsedOffset)
       .sort({ createdAt: 1 })
       .limit(10)
       .exec();
@@ -64,31 +64,31 @@ const approveApplication = async (req, res, next) => {
     await therapist.save();
 
     await Application.findOneAndDelete({ email: applicationInformation.email });
-    const adminEmail = 'chiryohelp@gmail.com';
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: adminEmail,
-        pass: process.env.ADMINPASS,
-      },
-    });
+    const adminEmail = 'chiryo.help@gmail.com';
 
-    const mailOptions = {
-      from: adminEmail,
-      // Need to remember to turn this off and not actually send to real therapists lol
-      from: adminEmail,
-      // to: applicationInformation.email,
-      subject: 'You are now part of Chiryo!',
-      text: '',
-    };
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: adminEmail,
+    //     pass: process.env.ADMINPASS,
+    //   },
+    // });
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        return res.status(500).send('An error occurred: ' + error);
-      } else {
-        console.log('SENT:' + info.response);
-      }
-    });
+    // const mailOptions = {
+    //   from: adminEmail,
+    //   // Need to remember to turn this off and not actually send to real therapists lol
+    //   // to: applicationInformation.email,
+    //   subject: 'You are now part of Chiryo!',
+    //   text: 'You are now a part of Chiryo! Welcome to the family! For next steps visit the website 🫂',
+    // };
+
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     return res.status(500).send('An error occurred: ' + error);
+    //   } else {
+    //     console.log('SENT:' + info.response);
+    //   }
+    // });
 
     return res.status(201).send('Applicant accepted!');
   } catch (err) {

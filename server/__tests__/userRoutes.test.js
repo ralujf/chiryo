@@ -3,16 +3,21 @@ const { app, startServer, closeServer } = require('../index');
 const User = require('../models/user');
 const userFixture = require('../__fixtures__/user.data.json');
 
+jest.setTimeout(15000);
+
 describe('User Routes', () => {
   let token;
+  let userId;
 
   beforeAll(async () => {
     await startServer();
-    userFixture.forEach(async (userJSON) => {
-      await request(app).post('/api/register').send({
-        data: userJSON,
-      });
-    });
+    await Promise.all(
+      userFixture.map(async (userJSON) => {
+        await request(app).post('/api/register').send({
+          data: userJSON,
+        });
+      }),
+    );
 
     // Login to get the token
     const loginResponse = await request(app)
@@ -25,6 +30,8 @@ describe('User Routes', () => {
       });
 
     token = loginResponse.body.token;
+    console.log(loginResponse);
+    userId = loginResponse.body.userSubset.userId;
   });
 
   afterAll(async () => {
@@ -69,6 +76,45 @@ describe('User Routes', () => {
     expect(response.status).toBe(400);
   });
 
+  it('should fail to register a user with missing username', async () => {
+    const response = await request(app)
+      .post('/api/register')
+      .send({
+        data: {
+          email: 'test@test.com',
+          password: 'password',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to register a user with missing email', async () => {
+    const response = await request(app)
+      .post('/api/register')
+      .send({
+        data: {
+          username: 'testuser',
+          password: 'password',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to register a user with missing password', async () => {
+    const response = await request(app)
+      .post('/api/register')
+      .send({
+        data: {
+          username: 'testuser',
+          email: 'test@test.com',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should login a user', async () => {
     const response = await request(app)
       .post('/api/login')
@@ -80,6 +126,9 @@ describe('User Routes', () => {
       });
 
     expect(response.status).toBe(200);
+    expect(response.body.token).not.toBe(null);
+    expect(response.body.userSubset).not.toBe(null);
+    expect(response.body.userSubset.role).toBe('user');
   });
 
   it('should fail to login a user with wrong password', async () => {
@@ -139,6 +188,34 @@ describe('User Routes', () => {
     expect(response.status).toBe(403);
   });
 
+  it('should fail to update profile with missing username', async () => {
+    const response = await request(app)
+      .patch('/api/update-profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          password: userFixture[0].password,
+          email: 'newemail@test.com',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to update profile with missing password', async () => {
+    const response = await request(app)
+      .patch('/api/update-profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          email: 'newemail@test.com',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
   it('should update user password', async () => {
     const response = await request(app)
       .patch('/api/update-password')
@@ -170,6 +247,36 @@ describe('User Routes', () => {
       });
 
     expect(response.status).toBe(401);
+  });
+
+  it('should fail to update password with missing old password', async () => {
+    const response = await request(app)
+      .patch('/api/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          newPassword: 'newpassword',
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to update password with missing new password', async () => {
+    const response = await request(app)
+      .patch('/api/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          oldPassword: userFixture[0].password,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(400);
   });
 
   it('should delete a user, if it exists', async () => {
@@ -218,6 +325,48 @@ describe('User Routes', () => {
     expect(response.status).toBe(404);
   });
 
+  it('should fail to delete user with missing username', async () => {
+    const response = await request(app)
+      .delete('/api/delete-user-account')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          password: userFixture[0].password,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to delete user with missing password', async () => {
+    const response = await request(app)
+      .delete('/api/delete-user-account')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should fail to delete user with missing role', async () => {
+    const response = await request(app)
+      .delete('/api/delete-user-account')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          username: userFixture[0].username,
+          password: userFixture[0].password,
+        },
+      });
+
+    expect(response.status).toBe(401);
+  });
+
   it('should logout a user', async () => {
     const response = await request(app)
       .post('/api/logout')
@@ -231,5 +380,49 @@ describe('User Routes', () => {
     const response = await request(app).post('/api/logout');
 
     expect(response.status).toBe(400);
+  });
+
+  it('should set firstLogin to false', async () => {
+    const response = await request(app)
+      .patch('/api/set-first-login')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          userId: userId,
+          firstLogin: false,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('First login status updated successfully');
+  });
+
+  it('should fail to set firstLogin with missing userId', async () => {
+    const response = await request(app)
+      .patch('/api/set-first-login')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          firstLogin: false,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not fail to set firstLogin with missing firstLogin field', async () => {
+    const response = await request(app)
+      .patch('/api/set-first-login')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        data: {
+          userId: userId,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(200);
   });
 });

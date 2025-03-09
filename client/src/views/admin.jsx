@@ -3,9 +3,16 @@ import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { ToastContainer, toast } from 'react-toastify';
 import DashboardSidebar from '../components/dashboardSidebar';
-import { fetchApplicants, acceptApplicant, rejectApplicant } from '../api/crud';
+import { useCredentialStore } from '../state/state';
+import {
+  fetchApplicants,
+  acceptApplicant,
+  rejectApplicant,
+  searchForTherapists,
+} from '../api/crud';
 
 const Admin = () => {
+  const { adminId } = useCredentialStore((state) => state.adminId);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
@@ -13,17 +20,25 @@ const Admin = () => {
   useEffect(() => {
     let offset = currentPage;
     const updateData = () => {
-      const newTableData = fetchApplicants(offset);
+      const newTableData = fetchApplicants(
+        { data: { adminId: adminId } },
+        offset,
+      );
       console.log('Admin Data:', newTableData);
       setTableData(newTableData.tableData);
       setTotalPages(newTableData.total);
     };
 
     updateData();
-  }, [currentPage]);
+  }, [currentPage, adminId]);
 
-  const handleRejectApplicant = () => {
-    const result = rejectApplicant();
+  const handleRejectApplicant = (email) => {
+    const result = rejectApplicant({
+      data: {
+        email: email,
+        adminId: adminId,
+      },
+    });
 
     if (result) {
       notify();
@@ -32,8 +47,10 @@ const Admin = () => {
     }
   };
 
-  const handleAcceptApplicant = () => {
-    const result = acceptApplicant();
+  const handleAcceptApplicant = (data) => {
+    const result = acceptApplicant({
+      data: { applicationInformation: data, adminId: adminId },
+    });
 
     if (result) {
       notify();
@@ -108,7 +125,12 @@ const Admin = () => {
               <th className="chiryo_primary align-middle">Name</th>
               <th className="chiryo_primary align-middle">Qualifications</th>
               <th className="chiryo_primary">
-                <button className="btn chiryo_rounded chiryo_primary_action w-100">
+                <button
+                  onClick={() =>
+                    searchForTherapists({ data: { adminId: adminId } })
+                  }
+                  className="btn chiryo_rounded chiryo_primary_action w-100"
+                >
                   {' '}
                   Enrol Applicants
                 </button>

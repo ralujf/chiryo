@@ -9,27 +9,35 @@ const Therapist = require('../models/therapist');
  * @description - Takes in a users details, if it is valid then a JWT returned
  */
 const generateJWT = async (req, res) => {
-  const username = res.locals.username;
-  let user;
   try {
-    user = await User.find({ username: username });
-
-    if (!user) {
-      user = await Therapist.find({ username: username });
-    }
-
-    if (!user) {
+    if (!res.locals._id) {
+      console.error('User not valid');
       return res.status(404).send(`This user does not exist`);
     }
 
-    const role = user.role;
+    const token = jwt.sign(
+      { email: res.locals.user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1h',
+      },
+    );
 
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const userSubset = {
+      userId: res.locals._id,
+      username: res.locals.user.username,
+      // This needs to be added directly to the admin in DB
+      adminId: res.locals.user.adminId,
+      role: res.locals.user.role,
+      firstLogin: res.locals.user.firstLogin,
+    };
 
-    return res.status(200).send({ message: 'Login successful', token, role });
-  } catch (error) {
+    console.log(userSubset);
+
+    return res
+      .status(200)
+      .json({ message: 'Login successful', token, userSubset });
+  } catch (err) {
     return res.status(500).send(`There was an error ${err}`);
   }
 };
@@ -47,6 +55,9 @@ const validateJWT = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded.email) {
+      return res.status(403).send('Invalid token, user not authenticated');
+    }
   } catch {
     return res.status(403).send('Invalid token, user not authenticated');
   }
@@ -72,8 +83,8 @@ const validateJWT = async (req, res, next) => {
 
 const checkIdAdmin = (req, res, next) => {
   try {
-    const adminID = req.body.data.adminID;
-    if (!adminID || adminID !== process.env.ADMIN || adminID === undefined) {
+    const adminId = req.body.data.adminId;
+    if (!adminId || adminId !== process.env.ADMIN || adminId === undefined) {
       return res.status(403).send('User forbidden');
     }
   } catch (error) {

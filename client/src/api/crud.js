@@ -16,6 +16,7 @@ import {
   LOGOUT_URL,
   REMOVE_ALL_URL,
   SCRAPE_URL,
+  SET_LOGIN_URL,
 } from './config';
 import { fetchJWT, storeJWT } from './auth';
 // eslint-disable-next-line no-unused-vars
@@ -108,7 +109,15 @@ const deleteUser = (userData) =>
 
 /**
  *
- * @param {object} profileData = { data: {username, password, ...fields to update }}
+ * @param {Object} userData - { data: { userId, firstLogin, role }}
+ * @returns
+ */
+const setFirstLogin = (userData) =>
+  handleRequest('patch', SET_LOGIN_URL, userData);
+
+/**
+ *
+ * @param {object} profileData = { data: { username, password, ...fields to update }}
  * @returns - status message
  * @description - update the user field
  */
@@ -117,7 +126,7 @@ const updateProfileInfo = (profileData) =>
 
 /**
  *
- * @param {object} profileData = { data: {username, oldPassword, newPassword, role }}
+ * @param {object} profileData = { data: { username, oldPassword, newPassword, role }}
  * @returns - status message
  * @description - update the user field
  */
@@ -221,7 +230,7 @@ const sendApplication = (applicationData) =>
 
 /**
  *
- * @param {Object} adminData - { data:{ adminID }}
+ * @param {Object} adminData - { data:{ adminId }}
  * @param {string} offset
  * @returns
  * @description - Post an applicants details to the database to be ported into a HR system and reviewed
@@ -235,7 +244,7 @@ const fetchApplicants = (adminData, offset) =>
 
 /**
  *
- * @param {types.Applicant} adminData - { data: { ...application, adminID }}
+ * @param {types.Applicant} adminData - { data: { ...application, adminId }}
  * @param {string} offset
  * @returns
  * @description - Approve therapist into the account
@@ -245,7 +254,7 @@ const acceptApplicant = (adminData) =>
 
 /**
  *
- * @param {types.Applicant} adminData - { data: { applicantEmail, adminID }}
+ * @param {types.Applicant} adminData - { data: { applicantEmail, adminId }}
  * @param {string} offset
  * @returns
  * @description - Reject therapist into the account
@@ -255,7 +264,7 @@ const rejectApplicant = (adminData) =>
 
 /**
  *
- * @param {Object} adminData - { data: { adminID }}
+ * @param {Object} adminData - { data: { adminId }}
  * @returns
  */
 const searchForTherapists = (adminData) =>
@@ -278,4 +287,5 @@ export {
   fetchApplicants,
   rejectApplicant,
   acceptApplicant,
+  setFirstLogin,
 };

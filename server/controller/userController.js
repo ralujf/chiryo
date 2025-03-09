@@ -41,20 +41,22 @@ const loginUser = async (req, res, next) => {
 
   try {
     let user = await User.findOne({ username: username }).exec();
-    console.log(user);
+
     if (!user) {
       user = await Therapist.findOne({ username: username }).exec();
     }
+
     console.log(user);
 
     if (!user) {
+      console.error('Login unsuccessful');
       return res.status(404).send('User not found');
     }
 
     const result = await bcrypt.compare(password, user.password);
 
     if (result) {
-      res.locals.username = user.username;
+      res.locals.user = user;
       res.locals._id = user.toObject()._id;
 
       console.log('ID of logged in user: ' + res.locals._id);
@@ -124,6 +126,31 @@ const updateUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).send('Unable to update information: ' + err);
+  }
+};
+
+const setFirstLogin = async (req, res) => {
+  const { userId, firstLogin, role } = req.body.data;
+  console.log('setfirst logintest' + userId);
+
+  if (!userId || !role) {
+    return res.status(400).send('Missing userId or role');
+  }
+
+  try {
+    const user =
+      role === 'therapist'
+        ? await Therapist.findByIdAndUpdate(userId, {
+            firstLogin: false,
+          }).exec()
+        : await User.findByIdAndUpdate(userId, {
+            firstLogin: false,
+          }).exec();
+
+    return res.status(200).send('First login status updated successfully');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(`There was an error: ${err}`);
   }
 };
 
@@ -199,4 +226,5 @@ module.exports = {
   deleteUser,
   updateUser,
   updatePassword,
+  setFirstLogin,
 };

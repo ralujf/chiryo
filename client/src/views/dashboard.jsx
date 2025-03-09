@@ -11,6 +11,7 @@ import {
   clearTable,
   getTherapists,
   updateRowFromTable,
+  setFirstLogin,
 } from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCredentialStore } from '../state/state';
@@ -20,6 +21,13 @@ const Dashboard = () => {
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
   const { userId, role, firstLogin } = useCredentialStore((state) => state);
+
+  useEffect(() => {
+    setFirstLogin({
+      data: { userId: userId, firstLogin: firstLogin, role: role },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let offset = currentPage;
@@ -48,7 +56,13 @@ const Dashboard = () => {
       updatedTableData[rowIndex][key] = valueArr[index];
     });
     setTableData(updatedTableData);
-    updateRowFromTable(updatedTableData[rowIndex]);
+    updateRowFromTable({
+      data: {
+        userId: updatedTableData[rowIndex].userId,
+        therapistId: updatedTableData[rowIndex].therapistId,
+        ...updatedTableData[rowIndex],
+      },
+    });
   };
 
   const createMessage = (type) => {
@@ -129,11 +143,11 @@ const Dashboard = () => {
       >
         Dashboard | {currentPage + 1}
       </motion.h1>
-      {role === 'therapist' && (
+      {role === 'user' && (
         <motion.button
           {...animationOptions3}
           className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
-          onClick={() => getTherapists(userId)}
+          onClick={() => getTherapists({ data: { userId: userId } })}
         >
           Request New Therapists
         </motion.button>
@@ -160,7 +174,14 @@ const Dashboard = () => {
               <th className="chiryo_primary">
                 <button
                   className="btn chiryo_rounded chiryo_primary_action w-100"
-                  onClick={() => clearTable(userId)}
+                  onClick={() =>
+                    clearTable({
+                      data: {
+                        role: role,
+                        userId: userId,
+                      },
+                    })
+                  }
                 >
                   {' '}
                   <i className="bi bi-trash"></i> Remove All
@@ -336,7 +357,14 @@ const Dashboard = () => {
                   <td>
                     <button
                       className="btn btn-outline-secondary w-100 h-100"
-                      onClick={() => removeRowFromTable(userId, rowIndex)}
+                      onClick={() =>
+                        removeRowFromTable({
+                          data: {
+                            userId: row.userId,
+                            therapistId: row.therapistId,
+                          },
+                        })
+                      }
                     >
                       <i className="bi bi-trash"></i>
                     </button>
