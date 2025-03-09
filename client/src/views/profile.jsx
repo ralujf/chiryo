@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
-import { updateProfileInfo } from '../api/crud';
+import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
 import { ToastContainer, toast } from 'react-toastify';
+import { useCredentialStore } from '../state/state';
 
 const Profile = () => {
   const {
@@ -8,21 +9,37 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const role = useCredentialStore((state) => state.role);
 
   const onSubmitUpdate = async (data) => {
-    const response = await updateProfileInfo(data);
+    const response = await updateProfileInfo({
+      data: { username: data.username, password: data.password, ...data },
+    });
     console.log(response);
     notifyError(response);
   };
 
   const onSubmitChangePass = async (data) => {
-    const response = await updateProfileInfo(data);
+    const response = await updatePassword({
+      data: {
+        username: data.username,
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+        role: role,
+      },
+    });
     console.log(response);
     notifyError(response);
   };
 
   const onSubmitDelete = async (data) => {
-    const response = await updateProfileInfo(data);
+    const response = await deleteUser({
+      data: {
+        username: data.username,
+        password: data.password,
+        role: role,
+      },
+    });
     console.log(response);
     notifyError(response);
   };
@@ -75,18 +92,6 @@ const Profile = () => {
                 {errors.username && <span>This field is required</span>}
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  {...register('email', { required: true })}
-                />
-                {errors.email && <span>This field is required</span>}
-              </div>
-              <div className="mb-3">
                 <label htmlFor="password" className="form-label">
                   Password
                 </label>
@@ -98,6 +103,19 @@ const Profile = () => {
                 />
                 {errors.password && <span>This field is required</span>}
               </div>
+              <h1>Information to Update</h1>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  {...register('email')}
+                />{' '}
+              </div>
+
               <div className="mb-3">
                 <label htmlFor="age" className="form-label">
                   Age
@@ -106,9 +124,8 @@ const Profile = () => {
                   type="number"
                   className="form-control"
                   id="age"
-                  {...register('age', { required: true })}
+                  {...register('age')}
                 />
-                {errors.age && <span>This field is required</span>}
               </div>
               <div className="mb-3">
                 <label htmlFor="race" className="form-label">
@@ -154,12 +171,11 @@ const Profile = () => {
                   {...register('location')}
                 />
               </div>
-              <button
+              <input
                 type="submit"
+                value={'Update Profile'}
                 className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
-              >
-                Update Profile
-              </button>
+              ></input>
             </form>
           </div>
 
@@ -167,27 +183,41 @@ const Profile = () => {
           <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
             <form onSubmit={handleSubmit(onSubmitChangePass)}>
               <div className="mb-3">
-                <label htmlFor="OldPassword" className="form-label">
+                <label htmlFor="username" className="form-label">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  {...register('username', { required: true })}
+                />
+                {errors.username && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="oldPassword" className="form-label">
                   Old Password
                 </label>
                 <input
                   type="text"
                   className="form-control"
-                  id="OldPassword"
-                  {...register('OldPassword', { required: true })}
+                  id="oldPassword"
+                  {...register('oldPassword', { required: true })}
                 />
-                {errors.OldPassword && <span>This field is required</span>}
+                {errors.oldPassword && <span>This field is required</span>}
               </div>
               <div className="mb-3">
-                <label className="fw-bold">Password</label>
+                <label className="fw-bold">New Password</label>
                 <input
                   type="password"
                   className="mb-3 w-50"
-                  {...register('Password', {
+                  {...register('newPassword', {
                     required: 'Password is required',
                   })}
                 />
-                {errors.Password && <span>{errors.Password.message}</span>}
+                {errors.newPassword && (
+                  <span>{errors.newPassword.message}</span>
+                )}
               </div>
               <input
                 type="submit"
@@ -202,15 +232,27 @@ const Profile = () => {
           <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
             <form onSubmit={handleSubmit(onSubmitDelete)}>
               <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  {...register('email', { required: true })}
+                />
+                {errors.email && <span>This field is required</span>}
+              </div>
+              <div className="mb-3">
                 <label className="fw-bold">Password</label>
                 <input
                   type="password"
                   className="mb-3 w-50"
-                  {...register('Password', {
+                  {...register('password', {
                     required: 'Password is required',
                   })}
                 />
-                {errors.Password && <span>{errors.Password.message}</span>}
+                {errors.password && <span>{errors.password.message}</span>}
               </div>
               <input
                 type="submit"

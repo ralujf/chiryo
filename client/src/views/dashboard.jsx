@@ -24,13 +24,16 @@ const Dashboard = () => {
   useEffect(() => {
     let offset = currentPage;
     const updateData = () => {
-      const newTableData = loadTableData(userId, offset);
+      const newTableData = loadTableData(
+        { data: { userId: userId, role: role } },
+        offset,
+      );
       console.log('Dashboard Data:', newTableData);
       setTableData(newTableData.tableData);
       setTotalPages(newTableData.total);
     };
     updateData();
-  }, [currentPage, userId]);
+  }, [currentPage, userId, role]);
 
   /**
    *
