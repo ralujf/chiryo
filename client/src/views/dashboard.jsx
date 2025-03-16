@@ -26,8 +26,7 @@ const Dashboard = () => {
     setFirstLogin({
       data: { userId: userId, firstLogin: firstLogin, role: role },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [firstLogin, userId, role]);
 
   useEffect(() => {
     let offset = currentPage;

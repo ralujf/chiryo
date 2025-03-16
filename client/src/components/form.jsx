@@ -5,7 +5,8 @@ import { useCredentialStore } from '../state/state';
 import PropTypes from 'prop-types';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
-  const [passwordType, setPasswordType] = useState('password');
+  const [userState, setUserState] = useState('');
+  const [passState, setPassState] = useState('');
   const {
     register,
     handleSubmit,
@@ -16,8 +17,12 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
   const onSubmit = async (data) => {
     const response = await submissionMethod({ data: data });
     console.log(response);
+
     setUser(...response.userSubset);
-    notifyError(response);
+
+    if (response.errors != null) {
+      notifyError(response);
+    }
   };
 
   const notifyError = (error) =>
@@ -51,8 +56,15 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
       <form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
         <label className="fw-bold">Username</label>
         <input
-          className="mb-3 w-100 rounded"
+          className={'mb-3 w-100 rounded form-control ' + userState}
           placeholder="Username"
+          onInput={() => {
+            if (!errors.username) {
+              setUserState('is-valid');
+            } else {
+              setUserState('is-invalid');
+            }
+          }}
           {...register('username', {
             required: 'Username is required',
             maxLength: {
@@ -66,25 +78,18 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
           })}
         />
         {errors.username && <span>{errors.username.message}</span>}
-        <span>
-          <label className="d-inline fw-bold">Password</label>
-          <p
-            className="w-fit bg-transparent d-inline mx-2"
-            onClick={() => {
-              if (passwordType === 'text') {
-                setPasswordType('password');
-              } else if (passwordType === 'password') {
-                setPasswordType('text');
-              }
-            }}
-          >
-            <i className="bi bi-eye-fill"></i>
-          </p>
-        </span>
+        <label className="d-inline fw-bold">Password</label>
         <input
-          type={passwordType}
-          placeholder="********"
-          className="mb-3 w-100 rounded"
+          type="password"
+          placeholder="•••••••••••"
+          className={'mb-3 w-100 rounded form-control ' + passState}
+          onInput={() => {
+            if (!errors.password) {
+              setPassState('is-valid');
+            } else {
+              setPassState('is-invalid');
+            }
+          }}
           {...register('password', { required: 'Password is required' })}
         />
         {errors.password && <span>{errors.password.message}</span>}

@@ -12,7 +12,7 @@ import {
 } from '../api/crud';
 
 const Admin = () => {
-  const { adminId } = useCredentialStore((state) => state.adminId);
+  const { adminId, username } = useCredentialStore((state) => state);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState();
   const [tableData, setTableData] = useState();
@@ -21,7 +21,7 @@ const Admin = () => {
     let offset = currentPage;
     const updateData = () => {
       const newTableData = fetchApplicants(
-        { data: { adminId: adminId } },
+        { data: { adminId, username } },
         offset,
       );
       console.log('Admin Data:', newTableData);
@@ -30,13 +30,14 @@ const Admin = () => {
     };
 
     updateData();
-  }, [currentPage, adminId]);
+  }, [currentPage, adminId, username]);
 
   const handleRejectApplicant = (email) => {
     const result = rejectApplicant({
       data: {
         email: email,
-        adminId: adminId,
+        adminId,
+        username,
       },
     });
 
@@ -49,7 +50,7 @@ const Admin = () => {
 
   const handleAcceptApplicant = (data) => {
     const result = acceptApplicant({
-      data: { applicationInformation: data, adminId: adminId },
+      data: { applicationInformation: data, adminId, username },
     });
 
     if (result) {

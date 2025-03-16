@@ -119,79 +119,95 @@ const Application = () => {
               className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
             >
               <form
+                className="form-floating"
                 encType="multipart/form-data"
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="mb-3">
-                  <label htmlFor="firstName" className="form-label">
+                  <label htmlFor="firstName" className="form-label fw-bold">
                     First Name
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.firstName ? 'is-invalid' : '')
+                    }
                     id="firstName"
                     {...register('firstName', { required: true })}
                   />
                   {errors.firstName && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="lastName" className="form-label">
+                  <label htmlFor="lastName" className="form-label fw-bold">
                     Last Name
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.lastName ? 'is-invalid' : '')
+                    }
                     id="lastName"
                     {...register('lastName', { required: true })}
                   />
-                  {errors.lastName && <span>This field is required</span>}
+                  {errors.lastName && (
+                    <label htmlFor="floatingInputInvalid">
+                      This field is required
+                    </label>
+                  )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
+                  <label htmlFor="email" className="form-label fw-bold">
                     Email Address
                   </label>
                   <input
                     type="email"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.email ? 'is-invalid' : '')
+                    }
                     id="email"
                     {...register('email', { required: true })}
                   />
                   {errors.email && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
+                  <label htmlFor="password" className="form-label fw-bold">
                     Password
                   </label>
                   <input
-                    required
                     type="password"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.password ? 'is-invalid' : '')
+                    }
                     id="password"
-                    {...register('password', { required: false })}
+                    {...register('password', { required: true })}
                   />
                   {errors.password && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="age" className="form-label">
+                  <label htmlFor="age" className="form-label fw-bold">
                     Age
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.age ? 'is-invalid' : '')
+                    }
                     id="age"
                     min="12"
                     max="100"
-                    {...register('age', { required: false })}
+                    {...register('age', { required: true })}
                   />
                   {errors.age && <span>This field is required</span>}
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="background" className="form-label">
+                  <label htmlFor="background" className="form-label fw-bold">
                     Ethnic Background
                   </label>
                   <select
-                    className="form-select"
+                    className={
+                      'form-select ' + (errors.background ? 'is-invalid' : '')
+                    }
                     id="background"
                     {...register('background', { required: true })}
                   >
@@ -208,11 +224,13 @@ const Application = () => {
                   {errors.background && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="race" className="form-label">
+                  <label htmlFor="race" className="form-label fw-bold">
                     Race
                   </label>
                   <select
-                    className="form-select"
+                    className={
+                      'form-select ' + (errors.race ? 'is-invalid' : '')
+                    }
                     id="race"
                     {...register('race', { required: true })}
                   >
@@ -225,11 +243,13 @@ const Application = () => {
                   {errors.race && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="religion" className="form-label">
+                  <label htmlFor="religion" className="form-label fw-bold">
                     Religion
                   </label>
                   <select
-                    className="form-select"
+                    className={
+                      'form-select ' + (errors.religion ? 'is-invalid' : '')
+                    }
                     id="religion"
                     {...register('religion', { required: true })}
                   >
@@ -243,35 +263,41 @@ const Application = () => {
                   {errors.religion && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="expertise" className="form-label">
+                  <label htmlFor="expertise" className="form-label fw-bold">
                     Expertise
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.expertise ? 'is-invalid' : '')
+                    }
                     id="expertise"
                     {...register('expertise', { required: true })}
                   />
                   {errors.expertise && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="yoe" className="form-label">
+                  <label htmlFor="yoe" className="form-label fw-bold">
                     Years of Experience
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={
+                      'form-control ' + (errors.yoe ? 'is-invalid' : '')
+                    }
                     id="yoe"
                     {...register('yoe', { required: true })}
                   />
                   {errors.yoe && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="credentials" className="form-label">
+                  <label htmlFor="credentials" className="form-label fw-bold">
                     Credentials
                   </label>
                   <select
-                    className="form-select"
+                    className={
+                      'form-select ' + (errors.credentials ? 'is-invalid' : '')
+                    }
                     id="credentials"
                     {...register('credentials', { required: true })}
                   >
@@ -284,23 +310,31 @@ const Application = () => {
                   {errors.credentials && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="pdfInformation" className="form-label">
+                  <label
+                    htmlFor="pdfInformation"
+                    className="form-label fw-bold"
+                  >
                     Upload Resume
                   </label>
                   <input
                     type="file"
-                    className="form-control"
+                    className={
+                      'form-control ' +
+                      (errors.pdfInformation ? 'is-invalid' : '')
+                    }
                     id="pdfInformation"
                     {...register('pdfInformation', { required: true })}
                   />
                   {errors.pdfInformation && <span>This field is required</span>}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="location" className="form-label">
+                  <label htmlFor="location" className="form-label fw-bold">
                     Location
                   </label>
                   <select
-                    className="form-select"
+                    className={
+                      'form-select ' + (errors.location ? 'is-invalid' : '')
+                    }
                     id="location"
                     {...register('location', { required: true })}
                   >

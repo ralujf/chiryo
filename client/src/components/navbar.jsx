@@ -1,8 +1,23 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { useCredentialStore } from '../state/state';
+import { fetchJWT } from '../api/auth';
+import { logoutUserRedirect } from '../api/crud';
 
 const Navbar = () => {
-  const { userId } = useCredentialStore((state) => state.userId);
+  useEffect(() => {
+    const fetchToken = () => {
+      const token = fetchJWT();
+      if (token) {
+        setIsValidated(true);
+      } else {
+        setIsValidated(false);
+      }
+    };
+    fetchToken();
+  }, []);
+  const [validated, setIsValidated] = useState('');
+  const { userId, setUser } = useCredentialStore((state) => state);
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
@@ -101,13 +116,29 @@ const Navbar = () => {
               </>
             )}
           </ul>
-
-          <Link
-            className="nav-link text-dark chiryo_rounded chiryo_primary_active"
-            to="/login"
-          >
-            Login
-          </Link>
+          {validated ? (
+            <button
+              className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
+              onClick={() => {
+                setUser({
+                  adminId: null,
+                  userId: null,
+                  role: null,
+                  firstLogin: null,
+                });
+                logoutUserRedirect();
+              }}
+            >
+              Log out
+            </button>
+          ) : (
+            <Link
+              className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
+              to="/login"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>

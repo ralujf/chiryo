@@ -218,13 +218,18 @@ const Questionnaire = () => {
                   While these fields are not necessary, they&apos;d really help
                   find better matches! However, if you want to skip, press next
                 </small>
+                <label className="fw-bold">Email</label>
                 <input
+                  className={'mb-3 w-100 rounded form-control'}
                   placeholder="Email"
                   type="email"
                   name="email"
-                  className="form-control mb-3"
                   data-cy="email"
-                  required
+                  onChange={(e) => {
+                    e.currentTarget.className =
+                      'mb-3 w-100 rounded form-control ' +
+                      (e.currentTarget.value === '' ? 'is-invalid' : '');
+                  }}
                 ></input>
                 <input
                   placeholder="Age"
@@ -234,7 +239,6 @@ const Questionnaire = () => {
                   max="100"
                   className="form-control mb-3"
                   data-cy="age"
-                  required
                 />
                 <select
                   name="race"
@@ -279,7 +283,6 @@ const Questionnaire = () => {
                   className="form-control mb-3"
                   id="locationInput"
                   data-cy="location"
-                  required
                 />
                 <p>Anything else?</p>
                 <input
@@ -370,10 +373,10 @@ const Questionnaire = () => {
                 <h5
                   data-cy="password"
                   onClick={(e) => {
-                    if (e.currentTarget.innerText == '*******') {
+                    if (e.currentTarget.innerText == '•••••••••••') {
                       e.currentTarget.innerText = password;
                     } else {
-                      e.currentTarget.innerText = '*******';
+                      e.currentTarget.innerText = '•••••••••••';
                     }
                   }}
                 >
