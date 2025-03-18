@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
-
+import { handleResponseStatus } from '../components/formHelpers';
 const Profile = () => {
   const {
     register,
@@ -88,6 +88,9 @@ const Profile = () => {
                   className="form-control"
                   id="username"
                   {...register('username', { required: true })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.username && <span>This field is required</span>}
               </div>
@@ -100,6 +103,9 @@ const Profile = () => {
                   className="form-control"
                   id="password"
                   {...register('password', { required: true })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.password && <span>This field is required</span>}
               </div>
@@ -113,6 +119,9 @@ const Profile = () => {
                   className="form-control"
                   id="email"
                   {...register('email')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />{' '}
               </div>
 
@@ -125,6 +134,9 @@ const Profile = () => {
                   className="form-control"
                   id="age"
                   {...register('age')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
               </div>
               <div className="mb-3">
@@ -136,6 +148,9 @@ const Profile = () => {
                   className="form-control"
                   id="race"
                   {...register('race')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
               </div>
               <div className="mb-3">
@@ -147,6 +162,9 @@ const Profile = () => {
                   className="form-control"
                   id="background"
                   {...register('background')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
               </div>
               <div className="mb-3">
@@ -158,6 +176,9 @@ const Profile = () => {
                   className="form-control"
                   id="religion"
                   {...register('religion')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
               </div>
               <div className="mb-3">
@@ -169,6 +190,9 @@ const Profile = () => {
                   className="form-control"
                   id="location"
                   {...register('location')}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
               </div>
               <input
@@ -191,6 +215,9 @@ const Profile = () => {
                   className="form-control"
                   id="username"
                   {...register('username', { required: true })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.username && <span>This field is required</span>}
               </div>
@@ -203,6 +230,9 @@ const Profile = () => {
                   className="form-control"
                   id="oldPassword"
                   {...register('oldPassword', { required: true })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.oldPassword && <span>This field is required</span>}
               </div>
@@ -214,6 +244,9 @@ const Profile = () => {
                   {...register('newPassword', {
                     required: 'Password is required',
                   })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.newPassword && (
                   <span>{errors.newPassword.message}</span>
@@ -240,6 +273,9 @@ const Profile = () => {
                   className="form-control"
                   id="email"
                   {...register('email', { required: true })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.email && <span>This field is required</span>}
               </div>
@@ -251,6 +287,9 @@ const Profile = () => {
                   {...register('password', {
                     required: 'Password is required',
                   })}
+                  onInput={(e) => {
+                    handleResponseStatus(e);
+                  }}
                 />
                 {errors.password && <span>{errors.password.message}</span>}
               </div>

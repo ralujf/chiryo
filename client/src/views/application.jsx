@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import applicationImage from '../assets/chiryohero-application.png';
 import { sendApplication } from '../api/crud';
+import { handleResponseStatus } from '../components/formHelpers';
 
 const Application = () => {
   const {
@@ -129,9 +130,10 @@ const Application = () => {
                   </label>
                   <input
                     type="text"
-                    className={
-                      'form-control ' + (errors.firstName ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="firstName"
                     {...register('firstName', { required: true })}
                   />
@@ -143,9 +145,10 @@ const Application = () => {
                   </label>
                   <input
                     type="text"
-                    className={
-                      'form-control ' + (errors.lastName ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="lastName"
                     {...register('lastName', { required: true })}
                   />
@@ -161,9 +164,10 @@ const Application = () => {
                   </label>
                   <input
                     type="email"
-                    className={
-                      'form-control ' + (errors.email ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="email"
                     {...register('email', { required: true })}
                   />
@@ -175,9 +179,10 @@ const Application = () => {
                   </label>
                   <input
                     type="password"
-                    className={
-                      'form-control ' + (errors.password ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="password"
                     {...register('password', { required: true })}
                   />
@@ -189,9 +194,10 @@ const Application = () => {
                   </label>
                   <input
                     type="number"
-                    className={
-                      'form-control ' + (errors.age ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="age"
                     min="12"
                     max="100"
@@ -205,9 +211,10 @@ const Application = () => {
                     Ethnic Background
                   </label>
                   <select
-                    className={
-                      'form-select ' + (errors.background ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="background"
                     {...register('background', { required: true })}
                   >
@@ -228,9 +235,10 @@ const Application = () => {
                     Race
                   </label>
                   <select
-                    className={
-                      'form-select ' + (errors.race ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="race"
                     {...register('race', { required: true })}
                   >
@@ -247,9 +255,10 @@ const Application = () => {
                     Religion
                   </label>
                   <select
-                    className={
-                      'form-select ' + (errors.religion ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="religion"
                     {...register('religion', { required: true })}
                   >
@@ -268,9 +277,10 @@ const Application = () => {
                   </label>
                   <input
                     type="text"
-                    className={
-                      'form-control ' + (errors.expertise ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="expertise"
                     {...register('expertise', { required: true })}
                   />
@@ -282,9 +292,10 @@ const Application = () => {
                   </label>
                   <input
                     type="number"
-                    className={
-                      'form-control ' + (errors.yoe ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="yoe"
                     {...register('yoe', { required: true })}
                   />
@@ -295,9 +306,10 @@ const Application = () => {
                     Credentials
                   </label>
                   <select
-                    className={
-                      'form-select ' + (errors.credentials ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="credentials"
                     {...register('credentials', { required: true })}
                   >
@@ -318,10 +330,10 @@ const Application = () => {
                   </label>
                   <input
                     type="file"
-                    className={
-                      'form-control ' +
-                      (errors.pdfInformation ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="pdfInformation"
                     {...register('pdfInformation', { required: true })}
                   />
@@ -332,9 +344,10 @@ const Application = () => {
                     Location
                   </label>
                   <select
-                    className={
-                      'form-select ' + (errors.location ? 'is-invalid' : '')
-                    }
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
                     id="location"
                     {...register('location', { required: true })}
                   >

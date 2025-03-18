@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import PropTypes from 'prop-types';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
-import PropTypes from 'prop-types';
+import { handleResponseStatus } from './formHelpers';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
-  const [userState, setUserState] = useState('');
-  const [passState, setPassState] = useState('');
   const {
     register,
     handleSubmit,
@@ -54,45 +52,41 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
       />
       <h1 className="display-3 fw-bolder mb-5">{formTitle}</h1>
       <form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
-        <label className="fw-bold">Username</label>
-        <input
-          className={'mb-3 w-100 rounded form-control ' + userState}
-          placeholder="Username"
-          onInput={() => {
-            if (!errors.username) {
-              setUserState('is-valid');
-            } else {
-              setUserState('is-invalid');
-            }
-          }}
-          {...register('username', {
-            required: 'Username is required',
-            maxLength: {
-              value: 50,
-              message: 'Username cannot exceed 50 characters',
-            },
-            pattern: {
-              value: /^[a-zA-Z0-9]+$/,
-              message: 'Username cannot contain special characters',
-            },
-          })}
-        />
-        {errors.username && <span>{errors.username.message}</span>}
-        <label className="d-inline fw-bold">Password</label>
-        <input
-          type="password"
-          placeholder="•••••••••••"
-          className={'mb-3 w-100 rounded form-control ' + passState}
-          onInput={() => {
-            if (!errors.password) {
-              setPassState('is-valid');
-            } else {
-              setPassState('is-invalid');
-            }
-          }}
-          {...register('password', { required: 'Password is required' })}
-        />
-        {errors.password && <span>{errors.password.message}</span>}
+        <div className="mb-3">
+          <label className="fw-bold">Username</label>
+          <input
+            className="form-control"
+            placeholder="Username"
+            onInput={(e) => {
+              handleResponseStatus(e, errors.username);
+            }}
+            {...register('username', {
+              required: 'Username is required',
+              maxLength: {
+                value: 50,
+                message: 'Username cannot exceed 50 characters',
+              },
+              pattern: {
+                value: /^[a-zA-Z0-9]+$/,
+                message: 'Username cannot contain special characters',
+              },
+            })}
+          />
+          {errors.username && <span>{errors.username.message}</span>}
+        </div>
+        <div className="mb-3">
+          <label className="fw-bold">Password</label>
+          <input
+            type="password"
+            placeholder="•••••••••••"
+            className="w-100 form-control"
+            onInput={(e) => {
+              handleResponseStatus(e, errors.password);
+            }}
+            {...register('password', { required: 'Password is required' })}
+          />
+          {errors.password && <span>{errors.password.message}</span>}
+        </div>
         <input
           type="submit"
           value={submissionText}

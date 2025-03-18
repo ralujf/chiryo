@@ -14,6 +14,7 @@ import { registerUser } from '../api/crud';
 import quizSound from '../assets/correct.mp3';
 import { useCredentialStore } from '../state/state';
 import { fetchJWT } from '../api/auth';
+import { handleResponseStatus } from '../components/formHelpers';
 
 const introStateOptions = {
   START: 'START',
@@ -48,8 +49,8 @@ const Questionnaire = () => {
     }
   }, []);
 
-  const notify = () =>
-    toast.success('Nice Job! +100 Points✨', {
+  const notify = (msg) =>
+    toast.success(msg ? msg : 'Nice Job! +100 Points✨', {
       position: 'bottom-center',
       autoClose: 2000,
       hideProgressBar: false,
@@ -218,81 +219,119 @@ const Questionnaire = () => {
                   While these fields are not necessary, they&apos;d really help
                   find better matches! However, if you want to skip, press next
                 </small>
-                <label className="fw-bold">Email</label>
-                <input
-                  className={'mb-3 w-100 rounded form-control'}
-                  placeholder="Email"
-                  type="email"
-                  name="email"
-                  data-cy="email"
-                  onChange={(e) => {
-                    e.currentTarget.className =
-                      'mb-3 w-100 rounded form-control ' +
-                      (e.currentTarget.value === '' ? 'is-invalid' : '');
-                  }}
-                ></input>
-                <input
-                  placeholder="Age"
-                  type="number"
-                  name="age"
-                  min="12"
-                  max="100"
-                  className="form-control mb-3"
-                  data-cy="age"
-                />
-                <select
-                  name="race"
-                  data-cy="race"
-                  className="form-control mb-3"
-                >
-                  <option value="">Select Race</option>
-                  <option value="asian">Asian</option>
-                  <option value="black">Black</option>
-                  <option value="white">White</option>
-                  <option value="hispanic">Hispanic</option>
-                  <option value="other">Other</option>
-                </select>
-                <select
-                  name="background"
-                  data-cy="background"
-                  className="form-control mb-3"
-                >
-                  <option value="">Select Ethnic Background</option>
-                  <option value="asian">Asian</option>
-                  <option value="african">African</option>
-                  <option value="european">European</option>
-                  <option value="latino">Latino</option>
-                  <option value="other">Other</option>
-                </select>
-                <select
-                  name="religion"
-                  data-cy="religion"
-                  className="form-control mb-3"
-                >
-                  <option value="">Select Religion</option>
-                  <option value="christianity">Christianity</option>
-                  <option value="islam">Islam</option>
-                  <option value="hinduism">Hinduism</option>
-                  <option value="buddhism">Buddhism</option>
-                  <option value="other">Other</option>
-                </select>
-                <input
-                  placeholder="Location"
-                  type="text"
-                  name="location"
-                  className="form-control mb-3"
-                  id="locationInput"
-                  data-cy="location"
-                />
-                <p>Anything else?</p>
-                <input
-                  placeholder="Enter any additional information..."
-                  type="text"
-                  name="additional"
-                  className="form-control mb-3"
-                  id="additionalInput"
-                  data-cy="additional"
-                />
+                <div className="mb-3">
+                  <label className="fw-bold">Email</label>
+                  <input
+                    required
+                    className="form-control"
+                    placeholder="Email"
+                    type="email"
+                    name="email"
+                    data-cy="email"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  ></input>
+                </div>
+                <div className="mb-3">
+                  <label className="fw-bold">Age</label>
+                  <input
+                    required
+                    placeholder="Age"
+                    type="number"
+                    name="age"
+                    min="12"
+                    max="100"
+                    className="form-control"
+                    data-cy="age"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="fw-bold">Race</label>
+                  <select
+                    required
+                    name="race"
+                    data-cy="race"
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  >
+                    <option value="">Select Race</option>
+                    <option value="asian">Asian</option>
+                    <option value="black">Black</option>
+                    <option value="white">White</option>
+                    <option value="hispanic">Hispanic</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="fw-bold">Ethnic Background</label>
+                  <select
+                    required
+                    name="background"
+                    data-cy="background"
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  >
+                    <option value="">Select Ethnic Background</option>
+                    <option value="asian">Asian</option>
+                    <option value="african">African</option>
+                    <option value="european">European</option>
+                    <option value="latino">Latino</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="fw-bold">Religion</label>
+                  <select
+                    required
+                    name="religion"
+                    data-cy="religion"
+                    className="form-control"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  >
+                    <option value="">Select Religion</option>
+                    <option value="christianity">Christianity</option>
+                    <option value="islam">Islam</option>
+                    <option value="hinduism">Hinduism</option>
+                    <option value="buddhism">Buddhism</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="fw-bold">Location</label>
+                  <input
+                    required
+                    placeholder="Location"
+                    type="text"
+                    name="location"
+                    className="form-control mb-3"
+                    id="locationInput"
+                    data-cy="location"
+                    onInput={(e) => {
+                      handleResponseStatus(e);
+                    }}
+                  />
+                </div>
+                <div className="mb-3">
+                  <p>Anything else?</p>
+                  <input
+                    placeholder="Enter any additional information i.e. previous experiences, related issues etc..."
+                    type="text"
+                    name="additional"
+                    className="form-control mb-3"
+                    id="additionalInput"
+                    data-cy="additional"
+                  />
+                </div>
               </div>
             )}
             {currentQuestionIndex < QUESTIONS.length && (
@@ -382,6 +421,17 @@ const Questionnaire = () => {
                 >
                   *******
                 </h5>
+                <button
+                  style={{ backgroundColor: 'white', border: '2px solid' }}
+                  className="btn chiryo_rounded"
+                  onClick={() => {
+                    navigator.clipboard.write({ username, password });
+                    notify('Details saved to clipboard!');
+                  }}
+                >
+                  <i className="bi bi-clipboard"></i>
+                  Copy
+                </button>
               </div>
               <div className="modal-footer d-flex justify-content-center">
                 <button
