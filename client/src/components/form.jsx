@@ -3,14 +3,34 @@ import PropTypes from 'prop-types';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
 import { handleResponseStatus } from './formHelpers';
+import { useEffect } from 'react';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
   const setUser = useCredentialStore((state) => state.setUser);
+  useEffect(() => {
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .readText()
+        .then((text) => {
+          try {
+            const { username, password } = JSON.parse(text);
+            if (username) setValue('username', username);
+            if (password) setValue('password', password);
+          } catch (error) {
+            console.error('Clipboard content is not valid JSON:', error);
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to read clipboard contents:', err);
+        });
+    }
+  }, [setValue]);
 
   const onSubmit = async (data) => {
     const response = await submissionMethod({ data: data });

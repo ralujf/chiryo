@@ -424,9 +424,13 @@ const Questionnaire = () => {
                 <button
                   style={{ backgroundColor: 'white', border: '2px solid' }}
                   className="btn chiryo_rounded"
-                  onClick={() => {
-                    navigator.clipboard.write({ username, password });
-                    notify('Details saved to clipboard!');
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.write({ username, password });
+                      notify('Details saved to clipboard!');
+                    } catch (error) {
+                      notifyError(error);
+                    }
                   }}
                 >
                   <i className="bi bi-clipboard"></i>
