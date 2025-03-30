@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const link = 'https://www.psychologytoday.com/gb/counselling/eng/london';
+const LINK = 'https://www.psychologytoday.com/gb/counselling/eng/london';
 
 const scrapeTherapists = async () => {
   const browser = await puppeteer.launch({
@@ -8,7 +8,7 @@ const scrapeTherapists = async () => {
   });
 
   const page = await browser.newPage();
-  await page.goto(link, {
+  await page.goto(LINK, {
     waitUntil: 'domcontentloaded',
   });
 

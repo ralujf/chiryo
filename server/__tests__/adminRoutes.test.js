@@ -116,9 +116,9 @@ describe('Admin Routes', () => {
     expect(response.text).toBe('Applicant accepted!');
   });
 
-  it('should fail to approve an application with invalid data', async () => {
+  it('should fail to approve an application with invalid email', async () => {
     const invalidApplicationInformation = {
-      ...therapistsData[1],
+      ...therapistsData[3],
       email: 'invalid-email',
     };
     const response = await request(app)
@@ -132,7 +132,7 @@ describe('Admin Routes', () => {
         },
       });
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
   });
 
   it('should reject an application', async () => {

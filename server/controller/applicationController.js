@@ -63,34 +63,42 @@ const approveApplication = async (req, res, next) => {
     const therapist = new Therapist(applicationInformation);
     await therapist.save();
 
-    await Application.findOneAndDelete({ email: applicationInformation.email });
-    const adminEmail = 'chiryo.help@gmail.com';
+    const result = await Application.findOneAndDelete({
+      email: applicationInformation.email,
+    });
 
-    // const transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   auth: {
-    //     user: adminEmail,
-    //     pass: process.env.ADMINPASS,
-    //   },
-    // });
+    if (result) {
+      // const adminEmail = 'chiryo.help@gmail.com';
 
-    // const mailOptions = {
-    //   from: adminEmail,
-    //   // Need to remember to turn this off and not actually send to real therapists lol
-    //   // to: applicationInformation.email,
-    //   subject: 'You are now part of Chiryo!',
-    //   text: 'You are now a part of Chiryo! Welcome to the family! For next steps visit the website 🫂',
-    // };
+      // const transporter = nodemailer.createTransport({
+      //   service: 'gmail',
+      //   auth: {
+      //     user: adminEmail,
+      //     pass: process.env.ADMINPASS,
+      //   },
+      // });
 
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     return res.status(500).send('An error occurred: ' + error);
-    //   } else {
-    //     console.log('SENT:' + info.response);
-    //   }
-    // });
+      // const mailOptions = {
+      //   from: adminEmail,
+      //   // Need to remember to turn this off and not actually send to real therapists lol
+      //   // to: applicationInformation.email,
+      //   subject: 'You are now part of Chiryo!',
+      //   text: 'You are now a part of Chiryo! Welcome to the family! For next steps visit the website 🫂',
+      // };
 
-    return res.status(201).send('Applicant accepted!');
+      // transporter.sendMail(mailOptions, (error, info) => {
+      //   if (error) {
+      //     return res.status(500).send('An error occurred: ' + error);
+      //   } else {
+      //     console.log('SENT:' + info.response);
+      //    return res.status(200).send('Applicant approved');
+      //   }
+      // });
+
+      return res.status(201).send('Applicant accepted!');
+    }
+
+    return res.status(404).send('Applicant not found');
   } catch (err) {
     console.error(err);
     return res.status(500).send('Server side error occurred');

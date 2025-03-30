@@ -1,0 +1,277 @@
+<html><head><meta charset="utf-8"/><title>Test Report</title><style type="text/css">:root {
+  --text-primary: #111;
+  --text-secondary: #4f4f4f;
+  --success: #006633;
+  --success-bright: #80ffbf;
+  --danger: #cc071e;
+  --danger-bright: #fbdfe0;
+  --warning: #995c00;
+  --warning-bright: #ffeea8;
+  --panel: #eee;
+  --border: #949494;
+  --disabled: #6b6b6b;
+}
+
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+}
+body {
+  padding: 2rem 1rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+#metadata-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.additional-information-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/** SUMMARY */
+#summary {
+  color: var(--text-primary);
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 0.5rem;
+  background: var(--panel);
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: var(--success);
+  border-left: 0.4rem solid var(--success);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: var(--danger);
+  border-left: 0.4rem solid var(--danger);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-pending {
+  color: var(--warning);
+  border-left: 0.4rem solid var(--warning);
+  padding-left: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.summary-empty {
+  color: var(--disabled);
+  border-left: 0.4rem solid var(--disabled);
+  margin-bottom: 0.15rem;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: var(--success-bright);
+  color: var(--success);
+}
+.test-result.failed {
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.test-result.pending {
+  background-color: var(--warning-bright);
+  color: var(--warning);
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--danger);
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 1rem;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: var(--panel);
+  color: var(--text-secondary);
+  border: 0.15rem solid;
+  border-color: var(--panel);
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  border-color: var(--border);
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 1rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
+}
+.suite-info .suite-time.warn {
+  background-color: var(--danger);
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 1rem;
+  transform: rotate(180deg) translateY(0.15rem);
+}
+.suite-container[open] .suite-info:before {
+  transform: rotate(0deg) translateY(0.15rem);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--panel);
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: var(--danger-bright);
+  color: var(--danger);
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><main class="jesthtml-content"><header><h1 id="title">Test Report</h1></header><section id="metadata-container"><div id="timestamp">Started: 2025-03-26 20:59:56</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (6)</div><div class="summary-passed ">6 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (66)</div><div class="summary-passed ">66 passed</div><div class="summary-failed  summary-empty">0 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></section><details id="suite-1" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\userRoutes.test.js</div><div class="suite-time warn">12.349s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should register a user</div><div class="test-status">passed</div><div class="test-duration">0.728s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to register a user with invalid data format (email wrong)</div><div class="test-status">passed</div><div class="test-duration">0.012s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to register a user with missing username</div><div class="test-status">passed</div><div class="test-duration">0.011s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to register a user with missing email</div><div class="test-status">passed</div><div class="test-duration">0.015s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to register a user with missing password</div><div class="test-status">passed</div><div class="test-duration">0.012s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should login a user</div><div class="test-status">passed</div><div class="test-duration">0.999s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to login a user with wrong password</div><div class="test-status">passed</div><div class="test-duration">0.691s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to login a non-existent user</div><div class="test-status">passed</div><div class="test-duration">0.18s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should update user profile</div><div class="test-status">passed</div><div class="test-duration">0.733s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update user profile with wrong password</div><div class="test-status">passed</div><div class="test-duration">0.096s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update profile with missing username</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update profile with missing password</div><div class="test-status">passed</div><div class="test-duration">0.013s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should update user password</div><div class="test-status">passed</div><div class="test-duration">1.321s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update user password with wrong old password</div><div class="test-status">passed</div><div class="test-duration">0.093s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update password with missing old password</div><div class="test-status">passed</div><div class="test-duration">0.01s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to update password with missing new password</div><div class="test-status">passed</div><div class="test-duration">0.011s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should delete a user, if it exists</div><div class="test-status">passed</div><div class="test-duration">0.722s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to delete a user with wrong password</div><div class="test-status">passed</div><div class="test-duration">0.661s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to delete a non-existent user</div><div class="test-status">passed</div><div class="test-duration">0.095s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to delete user with missing username</div><div class="test-status">passed</div><div class="test-duration">0.011s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to delete user with missing password</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to delete user with missing role</div><div class="test-status">passed</div><div class="test-duration">0.096s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should logout a user</div><div class="test-status">passed</div><div class="test-duration">0.01s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to logout a user without token</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should set firstLogin to false</div><div class="test-status">passed</div><div class="test-duration">0.103s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should fail to set firstLogin with missing userId</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">User Routes</div><div class="test-title">should not fail to set firstLogin with missing firstLogin field</div><div class="test-status">passed</div><div class="test-duration">0.098s</div></div></div></div></details><details id="suite-2" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\matchRoutes.test.js</div><div class="suite-time warn">11.565s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Matching Routes</div><div class="test-title">should match user with a therapist</div><div class="test-status">passed</div><div class="test-duration">2.711s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Matching Routes</div><div class="test-title">should fail due to no JWT when matching user with a therapist</div><div class="test-status">passed</div><div class="test-duration">0.011s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Matching Routes</div><div class="test-title">should fail due to JWT validation, no auth token</div><div class="test-status">passed</div><div class="test-duration">0.012s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Matching Routes</div><div class="test-title">should fail due to JWT validation, no user</div><div class="test-status">passed</div><div class="test-duration">0.182s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Matching Routes</div><div class="test-title">should return fail due to no available matches for the user</div><div class="test-status">passed</div><div class="test-duration">2.556s</div></div></div></div></details><details id="suite-3" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\adminRoutes.test.js</div><div class="suite-time">4.843s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should handle application submission</div><div class="test-status">passed</div><div class="test-duration">1.896s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should fail to handle application submission with invalid data</div><div class="test-status">passed</div><div class="test-duration">0.017s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should view all applications</div><div class="test-status">passed</div><div class="test-duration">0.677s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">view all applications without token</div><div class="test-status">passed</div><div class="test-duration">0.01s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should approve an application</div><div class="test-status">passed</div><div class="test-duration">0.275s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should fail to approve an application with invalid email</div><div class="test-status">passed</div><div class="test-duration">0.273s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should reject an application</div><div class="test-status">passed</div><div class="test-duration">0.188s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should fail to reject a non-existent application</div><div class="test-status">passed</div><div class="test-duration">0.183s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should fail to reject a due to no admin ID</div><div class="test-status">passed</div><div class="test-duration">0.097s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should handle application submission with invalid password</div><div class="test-status">passed</div><div class="test-duration">0.012s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should fail with invalid offset in view applications</div><div class="test-status">passed</div><div class="test-duration">0.186s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should handle server error in view applications</div><div class="test-status">passed</div><div class="test-duration">0.1s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should handle server error in approve application</div><div class="test-status">passed</div><div class="test-duration">0.099s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Admin Routes</div><div class="test-title">should handle server error in reject application</div><div class="test-status">passed</div><div class="test-duration">0.095s</div></div></div></div></details><details id="suite-4" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\dashboardRoutes.test.js</div><div class="suite-time">4.317s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fetch user dashboard</div><div class="test-status">passed</div><div class="test-duration">0.298s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to fetch user dashboard with invalid offset</div><div class="test-status">passed</div><div class="test-duration">0.102s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should delete a record</div><div class="test-status">passed</div><div class="test-duration">0.294s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to delete due to non-existent userId</div><div class="test-status">passed</div><div class="test-duration">0.186s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to delete a non-existent record due to invalid userId</div><div class="test-status">passed</div><div class="test-duration">0.109s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should delete all records</div><div class="test-status">passed</div><div class="test-duration">0.329s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to delete all records for non-existent user</div><div class="test-status">passed</div><div class="test-duration">0.116s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to delete all records for non-existent user</div><div class="test-status">passed</div><div class="test-duration">0.222s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should update a record</div><div class="test-status">passed</div><div class="test-duration">0.296s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to update a non-existent record</div><div class="test-status">passed</div><div class="test-duration">0.11s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">Dashboard Routes</div><div class="test-title">should fail to update a non-existent but valid objectId</div><div class="test-status">passed</div><div class="test-duration">0.189s</div></div></div></div></details><details id="suite-5" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\matching.test.js</div><div class="suite-time">2.104s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">calculating correlation between two objects</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">assert that two objects have the keys and the same types true</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">assert that two objects have the keys and the same types false</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">matchObject returns correct matches and diagnosis</div><div class="test-status">passed</div><div class="test-duration">1.058s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">matchObject handles no therapists</div><div class="test-status">passed</div><div class="test-duration">0.283s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">matchObject handles therapists with missing fields</div><div class="test-status">passed</div><div class="test-duration">0.088s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">matching algorithm tests</div><div class="test-title">returnAllTherapists returns therapist data</div><div class="test-status">passed</div><div class="test-duration"> </div></div></div></div></details><details id="suite-6" class="suite-container" open=""><summary class="suite-info"><div class="suite-path">C:\Users\raluf\Documents\Programming\react\chiryo\server\__tests__\scraper.test.js</div><div class="suite-time">0.21s</div></summary><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">scraper</div><div class="test-title">should scrape therapists successfully</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">scraper</div><div class="test-title">should handle error during scraping</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div></div></details></main></body></html>

@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "Backend API for Chiryo",
   "main": "index.js",
+  "jest": {
+    "testResultsProcessor": "./node_modules/jest-html-reporter"
+  },
+  "jest-html-reporter": {
+    "pageTitle": "Test Report"
+  },
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
     "test:coverage": "jest --coverage --watchAll --detectOpenHandles",
@@ -27,6 +33,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "jest-html-reporter": "^4.1.0",
     "jsdoc": "^4.0.4",
     "supertest": "^7.0.0"
   }
