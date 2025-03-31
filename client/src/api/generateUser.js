@@ -1,5 +1,5 @@
 // TODO: Replace with dict API
-const adjectives = [
+const ADJECTIVES = [
   'Quick',
   'Elated',
   'Happy',
@@ -12,7 +12,7 @@ const adjectives = [
   'Calm',
 ];
 
-const nouns = [
+const NOUNS = [
   'Fox',
   'Dog',
   'Cat',
@@ -25,10 +25,13 @@ const nouns = [
   'Shark',
 ];
 
+Object.freeze(ADJECTIVES);
+Object.freeze(NOUNS);
+
 function generateRandomUsername() {
   const randomAdjective =
-    adjectives[Math.floor(Math.random() * adjectives.length)];
-  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+    ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+  const randomNoun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
   const randomNumber = Math.floor(Math.random() * 1000);
   return `${randomAdjective}${randomNoun}${randomNumber}`;
 }

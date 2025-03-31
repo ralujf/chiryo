@@ -22,6 +22,8 @@ const introStateOptions = {
   GENCRED: 'GENCRED',
 };
 
+Object.freeze(introStateOptions);
+
 const Questionnaire = () => {
   const {
     role,
@@ -106,7 +108,6 @@ const Questionnaire = () => {
 
       notify();
     } else {
-      console.log('Check');
       // Completion State
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }

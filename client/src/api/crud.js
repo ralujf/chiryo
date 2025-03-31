@@ -150,6 +150,7 @@ const loadTableData = (userData, offset) => {
 
   console.log(result);
   return result;
+  // const nameArray = [];
   // const exampleArr = Array.from({ length: 12 }, () => ({
   //   user: {
   //     _id: 'sLS9S*(£a3L',

@@ -14,6 +14,9 @@ const PROMPTS = [
   'In my free time I like to ',
 ];
 
+Object.freeze(QUESTIONS);
+Object.freeze(PROMPTS);
+
 const createProblem = (answers) => {
   return answers
     .reduce((acc, answer, index) => {
