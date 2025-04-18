@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+src/api/database.json
+src/api/applicants.json
+src/api/dashboard.json

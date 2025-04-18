@@ -5,18 +5,17 @@ import { privateStorage } from './privateStorage';
 const useCredentialStore = create(
   persist(
     (set) => ({
-      userId: '',
-      adminId: '',
+      userId: 'fake',
+      adminId: 'fake',
       username: '',
       password: '',
-      role: '',
+      role: 'user',
       firstLogin: null,
       currentQuestionIndex: 0,
       answers: [],
-      introState: 'START',
+      introState: 'GENCRED',
       setUser: (user) =>
         set(() => {
-          // Consider server side encryption for ids maybe
           return {
             adminId: user.adminId ? user.adminId : null,
             userId: user.userId,

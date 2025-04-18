@@ -26,13 +26,6 @@ app.use('/api', (_, __, next) => {
   next();
 });
 
-app.post('/check', (_, res, next) => {
-  return res.status(200).send({
-    message: 'SUCCESS',
-    id: 'CHECK',
-  });
-});
-
 app.use('/api', applicationsRouter);
 app.use('/api', userRouter);
 
@@ -40,38 +33,55 @@ app.use('/api/admin', validateJWT, checkIdAdmin, adminRouter);
 app.use('/api/matching', validateJWT, matchRouter);
 app.use('/api/dashboard', validateJWT, dashboardRouter);
 
+let server;
+
 const startServer = async () => {
-  if (process.env.NODE_ENV === 'production') {
-    await mongoose
-      .connect(process.env.MONGO_URL)
-      .then(() => console.log('MongoDB connected'))
-      .catch((err) => console.log(err));
-  } else {
-    await mongoose
-      .connect(process.env.MONGO_TEST)
-      .then(() => console.log('MongoDB connected to test'))
-      .catch((err) => console.log(err));
+  try {
+    let mongoUrl;
+    if (process.env.NODE_ENV === 'production') {
+      mongoUrl = process.env.MONGO_URL;
+    } else {
+      mongoUrl = process.env.MONGO_TEST;
+    }
+
+    await mongoose.connect(mongoUrl);
+
+    if (process.env.NODE_ENV === 'production') {
+      console.log('MongoDB connected to production');
+    } else {
+      console.log('MongoDB connected to test');
+    }
+
+    if (process.env.NODE_ENV !== 'test') {
+      mongoose.connection.on('error', (err) => {
+        console.error(err);
+      });
+
+      mongoose.connection.on('disconnected', () => {
+        console.log('The server is disconnected');
+      });
+    }
+
+    server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error('Error connecting to MongoDB:', err);
   }
 };
 
 const closeServer = async () => {
+  if (server) {
+    server.close(() => {
+      console.log('Server closed');
+    });
+  }
   mongoose.disconnect();
 };
 
-if (process.env.NODE_ENV !== 'test') {
-  mongoose.connection.on('error', (err) => {
-    console.error(err);
-  });
-
-  mongoose.connection.on('disconnected', () => {
-    console.log('The server is disconnected');
-  });
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+// Stop start running automatically in TCs
+if (require.main === module) {
+  startServer();
 }
-
-startServer();
 
 module.exports = { app, startServer, closeServer };

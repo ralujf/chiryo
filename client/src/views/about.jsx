@@ -3,26 +3,26 @@ import { animationOptions3 } from '../styles/animations';
 
 const About = () => {
   return (
-    <div className="container-fluid" style={{ padding: '15vh 7.5vw' }}>
-      <section style={{ margin: '0vh 0vw 30vh 0vw' }}>
-        <h1 className="display-3 fw-bolder mb-5" id="dashboard-title">
-          About
-        </h1>
+    <div className="container-fluid p-5 mt-5">
+      <section>
+        <h1 className="display-3 fw-bolder mb-5">About</h1>
         <motion.p
           {...animationOptions3}
           className="chiryo_rounded chiryo_primary display-6"
         >
-          This is an undergrad project about mental health.
+          This is an undergraduate project about mental health. The aim is to
+          provide an easier way to interact with a therapist.
         </motion.p>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
+      <section className="mt-5">
         <motion.p
           {...animationOptions3}
           className="chiryo_rounded chiryo_primary display-6"
         >
-          This is some more random text, I may delete this page at some point
-          probably not needed
+          This project utilizes technology that will become increasing prevalent
+          in the following years with the rapidly developments in the space of
+          artificial intelligence
         </motion.p>
       </section>
     </div>

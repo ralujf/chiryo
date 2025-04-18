@@ -9,6 +9,7 @@ const Intro = ({ role }) => {
   useEffect(() => {
     modalRef.current?.click();
   }, []);
+
   return (
     <>
       <div
@@ -45,7 +46,7 @@ const Intro = ({ role }) => {
                 </>
               )}
               <br></br>
-              <img src={tableImage} width={'100%'} />
+              <img src={tableImage} className="w-100" />
               <br></br>
               {role === 'user' ? (
                 <>
@@ -96,7 +97,7 @@ const Intro = ({ role }) => {
               You can choose the time of the meeting by clicking the time item
               and setting your preferred time!
               <br></br>
-              <img src={dropdownImage} width={'100%'} />
+              <img src={dropdownImage} className="w-100" />
               <br></br>
               {role === 'user' ? (
                 <>

@@ -3,8 +3,8 @@ const { app, startServer, closeServer } = require('../index');
 const Therapist = require('../models/therapist');
 const User = require('../models/user');
 const Dashboard = require('../models/dashboard');
-const therapistFixture = require('../__fixtures__/data.json');
-const userFixture = require('../__fixtures__/user.data.json');
+const therapistFixture = require('../__fixtures__/therapists.data.json');
+const userFixture = require('../__fixtures__/users.data.json');
 
 jest.setTimeout(30000); // These tests are longgg
 

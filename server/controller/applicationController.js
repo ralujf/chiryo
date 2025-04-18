@@ -25,7 +25,7 @@ const sendApplication = async (req, res) => {
   }
 };
 
-const findTherapistsExternal = async (req, res) => {
+const findTherapistsExternal = async (_, res) => {
   try {
     const arr = await scrapeTherapists();
     arr.forEach((therapist) => therapist.save());
@@ -35,7 +35,8 @@ const findTherapistsExternal = async (req, res) => {
   }
 };
 
-const viewApplications = async (req, res, next) => {
+const viewApplications = async (req, res) => {
+  const LIMIT = 10;
   const { offset = 0 } = req.params;
   let parsedOffset = parseInt(offset, 10);
 
@@ -47,7 +48,7 @@ const viewApplications = async (req, res, next) => {
     const applicants = await Application.find({})
       .skip(parsedOffset)
       .sort({ createdAt: 1 })
-      .limit(10)
+      .limit(LIMIT)
       .exec();
 
     return res.status(200).json({ data: applicants, total: applicants.length });
@@ -57,9 +58,10 @@ const viewApplications = async (req, res, next) => {
   }
 };
 
-const approveApplication = async (req, res, next) => {
+const approveApplication = async (req, res) => {
   try {
     const { applicationInformation } = req.body.data;
+    applicationInformation.username = `${applicationInformation.firstName}${applicationInformation.lastName}`;
     const therapist = new Therapist(applicationInformation);
     await therapist.save();
 
@@ -68,18 +70,18 @@ const approveApplication = async (req, res, next) => {
     });
 
     if (result) {
-      // const adminEmail = 'chiryo.help@gmail.com';
+      // const ADMIN = 'chiryo.help@gmail.com';
 
       // const transporter = nodemailer.createTransport({
       //   service: 'gmail',
       //   auth: {
-      //     user: adminEmail,
+      //     user: ADMIN,
       //     pass: process.env.ADMINPASS,
       //   },
       // });
 
       // const mailOptions = {
-      //   from: adminEmail,
+      //   from: ADMIN,
       //   // Need to remember to turn this off and not actually send to real therapists lol
       //   // to: applicationInformation.email,
       //   subject: 'You are now part of Chiryo!',
@@ -105,11 +107,11 @@ const approveApplication = async (req, res, next) => {
   }
 };
 
-const rejectApplication = async (req, res, next) => {
+const rejectApplication = async (req, res) => {
   try {
-    const applicantEmail = req.body.data;
+    const { email } = req.body.data;
     const result = await Application.findOneAndDelete({
-      email: applicantEmail.email,
+      email: email,
     });
 
     if (!result) {

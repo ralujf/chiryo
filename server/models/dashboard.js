@@ -21,6 +21,7 @@ const DashboardSchema = new Schema(
     therapist: {
       type: new Schema({
         _id: { type: Schema.Types.ObjectId, ref: 'Therapist' },
+        username: String,
         firstName: String,
         lastName: String,
         email: String,

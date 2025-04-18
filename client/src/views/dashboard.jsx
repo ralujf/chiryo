@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
-import { ToastContainer, toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
+import { copyToClipBoard } from '../components/notifications';
 import {
   loadTableData,
   removeRowFromTable,
@@ -15,6 +15,8 @@ import {
 } from '../api/crud';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCredentialStore } from '../state/state';
+import Pagination from '../components/pagination';
+import { NotificationContainer } from '../components/notificationContainer';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -64,82 +66,11 @@ const Dashboard = () => {
     });
   };
 
-  const createMessage = (type) => {
-    switch (type) {
-      case 'Phone':
-        return 'Phone number was copied!';
-      case 'In-person':
-        return 'Location was copied';
-      case 'Virtual':
-        return 'Meeting link was copied!';
-      default:
-        return 'Unknown type';
-    }
-  };
-
-  const copyToClipBoard = async (value, type) => {
-    let message = createMessage(type);
-    console.log(type);
-    try {
-      await navigator.clipboard.writeText(value);
-      notify(message);
-    } catch (err) {
-      notifyError();
-      console.error('Could not copy text: ', err);
-    }
-  };
-
-  const notify = (msg) =>
-    toast.success(msg, {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-    });
-
-  const notifyError = () =>
-    toast.error(
-      'Oops - looks like something went wrong! Refresh and try again',
-      {
-        position: 'bottom-center',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        type: 'error',
-      },
-    );
-
   return (
-    <div
-      className="container-fluid main-container"
-      style={{ width: '100vw', minHeight: '80vh', padding: '15vh 5vw' }}
-    >
+    <div className="container-fluid main-container vw-100 p-5 mt-5">
       {firstLogin && <Intro />}
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover
-        theme="light"
-      />
-      <motion.h1
-        {...animationOptions3}
-        className="display-3 fw-bolder mb-5"
-        id="dashboard-title"
-      >
+      <NotificationContainer />
+      <motion.h1 {...animationOptions3} className="display-3 fw-bolder mb-5">
         Dashboard | {currentPage + 1}
       </motion.h1>
       {role === 'user' && (
@@ -153,18 +84,18 @@ const Dashboard = () => {
       )}
       <motion.div
         {...animationOptions3}
-        className="chiryo_shadow"
+        className="chiryo_shadow w-100 overflow-hidden"
         style={{
-          overflow: 'hidden',
           borderRadius: '2em',
-          width: '100%',
           border: '1rem solid rgb(135, 206, 235)',
         }}
       >
         <table className="table w-100">
           <thead className="chiryo_primary">
             <tr>
-              <th className="chiryo_primary align-middle">Name</th>
+              <th className="chiryo_primary align-middle">
+                {role === 'user' ? 'Therapist' : 'Client'}
+              </th>
               <th className="chiryo_primary align-middle">Time</th>
               <th className="chiryo_primary align-middle">Meeting Point</th>
               <th className="chiryo_primary align-middle">
@@ -194,7 +125,22 @@ const Dashboard = () => {
                 <tr key={rowIndex} className="align-middle">
                   <td>
                     <DashboardSidebar
-                      {...(row.user ? row.user : row.therapist)}
+                      id={rowIndex}
+                      username={
+                        role === 'user'
+                          ? row.therapist.username
+                          : row.user.username
+                      }
+                      email={
+                        role === 'user' ? row.therapist.email : row.user.email
+                      }
+                      age={role === 'user' ? row.therapist.age : row.user.age}
+                      firstName={role == 'user' && row.therapist.firstName}
+                      lastName={role == 'user' && row.therapist.lastName}
+                      // Constants
+                      expertise={row.therapist.expertise}
+                      diagnosis={row.diagnosis}
+                      clientName={row.user.username}
                     />
                   </td>
                   <td>
@@ -374,57 +320,11 @@ const Dashboard = () => {
         </table>
       </motion.div>
 
-      <div className="container-fluid mt-5">
-        <nav
-          aria-label="Page navigation"
-          className="d-flex justify-content-center"
-        >
-          <ul className="pagination">
-            <li className="page-item">
-              <a
-                href="#"
-                className="page-link"
-                disabled={currentPage === 0}
-                onClick={() => {
-                  if (currentPage > 0) setCurrentPage(currentPage - 1);
-                }}
-              >
-                Previous
-              </a>
-            </li>
-            {Array.from({ length: totalPages }, (_, idx) => (
-              <li className="page-item" key={idx}>
-                <a
-                  className="page-link"
-                  onClick={() => {
-                    setCurrentPage(idx);
-                  }}
-                  href="#"
-                >
-                  {idx + 1}
-                </a>
-              </li>
-            ))}
-            <li className="page-item">
-              <a
-                href="#"
-                className={
-                  currentPage === totalPages - 1
-                    ? 'page-link disabled'
-                    : 'page-link'
-                }
-                disabled={currentPage === totalPages - 1}
-                onClick={() => {
-                  if (currentPage < totalPages - 1)
-                    setCurrentPage(currentPage + 1);
-                }}
-              >
-                Next
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+      />
     </div>
   );
 };

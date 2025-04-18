@@ -9,6 +9,7 @@ const Therapist = require('../models/therapist');
  * @description - Return correlation score between two objects with the same keys using string comparison (cosine.similarity) and a simple distance calculation. The higher the number, the better the correlation
  */
 function calculateCorrelation(objectA, objectB) {
+  const CEILING = 1;
   const keys = Object.keys(objectA);
   let totalScore = 0;
   let count = 0;
@@ -21,7 +22,7 @@ function calculateCorrelation(objectA, objectB) {
       // Normalize the difference between numbers to a score between 0 and 1
       const max = Math.max(valueA, valueB);
       const min = Math.min(valueA, valueB);
-      const score = 1 - (max - min) / (max + min);
+      const score = CEILING - (max - min) / (max + min);
       totalScore += score;
     } else if (typeof valueA === 'string' && typeof valueB === 'string') {
       // Use string-comparison to get a score between 0 and 1
@@ -93,6 +94,9 @@ const returnAllTherapists = async () => {
  * @description - Return matches and diagnosis of the user by taking a users information, i.e. age, race, diagnosis, religion and use these features to match them with a therapist in format { matches: [therapist1, therapist2, therapist3], diagnosis: userForMatching.diagnosis }
  */
 async function matchObject(userInfo) {
+  const START = 0;
+  const END = 7;
+
   const correlationScores = [];
 
   const user = {
@@ -140,7 +144,7 @@ async function matchObject(userInfo) {
 
   const topMatches = correlationScores
     .sort((a, b) => b.compatibilityScore - a.compatibilityScore)
-    .slice(0, 7);
+    .slice(START, END);
 
   const rankedTherapistByCompat = topMatches.map((x) => x.therapist);
 

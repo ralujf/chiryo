@@ -1,10 +1,13 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { useForm } from 'react-hook-form';
-import { ToastContainer, toast } from 'react-toastify';
-import applicationImage from '../assets/chiryohero-application.png';
+
 import { sendApplication } from '../api/crud';
 import { handleResponseStatus } from '../components/formHelpers';
+import { notifyError, notifySuccess } from '../components/notifications';
+import { NotificationContainer } from '../components/notificationContainer';
+import applicationImage from '../assets/chiryohero-application.png';
+import { sanitizeInput } from '../api/sanitizers';
 
 const Application = () => {
   const {
@@ -14,61 +17,25 @@ const Application = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const pdfFile = data.pdfInformation[0];
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
+    );
+    const pdfFile = sanitizedData.pdfInformation[0];
     const pdfBlob = new Blob([pdfFile], { type: pdfFile.type });
-    const formData = { ...data, pdfInformation: pdfBlob.bytes };
+    const formData = { ...sanitizedData, pdfInformation: pdfBlob.bytes };
 
     const response = await sendApplication({ data: formData });
     if (response === 'Application Submitted') {
-      notify(response);
+      notifySuccess(response);
     } else {
       notifyError(response);
     }
   };
 
-  const notify = (message) =>
-    toast.success('Success! ' + message, {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-    });
-
-  const notifyError = (error) =>
-    toast.error('Oops - looks like something went wrong! ' + error, {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-      type: 'error',
-    });
-
   return (
     <>
-      <div
-        className="container-fluid"
-        style={{ minHeight: '80vh', padding: '15vh 7.5vw' }}
-      >
-        <ToastContainer
-          position="bottom-center"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          pauseOnHover
-          theme="light"
-        />
+      <div className="container-fluid p-5 mt-5">
+        <NotificationContainer />
         <div className="justify-content-evenly chiryo_rounded mb-5">
           <div>
             <motion.h1
@@ -77,7 +44,7 @@ const Application = () => {
             >
               Requirements
             </motion.h1>
-            <div className="row">
+            <div className="row gap-sm-2 gap-md-0">
               <div className="col-md-6">
                 <motion.div
                   {...animationOptions3}
@@ -100,15 +67,14 @@ const Application = () => {
                 <motion.img
                   {...animationOptions3}
                   src={applicationImage}
-                  className="z-1"
+                  className="z-1 w-100"
                   alt="application image"
-                  width={'100%'}
                 />
               </div>
             </div>
           </div>
 
-          <div className="chiryo_rounded" style={{ margin: '30vh 0vw' }}>
+          <div className="chiryo_rounded mt-5">
             <motion.h1
               {...animationOptions3}
               className="display-3 fw-bolder mb-5"

@@ -8,7 +8,7 @@ const Therapist = require('../models/therapist');
  * @returns - 404 if user not found, else 200 Login successful
  * @description - Takes in a users details, if it is valid then a JWT returned
  */
-const generateJWT = async (req, res) => {
+const generateJWT = async (_, res) => {
   try {
     if (!res.locals._id) {
       console.error('User not valid');
@@ -51,6 +51,7 @@ const generateJWT = async (req, res) => {
 const validateJWT = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
   const { username } = req.body.data;
+
   let user;
 
   try {

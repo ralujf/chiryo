@@ -3,49 +3,44 @@ import { animationOptions, animationOptions3 } from '../styles/animations';
 
 const userInfo = () => {
   return (
-    <div className="container" style={{ padding: '15vh 7.5vw' }}>
-      <section style={{ margin: '0vh 0vw 30vh 0vw' }}>
-        <h1
-          className="display-3 text-center fw-bolder mb-5"
-          id="dashboard-title"
-        >
+    <div className="container p-5">
+      <section className="mt-5">
+        <h1 className="display-3 text-center fw-bolder mb-5">
           Why is mental health important?
         </h1>
         <p className="text-center display-6">
-          Mental health isn’t just about handling big life challenges—it’s the
-          foundation for everything we do, from how we handle stress to how we
-          connect with others. Just like we exercise to keep our bodies strong,
-          taking care of our minds helps us stay balanced, focused, and ready to
-          tackle whatever life throws our way. Whether it’s therapy, self-care,
-          or just taking a deep breath on a tough day, mental well-being matters
-          for everyone. After all, a healthy mind makes for a happier, more
-          fulfilling life!
+          Mental health isn&apos;t just about handling big life
+          challenges—it&apos;s the foundation for everything we do, from how we
+          handle stress to how we connect with others. Just like we exercise to
+          keep our bodies strong, taking care of our minds helps us stay
+          balanced, focused, and ready to tackle whatever life throws our way.
+          Whether it&apos;s therapy, self-care, or just taking a deep breath on
+          a tough day, mental well-being matters for everyone. After all, a
+          healthy mind makes for a happier, more fulfilling life!
         </p>
       </section>
-      <section style={{ margin: '30vh 0vw' }}>
-        <h1
-          className="display-3 text-center fw-bolder mb-5"
-          id="dashboard-title"
-        >
+
+      <section>
+        <h1 className="display-3 text-center fw-bolder my-5">
           Cornerstones of improving mental health
         </h1>
-        <div className="row justify-content-evenly gap-5">
+        <div className="col justify-content-evenly gap-5 w-full">
           <motion.div
             {...animationOptions}
-            className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between"
+            className="chiryo_rounded chiryo_primary p-3 p-md-5 h-full w-full mb-3"
           >
             <h1 className="text-center display-4 fw-bolder mb-3">
               Prioritise Sleep
             </h1>
             <p className="text-center display-6">
-              Aim for 7–9 hours of quality sleep each night to help regulate
-              mood, energy, and cognitive function
+              Aim for 7&ndash;9 hours of quality sleep each night to help
+              regulate mood, energy, and cognitive function
             </p>
           </motion.div>
 
           <motion.div
             {...animationOptions}
-            className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between"
+            className="chiryo_rounded chiryo_primary p-3 p-md-5 h-full w-full mb-3"
           >
             <h1 className="text-center display-4 fw-bolder mb-3">
               Stay Active
@@ -58,7 +53,7 @@ const userInfo = () => {
 
           <motion.div
             {...animationOptions}
-            className="col-md-5 chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between"
+            className="chiryo_rounded chiryo_primary p-3 p-md-5 h-full w-full mb-3"
           >
             <h1 className="text-center display-4 fw-bolder mb-3">
               Connect with Others
@@ -71,8 +66,8 @@ const userInfo = () => {
         </div>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
-        <h2 className="display-3 fw-bolder mb-5">Other Recommended Services</h2>
+      <section>
+        <h2 className="display-3 fw-bolder my-5">Other Recommended Services</h2>
         <motion.div
           {...animationOptions3}
           className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"

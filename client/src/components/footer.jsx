@@ -2,10 +2,7 @@ import { Link } from 'wouter';
 
 const Footer = () => {
   return (
-    <footer
-      className="bg-dark text-white py-4 container-fluid z-6 relative-bottom"
-      style={{ width: '100vw' }}
-    >
+    <footer className="bg-dark text-white py-4 container-fluid z-6 vw-100 relative-bottom">
       <div className="container">
         <div className="row">
           <div className="col-md-6">
@@ -46,10 +43,7 @@ const Footer = () => {
         </div>
       </div>
       <hr />
-      <div
-        className="text-left mx-5"
-        style={{ opacity: 0.5, margin: '0vh 15vw' }}
-      >
+      <div className="text-left mx-5 opacity-50" style={{ margin: '0vh 15vw' }}>
         <small>
           Any personal information used is stored in accordance to existing
           standards and will be encrypted end-to-end. This project does not

@@ -12,27 +12,30 @@ const {
 const { generateJWT } = require('../middleware/auth');
 const router = express.Router();
 
+const MIN_LENGTH_NAME = 3;
+const MIN_LENGTH_PASS = 6;
+
 const registrationValidation = [
   body('data.username').exists(),
   body('data.email').isEmail().normalizeEmail(),
-  body('data.password').isLength({ min: 6 }).escape(),
+  body('data.password').isLength({ min: MIN_LENGTH_PASS }).escape(),
 ];
 
 const loginValidation = [
-  body('data.username').trim().isLength({ min: 3 }).escape(),
-  body('data.password').isLength({ min: 6 }).escape(),
+  body('data.username').trim().isLength({ min: MIN_LENGTH_NAME }).escape(),
+  body('data.password').isLength({ min: MIN_LENGTH_PASS }).escape(),
 ];
 
 const updateProfileValidation = [
-  body('data.username').trim().isLength({ min: 3 }).escape(),
-  body('data.password').isLength({ min: 6 }).escape(),
+  body('data.username').trim().isLength({ min: MIN_LENGTH_NAME }).escape(),
+  body('data.password').isLength({ min: MIN_LENGTH_PASS }).escape(),
   body('data.email').optional().isEmail().normalizeEmail(),
 ];
 
 const updatePasswordValidation = [
-  body('data.username').trim().isLength({ min: 3 }).escape(),
-  body('data.oldPassword').isLength({ min: 6 }).escape(),
-  body('data.newPassword').isLength({ min: 6 }).escape(),
+  body('data.username').trim().isLength({ min: MIN_LENGTH_NAME }).escape(),
+  body('data.oldPassword').isLength({ min: MIN_LENGTH_PASS }).escape(),
+  body('data.newPassword').isLength({ min: MIN_LENGTH_PASS }).escape(),
 ];
 
 router.post(
@@ -54,11 +57,6 @@ router.post(
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(req.body);
-      console.log('-------');
-      console.log(req.body.data);
-      console.log('---------');
-      console.log(req.body.data.username);
       return res.status(400).json({ errors: errors.array() });
     }
     next();

@@ -1,8 +1,8 @@
 import './app.css';
 import './styles/main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { Switch, Route } from 'wouter';
 import { PrivateRoute } from './api/routes';
 
@@ -15,8 +15,8 @@ import Dashboard from './views/dashboard';
 import Questionnaire from './views/questionnaire';
 import Login from './views/login';
 import Profile from './views/profile';
+import Admin from './views/admin';
 
-// Stateless pages
 import UserInfo from './views/userInfo';
 import TherapistInfo from './views/therapistInfo';
 import About from './views/about';
@@ -36,14 +36,14 @@ function App() {
       <Switch>
         <Route path="/" component={Main} />
         <Route path="/become-a-therapist" component={Application} />
-        <PrivateRoute path="/dashboard" component={<Dashboard />} />
-        <PrivateRoute path="/profile" component={<Profile />} />
-        <Route path="/dashboard" component={Dashboard} />
         <Route path="/questionnaire" component={Questionnaire} />
         <Route path="/login" component={Login} />
         <Route path="/about" component={About} />
         <Route path="/info" component={UserInfo} />
         <Route path="/become-a-therapist/info" component={TherapistInfo} />
+        <PrivateRoute path="/profile" component={Profile} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/applicants" component={Admin} />
         <Route>{NotFound}</Route>
       </Switch>
       <Footer />

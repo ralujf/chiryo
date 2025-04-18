@@ -20,11 +20,16 @@ Object.freeze(PROMPTS);
 const createProblem = (answers) => {
   return answers
     .reduce((acc, answer, index) => {
-      if (typeof answer != 'string') answer = String(answer);
+      if (typeof answer != 'string') {
+        answer = String(answer);
+      }
+
       let trimmedAnswer = `${PROMPTS[index]}${answer}`.trim();
+
       if (!/[.!?]$/.test(trimmedAnswer)) {
         trimmedAnswer += '.';
       }
+
       return acc + ' ' + trimmedAnswer;
     }, '')
     .trim();

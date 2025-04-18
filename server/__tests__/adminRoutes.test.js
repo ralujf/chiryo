@@ -4,7 +4,7 @@ const Application = require('../models/application');
 const Therapist = require('../models/therapist');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const therapistsData = require('../__fixtures__/data.json');
+const therapistsData = require('../__fixtures__/therapists.data.json');
 
 describe('Admin Routes', () => {
   let token;

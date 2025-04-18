@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { app, startServer, closeServer } = require('../index');
 const User = require('../models/user');
-const userFixture = require('../__fixtures__/user.data.json');
+const userFixture = require('../__fixtures__/users.data.json');
 
 jest.setTimeout(15000);
 

@@ -1,14 +1,19 @@
+import PropTypes from 'prop-types';
 import { Route, Redirect } from 'wouter';
 
-// attribution @cbbfcd : wouter issues #223
-function PrivateRoute(props, Component) {
-  const renderChildren = () =>
-    localStorage.getItem('jwtToken') ? (
-      <Component {...props} />
-    ) : (
-      <Redirect to="/login" />
-    );
-  return <Route>{renderChildren}</Route>;
+function PrivateRoute({ component: Component, ...rest }) {
+  const isAuthenticated = localStorage.getItem('jwtToken');
+  return (
+    <Route
+      {...rest}
+      component={(props) =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
 }
+PrivateRoute.propTypes = {
+  component: PropTypes.elementType.isRequired,
+};
 
 export { PrivateRoute };

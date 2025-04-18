@@ -1,27 +1,40 @@
 import PropTypes from 'prop-types';
+import profileImage from '../assets/profile.jpg';
+
 const DashboardSidebar = (props) => {
-  const { username, email, age, diagnosis } = props;
+  const {
+    id,
+    username,
+    clientName,
+    email,
+    age,
+    diagnosis,
+    expertise,
+    firstName,
+    lastName,
+  } = props;
+
   return (
     <>
       <button
-        className="btn chiryo_primary_active d-flex align-items-center"
+        className="btn chiryo_primary_active d-flex align-items-center justify-content-between w-75"
         type="button"
         data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasSidebar"
-        aria-controls="offcanvasSidebar"
+        data-bs-target={`#offcanvasSidebar-${id}`}
+        aria-controls={`offcanvasSidebar-${id}`}
       >
-        <p className="mb-0 me-2">{username}</p>
+        <p className="mb-0 me-2 mr-full">{username}</p>
         <i className="bi bi-person-lines-fill"></i>
       </button>
 
       <div
         className="offcanvas offcanvas-start"
         tabIndex="-1"
-        id="offcanvasSidebar"
-        aria-labelledby="offcanvasUserLabel"
+        id={`offcanvasSidebar-${id}`}
+        aria-labelledby={`offcanvasUserLabel-${id}`}
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="offcanvasUserLabel">
+          <h5 className="offcanvas-title" id={`offcanvasUserLabel-${id}`}>
             {username}&apos;s Profile
           </h5>
           <button
@@ -31,18 +44,42 @@ const DashboardSidebar = (props) => {
             aria-label="Close"
           ></button>
         </div>
+        <div className="d-flex align-items-center">
+          <img src={profileImage} className="w-25"></img>
+        </div>
+
         <div className="offcanvas-body">
-          <h5></h5>
-          <p>{age} years old</p>
+          {firstName && lastName && (
+            <h4>
+              {firstName} {lastName}
+            </h4>
+          )}
+          {age && <p>{age} years old</p>}
+
+          {expertise && (
+            <>
+              <hr></hr>
+              <h5>Expertise</h5>
+              <p>{expertise}</p>
+            </>
+          )}
+
           <hr></hr>
-          <h5>{username}&apos;s diagnosis</h5>
-          <p>{diagnosis}</p>
-          <button
-            className="text-dark chiryo_rounded chiryo_primary_active mb-3"
-            onClick={() => (window.location.href = `mailto:${email}`)}
-          >
-            Send Email
-          </button>
+          {diagnosis && (
+            <>
+              <h5>{clientName}&apos;s Diagnosis</h5>
+              <p>{diagnosis}</p>
+            </>
+          )}
+
+          {email && (
+            <button
+              className="text-dark chiryo_rounded chiryo_primary_active mb-3"
+              onClick={() => (window.location.href = `mailto:${email}`)}
+            >
+              Send Email
+            </button>
+          )}
         </div>
       </div>
     </>
@@ -50,11 +87,15 @@ const DashboardSidebar = (props) => {
 };
 
 DashboardSidebar.propTypes = {
+  id: PropTypes.string.isRequired,
+  clientName: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  // TODO: Alter implementation and change the rest once everything is done
-  age: PropTypes.string,
+  age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   diagnosis: PropTypes.string,
+  expertise: PropTypes.string.isRequired,
 };
 
 export default DashboardSidebar;

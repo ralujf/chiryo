@@ -21,6 +21,9 @@ import {
 import { fetchJWT, storeJWT } from './auth';
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
+// Proxy Data
+import applicantData from '../api/applicants.json';
+import dashboardData from '../api/dashboard.json';
 
 function errorLog(error) {
   if (error.response) {
@@ -33,7 +36,10 @@ function errorLog(error) {
     console.error('Error message:', error.message);
   }
   console.error('Error config:', error.config);
-  return error.response.statusText;
+  if (error.response?.statusText) {
+    return error.response.statusText;
+  }
+  return error.response;
 }
 
 function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
@@ -149,34 +155,12 @@ const loadTableData = (userData, offset) => {
   );
 
   console.log(result);
-  return result;
-  // const nameArray = [];
-  // const exampleArr = Array.from({ length: 12 }, () => ({
-  //   user: {
-  //     _id: 'sLS9S*(£a3L',
-  //     username: 'Username',
-  //     email: 'ralphdaveysss@gmail.com',
-  //   },
-  //   therapist: {
-  //     _id: 'ie*234£39)23!',
-  //     username: 'SteveWatts',
-  //     firstName: 'Steve',
-  //     lastName: 'Watts',
-  //     email: 'stevewatts@gmail.com',
-  //     expertise: 'Couples',
-  //   },
-  //   location: 'Phone',
-  //   locationLink: '07480144234',
-  //   time: new Date(),
-  //   diagnosis: 'Depression',
-  //   markResolvedUser: false,
-  //   markResolvedTherapist: false,
-  // }));
+  // return result;
 
-  // return {
-  //   tableData: exampleArr.slice(offset * 10),
-  //   total: exampleArr.length % 10,
-  // };
+  return {
+    tableData: dashboardData.slice(offset * 10),
+    total: Math.ceil(dashboardData.length / 10),
+  };
 };
 
 /**
@@ -231,17 +215,25 @@ const sendApplication = (applicationData) =>
 
 /**
  *
- * @param {Object} adminData - { data:{ adminId }}
+ * @param {Object} adminData - { data: { adminId }}
  * @param {string} offset
- * @returns
- * @description - Post an applicants details to the database to be ported into a HR system and reviewed
+ * @returns {Promise<Array>} - A promise that resolves to an array of data
+ * @description - Fetches a list of applicants from the database for review
  */
-const fetchApplicants = (adminData, offset) =>
-  handleRequest(
+const fetchApplicants = (adminData, offset) => {
+  let data = handleRequest(
     'get',
     createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
     adminData,
   );
+  console.log(data);
+  // return data
+
+  return {
+    tableData: applicantData.slice(offset * 10),
+    total: Math.ceil(applicantData.length / 10),
+  };
+};
 
 /**
  *

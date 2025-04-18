@@ -29,6 +29,12 @@ const TherapistSchema = new Schema(
       required: true,
       unique: false,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: false,
+      immutable: true,
+    },
     age: {
       type: Number,
       required: false,

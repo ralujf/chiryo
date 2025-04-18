@@ -1,8 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
-import { ToastContainer, toast } from 'react-toastify';
+import { motion } from 'motion/react';
+import { animationOptions3 } from '../styles/animations';
+import { sanitizeInput } from '../api/sanitizers';
+
 import { useCredentialStore } from '../state/state';
 import { handleResponseStatus } from '../components/formHelpers';
+import { NotificationContainer } from '../components/notificationContainer';
+import { notifyError } from '../components/notifications';
+
 const Profile = () => {
   const {
     register,
@@ -12,78 +18,82 @@ const Profile = () => {
   const role = useCredentialStore((state) => state.role);
 
   const onSubmitUpdate = async (data) => {
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
+    );
     const response = await updateProfileInfo({
-      data: { username: data.username, password: data.password, ...data },
+      data: {
+        username: sanitizedData.username,
+        password: sanitizedData.password,
+        ...sanitizedData,
+      },
     });
     console.log(response);
-    notifyError(response);
+    if (response.errors != null) {
+      notifyError(response.errors);
+    }
   };
 
   const onSubmitChangePass = async (data) => {
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
+    );
     const response = await updatePassword({
       data: {
-        username: data.username,
-        oldPassword: data.oldPassword,
-        newPassword: data.newPassword,
+        username: sanitizedData.username,
+        oldPassword: sanitizedData.oldPassword,
+        newPassword: sanitizedData.newPassword,
         role: role,
       },
     });
     console.log(response);
-    notifyError(response);
+    if (response.errors != null) {
+      notifyError(response.errors);
+    }
   };
 
   const onSubmitDelete = async (data) => {
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
+    );
     const response = await deleteUser({
       data: {
-        username: data.username,
-        password: data.password,
+        username: sanitizedData.username,
+        password: sanitizedData.password,
         role: role,
       },
     });
     console.log(response);
-    notifyError(response);
+    if (response.errors != null) {
+      notifyError(response.errors);
+    }
   };
-
-  const notifyError = (error) =>
-    toast.error('Oops - looks like something went wrong! ' + error, {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-      type: 'error',
-    });
 
   return (
     <>
-      <div
-        className="container-fluid"
-        style={{ minHeight: '80vh', padding: '15vh 7.5vw' }}
-      >
-        <ToastContainer
-          position="bottom-center"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          pauseOnHover
-          theme="light"
-        />
+      <div className="container-fluid p-5 mt-5">
+        <NotificationContainer />
         <div className="chiryo_rounded mb-5">
-          <h1 className="display-3 fw-bolder mb-5">Profile Information</h1>
-          <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
-            <form onSubmit={handleSubmit(onSubmitUpdate)}>
+          <motion.h1
+            {...animationOptions3}
+            className="display-3 fw-bolder mb-5"
+          >
+            Profile Information
+          </motion.h1>
+          <motion.div
+            {...animationOptions3}
+            className="chiryo_rounded chiryo_primary p-3 p-md-5"
+          >
+            <form
+              className="form-floating"
+              onSubmit={handleSubmit(onSubmitUpdate)}
+            >
               <div className="mb-3">
-                <label htmlFor="username" className="form-label">
+                <label htmlFor="username" className="form-label fw-bold">
                   Username
                 </label>
                 <input
+                  disabled={role === 'therapist' ? true : false}
                   type="text"
                   className="form-control"
                   id="username"
@@ -95,7 +105,7 @@ const Profile = () => {
                 {errors.username && <span>This field is required</span>}
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">
+                <label htmlFor="password" className="form-label fw-bold">
                   Password
                 </label>
                 <input
@@ -109,9 +119,9 @@ const Profile = () => {
                 />
                 {errors.password && <span>This field is required</span>}
               </div>
-              <h1>Information to Update</h1>
+              <h3 className="my-3">Information to Update</h3>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
+                <label htmlFor="email" className="form-label fw-bold">
                   Email
                 </label>
                 <input
@@ -122,11 +132,10 @@ const Profile = () => {
                   onInput={(e) => {
                     handleResponseStatus(e);
                   }}
-                />{' '}
+                />
               </div>
-
               <div className="mb-3">
-                <label htmlFor="age" className="form-label">
+                <label htmlFor="age" className="form-label fw-bold">
                   Age
                 </label>
                 <input
@@ -140,74 +149,114 @@ const Profile = () => {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="race" className="form-label">
+                <label htmlFor="race" className="form-label fw-bold">
                   Race
                 </label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="race"
                   {...register('race')}
                   onInput={(e) => {
                     handleResponseStatus(e);
                   }}
-                />
+                >
+                  <option value="">Select Race</option>
+                  <option value="asian">Asian</option>
+                  <option value="black">Black</option>
+                  <option value="white">White</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="background" className="form-label">
+                <label htmlFor="background" className="form-label fw-bold">
                   Background
                 </label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="background"
                   {...register('background')}
                   onInput={(e) => {
                     handleResponseStatus(e);
                   }}
-                />
+                >
+                  <option value="">Select Background</option>
+                  <option value="asian">Asian</option>
+                  <option value="black british">Black British</option>
+                  <option value="white british">White British</option>
+                  <option value="hispanic">Hispanic</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="religion" className="form-label">
+                <label htmlFor="religion" className="form-label fw-bold">
                   Religion
                 </label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="religion"
                   {...register('religion')}
                   onInput={(e) => {
                     handleResponseStatus(e);
                   }}
-                />
+                >
+                  <option value="">Select Religion</option>
+                  <option value="christianity">Christianity</option>
+                  <option value="islam">Islam</option>
+                  <option value="hinduism">Hinduism</option>
+                  <option value="buddhism">Buddhism</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="location" className="form-label">
+                <label htmlFor="location" className="form-label fw-bold">
                   Location
                 </label>
-                <input
-                  type="text"
+                <select
                   className="form-control"
                   id="location"
                   {...register('location')}
                   onInput={(e) => {
                     handleResponseStatus(e);
                   }}
-                />
+                >
+                  <option value="">Select Location</option>
+                  <option value="london">London</option>
+                  <option value="manchester">Manchester</option>
+                  <option value="birmingham">Birmingham</option>
+                  <option value="leeds">Leeds</option>
+                  <option value="glasgow">Glasgow</option>
+                  <option value="liverpool">Liverpool</option>
+                  <option value="edinburgh">Edinburgh</option>
+                  <option value="bristol">Bristol</option>
+                  <option value="sheffield">Sheffield</option>
+                  <option value="newcastle">Newcastle</option>
+                  <option value="nottingham">Nottingham</option>
+                  <option value="cardiff">Cardiff</option>
+                  <option value="leicester">Leicester</option>
+                  <option value="brighton">Brighton</option>
+                </select>
               </div>
               <input
                 type="submit"
                 value={'Update Profile'}
                 className="btn chiryo_rounded chiryo_primary_action chiryo_shadow"
-              ></input>
+              />
             </form>
-          </div>
+          </motion.div>
 
-          <h1>Change Password</h1>
-          <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
+          <motion.h1
+            {...animationOptions3}
+            className="display-3 fw-bolder my-5"
+          >
+            Change Password
+          </motion.h1>
+          <motion.div
+            {...animationOptions3}
+            className="chiryo_rounded chiryo_primary p-3 p-md-5"
+          >
             <form onSubmit={handleSubmit(onSubmitChangePass)}>
               <div className="mb-3">
-                <label htmlFor="username" className="form-label">
+                <label htmlFor="username" className="form-label fw-bold">
                   Username
                 </label>
                 <input
@@ -222,7 +271,7 @@ const Profile = () => {
                 {errors.username && <span>This field is required</span>}
               </div>
               <div className="mb-3">
-                <label htmlFor="oldPassword" className="form-label">
+                <label htmlFor="oldPassword" className="form-label fw-bold">
                   Old Password
                 </label>
                 <input
@@ -237,10 +286,10 @@ const Profile = () => {
                 {errors.oldPassword && <span>This field is required</span>}
               </div>
               <div className="mb-3">
-                <label className="fw-bold">New Password</label>
+                <label className="form-label fw-bold">New Password</label>
                 <input
                   type="password"
-                  className="mb-3 w-50"
+                  className="form-control"
                   {...register('newPassword', {
                     required: 'Password is required',
                   })}
@@ -259,13 +308,21 @@ const Profile = () => {
                 style={{ width: 'fit-content' }}
               />
             </form>
-          </div>
+          </motion.div>
 
-          <h1>Delete My Account</h1>
-          <div className="chiryo_rounded chiryo_primary p-3 p-md-5">
+          <motion.h1
+            {...animationOptions3}
+            className="display-3 fw-bolder my-5"
+          >
+            Delete My Account
+          </motion.h1>
+          <motion.div
+            {...animationOptions3}
+            className="chiryo_rounded chiryo_primary p-3 p-md-5"
+          >
             <form onSubmit={handleSubmit(onSubmitDelete)}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
+                <label htmlFor="email" className="form-label fw-bold">
                   Email
                 </label>
                 <input
@@ -283,7 +340,7 @@ const Profile = () => {
                 <label className="fw-bold">Password</label>
                 <input
                   type="password"
-                  className="mb-3 w-50"
+                  className="form-control"
                   {...register('password', {
                     required: 'Password is required',
                   })}
@@ -300,7 +357,7 @@ const Profile = () => {
                 style={{ width: 'fit-content' }}
               />
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </>

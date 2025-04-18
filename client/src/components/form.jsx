@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
 import { useCredentialStore } from '../state/state';
-import { handleResponseStatus } from './formHelpers';
-import { useEffect } from 'react';
+import {
+  extractDetailsFromClipboard,
+  handleResponseStatus,
+} from './formHelpers';
+import { sanitizeInput } from '../api/sanitizers';
+import { notifyError } from './notifications';
+import { NotificationContainer } from './notificationContainer';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
   const {
@@ -13,28 +18,24 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     formState: { errors },
   } = useForm();
   const setUser = useCredentialStore((state) => state.setUser);
+
   useEffect(() => {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .readText()
-        .then((text) => {
-          try {
-            const { username, password } = JSON.parse(text);
-            if (username) setValue('username', username);
-            if (password) setValue('password', password);
-          } catch (error) {
-            console.error('Clipboard content is not valid JSON:', error);
-          }
-        })
-        .catch((err) => {
-          console.error('Failed to read clipboard contents:', err);
-        });
-    }
+    const getDetails = async () => {
+      const details = await extractDetailsFromClipboard();
+
+      if (details) {
+        setValue('username', details.username);
+        setValue('password', details.password);
+      }
+    };
+    getDetails();
   }, [setValue]);
 
   const onSubmit = async (data) => {
-    const response = await submissionMethod({ data: data });
-    console.log(response);
+    const sanitizedData = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
+    );
+    const response = await submissionMethod({ data: sanitizedData });
 
     setUser(...response.userSubset);
 
@@ -43,33 +44,9 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     }
   };
 
-  const notifyError = (error) =>
-    toast.error('Oops - looks like something went wrong! ' + error, {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-      type: 'error',
-    });
-
   return (
     <div className="chiryo_rounded chiryo_primary w-50 p-5">
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover
-        theme="light"
-      />
+      <NotificationContainer />
       <h1 className="display-3 fw-bolder mb-5">{formTitle}</h1>
       <form className="d-flex flex-column" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">

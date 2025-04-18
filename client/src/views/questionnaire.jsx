@@ -9,20 +9,22 @@ import { animationOptions3, questionAniOptions } from '../styles/animations';
 import { QUESTIONS, createProblem } from '../api/questions';
 import IsLoading from './isLoading';
 import Stars from '../components/stars';
-import { ToastContainer, toast } from 'react-toastify';
+import { notifyError, notifySuccess } from '../components/notifications';
 import { registerUser } from '../api/crud';
 import quizSound from '../assets/correct.mp3';
 import { useCredentialStore } from '../state/state';
 import { fetchJWT } from '../api/auth';
 import { handleResponseStatus } from '../components/formHelpers';
+import { NotificationContainer } from '../components/notificationContainer';
+import { sanitizeInput } from '../api/sanitizers';
 
-const introStateOptions = {
+const INTRO_STATE_OPTIONS = {
   START: 'START',
   MATCH: 'MATCH',
   GENCRED: 'GENCRED',
 };
 
-Object.freeze(introStateOptions);
+Object.freeze(INTRO_STATE_OPTIONS);
 
 const Questionnaire = () => {
   const {
@@ -51,33 +53,28 @@ const Questionnaire = () => {
     }
   }, []);
 
-  const notify = (msg) =>
-    toast.success(msg ? msg : 'Nice Job! +100 Points✨', {
-      position: 'bottom-center',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      theme: 'light',
-    });
+  const togglePassword = (e) => {
+    if (e.currentTarget.innerText == '•••••••••••') {
+      e.currentTarget.innerText = password;
+    } else {
+      e.currentTarget.innerText = '•••••••••••';
+    }
+  };
 
-  const notifyError = () =>
-    toast.error(
-      'Oops - looks like something went wrong! Refresh and try again 👍',
-      {
-        position: 'bottom-center',
-        autoClose: 3500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: 'light',
-        type: 'error',
-      },
-    );
+  const copyDetails = async () => {
+    try {
+      const details = `Username: ${
+        username ? username : 'placeholder'
+      }\nPassword: ${password ? password : 'password'}`;
+      await navigator.clipboard.writeText(details);
+      console.log(details);
+      notifySuccess('Details saved to clipboard!');
+    } catch (err) {
+      console.error(err);
+      notifyError('Failed to copy details, have you given permission?');
+    }
+  };
+  //
 
   /**
    * @description - Generates a random username for a new user
@@ -92,11 +89,12 @@ const Questionnaire = () => {
   };
 
   const handleAnswer = (formResponse) => {
+    const sanitizedAnswer = sanitizeInput(formResponse.get('answer'));
     if (
-      introState === introStateOptions.START &&
+      introState === INTRO_STATE_OPTIONS.START &&
       currentQuestionIndex <= QUESTIONS.length - 1
     ) {
-      setAnswers([...answers, formResponse.get('answer')]);
+      setAnswers([...answers, sanitizedAnswer]);
       setAnimate(true);
 
       textareaRef.current.value = '';
@@ -106,7 +104,7 @@ const Questionnaire = () => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }, 1150);
 
-      notify();
+      notifySuccess('Nice Job! +100 Points✨');
     } else {
       // Completion State
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -119,16 +117,20 @@ const Questionnaire = () => {
    * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
    */
   const handleOptionalForm = async (formResponse) => {
+    const sanitizedFormResponse = Object.fromEntries(
+      Array.from(formResponse.entries()).map(([key, value]) => [
+        key,
+        sanitizeInput(value),
+      ]),
+    );
     const { username, password } = updateGlobalCredentials();
     const PROBLEM = createProblem(answers);
-    const USER_DETAILS = JSON.parse(
-      JSON.stringify(Object.fromEntries(formResponse)),
-    );
+    const USER_DETAILS = JSON.parse(JSON.stringify(sanitizedFormResponse));
     const token = fetchJWT();
 
     if (userId && token && role != 'therapist') {
       // If the user already exists, do not create another
-      setIntroState(introStateOptions.MATCH);
+      setIntroState(INTRO_STATE_OPTIONS.MATCH);
     } else {
       // New User
       const { email, age, race, background, religion, location } = USER_DETAILS;
@@ -151,7 +153,7 @@ const Questionnaire = () => {
         await setUser(user);
         setTimeout(() => {
           // Wait for zustand to update global store
-          setIntroState(introStateOptions.MATCH);
+          setIntroState(INTRO_STATE_OPTIONS.MATCH);
         }, 1500);
       } else {
         notifyError(response.errors);
@@ -160,7 +162,7 @@ const Questionnaire = () => {
   };
   if (role === 'therapist') {
     return <div>Therapist are not allowed to do this stuff..</div>;
-  } else if (introState === introStateOptions.START) {
+  } else if (introState === INTRO_STATE_OPTIONS.START) {
     return (
       <div
         className="container-fluid vw-100 min-vh-100 d-flex justify-content-center"
@@ -168,18 +170,7 @@ const Questionnaire = () => {
           padding: '20vh 5vw',
         }}
       >
-        <ToastContainer
-          position="bottom-center"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          pauseOnHover
-          theme="light"
-        />
+        <NotificationContainer />
         {currentQuestionIndex < QUESTIONS.length && (
           <Stars number={currentQuestionIndex} />
         )}
@@ -378,15 +369,16 @@ const Questionnaire = () => {
         </div>
       </div>
     );
-  } else if (introState === introStateOptions.MATCH) {
+  } else if (introState === INTRO_STATE_OPTIONS.MATCH) {
     return (
       <div style={{ paddingTop: '20vh' }}>
-        <IsLoading introStateOptions={introStateOptions} />
+        <IsLoading introStateOptions={INTRO_STATE_OPTIONS} />
       </div>
     );
-  } else if (introState === introStateOptions.GENCRED) {
+  } else if (introState === INTRO_STATE_OPTIONS.GENCRED) {
     return (
       <div className="min-vh-100">
+        <NotificationContainer />
         <motion.div
           {...animationOptions3}
           className="modal d-block show mt-5"
@@ -410,39 +402,33 @@ const Questionnaire = () => {
                 <p>Your user credentials have been generated successfully.</p>
                 <h5>{username}</h5>
                 <small>Click the password to reveal</small>
-                <h5
-                  data-cy="password"
-                  onClick={(e) => {
-                    if (e.currentTarget.innerText == '•••••••••••') {
-                      e.currentTarget.innerText = password;
-                    } else {
-                      e.currentTarget.innerText = '•••••••••••';
-                    }
-                  }}
-                >
+                <h5 data-cy="password" onClick={togglePassword}>
                   *******
                 </h5>
-                <button
-                  style={{ backgroundColor: 'white', border: '2px solid' }}
-                  className="btn chiryo_rounded"
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.write({ username, password });
-                      notify('Details saved to clipboard!');
-                    } catch (error) {
-                      notifyError(error);
-                    }
-                  }}
-                >
-                  <i className="bi bi-clipboard"></i>
-                  Copy
-                </button>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="btn chiryo_rounded bg-white border-2"
+                    onClick={() => copyDetails()}
+                  >
+                    <span
+                      className=""
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: '10px',
+                      }}
+                    >
+                      <i className="bi bi-clipboard"></i>
+                      <p style={{ margin: 0 }}>Copy</p>
+                    </span>
+                  </button>
+                </div>
               </div>
-              <div className="modal-footer d-flex justify-content-center">
+              <div className="modal-footer d-flex justify-content-center gap-3">
                 <button
-                  style={{ backgroundColor: 'white', border: '2px solid' }}
-                  onClick={() => setIntroState(introStateOptions.START)}
-                  className="btn chiryo_rounded"
+                  onClick={() => setIntroState(INTRO_STATE_OPTIONS.START)}
+                  className="btn chiryo_rounded bg-white border-2"
                 >
                   Redo
                 </button>

@@ -13,7 +13,11 @@ const KEY = CryptoJS.PBKDF2(CRYPTO_KEY, SALT, {
 export const privateStorage = {
   getItem: (name) => {
     const data = localStorage.getItem(name);
-    if (!data) return null;
+
+    if (!data) {
+      return null;
+    }
+
     try {
       const [ivHex, encryptedHex] = data.split(':');
 

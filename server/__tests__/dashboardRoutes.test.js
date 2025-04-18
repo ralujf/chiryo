@@ -4,8 +4,8 @@ const Dashboard = require('../models/dashboard');
 const User = require('../models/user');
 const Therapist = require('../models/therapist');
 const jwt = require('jsonwebtoken');
-const therapistFixture = require('../__fixtures__/data.json');
-const userFixture = require('../__fixtures__/user.data.json');
+const therapistFixture = require('../__fixtures__/therapists.data.json');
+const userFixture = require('../__fixtures__/users.data.json');
 
 describe('Dashboard Routes', () => {
   let token;

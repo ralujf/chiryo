@@ -5,6 +5,9 @@ import { fetchJWT } from '../api/auth';
 import { logoutUserRedirect } from '../api/crud';
 
 const Navbar = () => {
+  const [validated, setIsValidated] = useState('');
+  const { userId, adminId, setUser } = useCredentialStore((state) => state);
+
   useEffect(() => {
     const fetchToken = () => {
       const token = fetchJWT();
@@ -16,8 +19,7 @@ const Navbar = () => {
     };
     fetchToken();
   }, []);
-  const [validated, setIsValidated] = useState('');
-  const { userId, setUser } = useCredentialStore((state) => state);
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
@@ -111,6 +113,20 @@ const Navbar = () => {
                     style={{ color: 'darkgrey' }}
                   >
                     Profile
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {adminId && (
+              <>
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    to="/applicants"
+                    style={{ color: 'darkgrey' }}
+                  >
+                    Applicants
                   </Link>
                 </li>
               </>

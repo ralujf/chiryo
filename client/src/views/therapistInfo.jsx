@@ -3,14 +3,14 @@ import { animationOptions } from '../styles/animations';
 
 const therapistInfo = () => {
   return (
-    <div className="container" style={{ padding: '15vh 7.5vw' }}>
-      <section style={{ margin: '0vh 0vw 10vh 0vw' }}>
-        <h1 className="display-3 fw-bolder" id="dashboard-title">
+    <div className="container p-5">
+      <section className="mt-5">
+        <h1 className="display-3 fw-bolder">
           Additional Information | Therapists
         </h1>
       </section>
 
-      <section>
+      <section className="mt-5">
         <motion.div
           {...animationOptions}
           className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
@@ -36,7 +36,7 @@ const therapistInfo = () => {
         </motion.div>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
+      <section className="mt-5">
         <motion.div
           {...animationOptions}
           className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
@@ -58,7 +58,7 @@ const therapistInfo = () => {
         </motion.div>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
+      <section className="mt-5">
         <motion.div
           {...animationOptions}
           className="mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5"
@@ -68,14 +68,14 @@ const therapistInfo = () => {
           </h1>
           <p className="text-center display-6">
             Chiryo is designed with security in mind, using encrypted messaging
-            and video calls to protect client confidentiality. However, it’s
-            still essential to follow GDPA/HIPAA (or relevant privacy laws in
-            your region) when managing client data.
+            and video calls to protect client confidentiality. However,
+            it&apos;s still essential to follow GDPA/HIPAA (or relevant privacy
+            laws in your region) when managing client data.
           </p>
         </motion.div>
       </section>
 
-      <section style={{ margin: '30vh 0vw' }}>
+      <section className="mt-5">
         <h2 className="display-3 fw-bolder mb-5">
           Why join Chiryo instead of other sites?
         </h2>
@@ -85,24 +85,24 @@ const therapistInfo = () => {
         >
           <ul>
             <li className="mb-5">
-              <b>Set Your Own Schedule</b> – Take on as many (or as few) clients
-              as you like. Your time, your rules.
+              <b>Set Your Own Schedule</b> &ndash; Take on as many (or as few)
+              clients as you like. Your time, your rules.
             </li>
             <li className="mb-5">
-              <b>Secure & Seamless</b> – Our platform is designed with privacy
-              and security in mind, so both you and your clients can feel at
-              ease.
+              <b>Secure & Seamless</b> &ndash; Our platform is designed with
+              privacy and security in mind, so both you and your clients can
+              feel at ease.
             </li>
             <li>
-              <b>Expand Your Reach</b> – Connect with clients beyond your local
-              area and provide accessible care to those who need it.
+              <b>Expand Your Reach</b> &ndash; Connect with clients beyond your
+              local area and provide accessible care to those who need it.
             </li>
           </ul>
         </motion.div>
         <motion.p {...animationOptions} className="display-4 mt-5 mb-5">
-          Signing up is simple, and we’re here to support you every step of the
-          way. Join a community of professionals making therapy more accessible,
-          one session at a time!
+          Signing up is simple, and we&apos;re here to support you every step of
+          the way. Join a community of professionals making therapy more
+          accessible, one session at a time!
         </motion.p>
       </section>
     </div>

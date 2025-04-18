@@ -1,4 +1,3 @@
-// TODO: Replace with dict API
 const ADJECTIVES = [
   'Quick',
   'Elated',
@@ -25,6 +24,8 @@ const NOUNS = [
   'Shark',
 ];
 
+const LIMIT = 1000;
+
 Object.freeze(ADJECTIVES);
 Object.freeze(NOUNS);
 
@@ -32,16 +33,16 @@ function generateRandomUsername() {
   const randomAdjective =
     ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
   const randomNoun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
-  const randomNumber = Math.floor(Math.random() * 1000);
+  const randomNumber = Math.floor(Math.random() * LIMIT);
   return `${randomAdjective}${randomNoun}${randomNumber}`;
 }
 
 function generateRandomPassword(length = 12) {
-  const chars =
+  const CHARS =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let password = '';
   for (let i = 0; i < length; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    password += CHARS.charAt(Math.floor(Math.random() * CHARS.length));
   }
   return password;
 }

@@ -3,6 +3,7 @@ const Dashboard = require('../models/dashboard');
 const User = require('../models/user');
 
 const fetchDashboard = async (req, res) => {
+  const LIMIT = 10;
   const { offset = 0 } = req.params;
   const { userId, role } = req.body.data;
   const parsedOffset = parseInt(offset, 10);
@@ -24,7 +25,7 @@ const fetchDashboard = async (req, res) => {
   }
 
   try {
-    const rows = await Dashboard.find(query).skip(offset).limit(10).exec();
+    const rows = await Dashboard.find(query).skip(offset).limit(LIMIT).exec();
     return rows.length
       ? res.status(200).json({ data: rows, total: rows.length })
       : res.status(200).send('No results found for this valid user');

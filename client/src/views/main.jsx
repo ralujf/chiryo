@@ -6,14 +6,11 @@ import bottomHero from '../assets/chiryohero2.png';
 
 const Main = () => {
   return (
-    <div
-      className="container-fluid"
-      style={{ minHeight: '80vh', padding: '15vh 7.5vw' }}
-    >
+    <div className="container-fluid p-5 mt-5">
       <div className="row justify-content-center chiryo_rounded">
         <div className="col-md-5 chiryo_rounded p-3 p-md">
           <motion.div {...animationOptions3}>
-            <img src={topHero} alt="hero" width={'100%'} />
+            <img src={topHero} alt="hero" className="w-100" />
           </motion.div>
         </div>
 
@@ -38,7 +35,7 @@ const Main = () => {
         </div>
       </div>
 
-      <div style={{ margin: '30vh 0vw' }}>
+      <div className="py-5">
         <div className="row">
           <motion.img
             {...animationOptions3}
@@ -50,9 +47,9 @@ const Main = () => {
             {...animationOptions3}
             style={{
               position: 'absolute',
-              left: '25%',
+              left: '50%',
               top: '140%',
-              fontSize: '14.5rem',
+              fontSize: '20vw',
               fontWeight: 'bolder',
             }}
           >
@@ -70,10 +67,7 @@ const Main = () => {
         </div>
       </div>
 
-      <div
-        className="row justify-content-center chiryo_rounded"
-        style={{ margin: '30vh 0vw' }}
-      >
+      <div className="row justify-content-center chiryo_rounded mt-5 pt-5">
         <div className="col mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
           <h1 className="text-center display-3 fw-bolder mb-3">
             Why Use Chiryo?
@@ -93,12 +87,12 @@ const Main = () => {
             {...animationOptions3}
             src={bottomHero}
             alt="hero"
-            width={'100%'}
+            className="w-100"
           />
         </div>
       </div>
 
-      <div className="row">
+      <div className="row mt-5 pt-5">
         <motion.a
           {...animationOptions2}
           className="text-center fw-bold display-3 chiryo_primary_action chiryo_rounded"

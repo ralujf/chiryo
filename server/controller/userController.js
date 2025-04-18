@@ -7,6 +7,7 @@ const registerUser = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ username: user.username }).exec();
+
     if (existingUser) {
       return res.status(400).json({ errors: 'Username already exists' });
     }
@@ -14,6 +15,7 @@ const registerUser = async (req, res) => {
     const saltRounds = 13;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(user.password, salt);
+
     user.password = hash;
 
     const newUser = new User(user);

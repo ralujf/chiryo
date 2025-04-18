@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Application form tests > that the application renders correctly 1`] = `<Application />`;
+
+exports[`Profile form test > if it display the profile page 1`] = `<Profile />`;
+
+exports[`about page rendering tests > that the about page renders correctly 1`] = `<About />`;
+
+exports[`additional user information page rendering tests > that the user information page renders correctly 1`] = `<userInfo />`;
+
+exports[`dashboard page rendering tests > that the dashboard page renders correctly 1`] = `<Dashboard />`;
+
+exports[`login page tests > that the login page renders correctly 1`] = `<Login />`;
+
+exports[`main home page rendering tests > that the main home page renders correctly 1`] = `<Main />`;
+
+exports[`questionnaire rendering tests > that the questionnaire renders correctly 1`] = `<Questionnaire />`;
+
+exports[`therapist information page rendering tests > that the therapist information page renders correctly 1`] = `<therapistInfo />`;
