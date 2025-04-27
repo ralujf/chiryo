@@ -1,0 +1,9 @@
+const INTRO_STATE_OPTIONS = {
+  START: 'START',
+  MATCH: 'MATCH',
+  GENCRED: 'GENCRED',
+};
+
+Object.freeze(INTRO_STATE_OPTIONS);
+
+export { INTRO_STATE_OPTIONS };
