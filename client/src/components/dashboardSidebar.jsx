@@ -3,7 +3,7 @@ import profileImage from '../assets/profile.jpg';
 
 const DashboardSidebar = (props) => {
   const {
-    id,
+    elementId,
     username,
     clientName,
     email,
@@ -20,8 +20,8 @@ const DashboardSidebar = (props) => {
         className="btn chiryo_primary_active d-flex align-items-center justify-content-between w-75"
         type="button"
         data-bs-toggle="offcanvas"
-        data-bs-target={`#offcanvasSidebar-${id}`}
-        aria-controls={`offcanvasSidebar-${id}`}
+        data-bs-target={`#offcanvasSidebar-${elementId}`}
+        aria-controls={`offcanvasSidebar-${elementId}`}
       >
         <p className="mb-0 me-2 mr-full">{username}</p>
         <i className="bi bi-person-lines-fill"></i>
@@ -30,11 +30,14 @@ const DashboardSidebar = (props) => {
       <div
         className="offcanvas offcanvas-start"
         tabIndex="-1"
-        id={`offcanvasSidebar-${id}`}
-        aria-labelledby={`offcanvasUserLabel-${id}`}
+        id={`offcanvasSidebar-${elementId}`}
+        aria-labelledby={`offcanvasUserLabel-${elementId}`}
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id={`offcanvasUserLabel-${id}`}>
+          <h5
+            className="offcanvas-title"
+            id={`offcanvasUserLabel-${elementId}`}
+          >
             {username}&apos;s Profile
           </h5>
           <button
@@ -54,7 +57,7 @@ const DashboardSidebar = (props) => {
               {firstName} {lastName}
             </h4>
           )}
-          {age && <p>{age} years old</p>}
+          {age && <p>{parseInt(age)} years old</p>}
 
           {expertise && (
             <>
@@ -65,7 +68,7 @@ const DashboardSidebar = (props) => {
           )}
 
           <hr></hr>
-          {diagnosis && (
+          {diagnosis && clientName && (
             <>
               <h5>{clientName}&apos;s Diagnosis</h5>
               <p>{diagnosis}</p>
@@ -87,13 +90,13 @@ const DashboardSidebar = (props) => {
 };
 
 DashboardSidebar.propTypes = {
-  id: PropTypes.string.isRequired,
-  clientName: PropTypes.string.isRequired,
+  elementId: PropTypes.string.isRequired,
+  clientName: PropTypes.string,
   username: PropTypes.string.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  age: PropTypes.number.isRequired,
   diagnosis: PropTypes.string,
   expertise: PropTypes.string.isRequired,
 };

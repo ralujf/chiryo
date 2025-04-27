@@ -38,45 +38,32 @@ const updatePasswordValidation = [
   body('data.newPassword').isLength({ min: MIN_LENGTH_PASS }).escape(),
 ];
 
-router.post(
-  '/register',
-  registrationValidation,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
-  registerUser,
-);
+const concatErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let array = errors.array();
 
-router.post(
-  '/login',
-  loginValidation,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
-  loginUser,
-  generateJWT,
-);
+    let message = array
+      .map((err, index) => {
+        return index < array.length - 1 ? `${err.msg},` : `${err.msg}.`;
+      })
+      .join(' ');
+
+    return res.status(400).send(message);
+  }
+  return next();
+};
+
+router.post('/register', registrationValidation, concatErrors, registerUser);
+
+router.post('/login', loginValidation, concatErrors, loginUser, generateJWT);
 
 router.post('/logout', logoutUser);
 
 router.patch(
   '/update-profile',
   updateProfileValidation,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  concatErrors,
   updateUser,
 );
 
@@ -85,26 +72,14 @@ router.patch('/set-first-login', setFirstLogin);
 router.patch(
   '/update-password',
   updatePasswordValidation,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  concatErrors,
   updatePassword,
 );
 
 router.delete(
   '/delete-user-account',
   loginValidation,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  },
+  concatErrors,
   deleteUser,
 );
 

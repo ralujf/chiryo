@@ -19,13 +19,11 @@ function calculateCorrelation(objectA, objectB) {
     const valueB = objectB[key];
 
     if (typeof valueA === 'number' && typeof valueB === 'number') {
-      // Normalize the difference between numbers to a score between 0 and 1
       const max = Math.max(valueA, valueB);
       const min = Math.min(valueA, valueB);
       const score = CEILING - (max - min) / (max + min);
       totalScore += score;
     } else if (typeof valueA === 'string' && typeof valueB === 'string') {
-      // Use string-comparison to get a score between 0 and 1
       const score = stringComparison.default.cosine.similarity(valueA, valueB);
       totalScore += score;
     } else {

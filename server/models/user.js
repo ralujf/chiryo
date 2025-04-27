@@ -55,6 +55,16 @@ const UserSchema = new Schema(
       default: 'user',
       immutable: true,
     },
+    problem: {
+      type: String,
+      required: false,
+      immutable: false,
+    },
+    additional: {
+      type: String,
+      required: false,
+      immutable: false,
+    },
   },
   { timestamps: true },
 );

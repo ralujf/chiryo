@@ -7,6 +7,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    reporters: ['html', 'verbose'],
+    outputFile: {
+      html: './html-report.json',
+    },
   },
   deps: {
     registerNodeLoader: false,

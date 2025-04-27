@@ -1,4 +1,4 @@
-function sanitizeString(input) {
+const sanitizeString = (input) => {
   if (typeof input !== 'string') {
     return input;
   }
@@ -11,19 +11,21 @@ function sanitizeString(input) {
       '"': '&quot;',
       '`': '&#96;',
     };
+
     return escapeChars[char] || char;
   });
-}
+};
 
-function sanitizeNumber(input) {
+const sanitizeNumber = (input) => {
   const number = Number(input);
   return isNaN(number) ? null : number;
-}
+};
 
-function sanitizeObject(obj) {
+const sanitizeObject = (obj) => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
   }
+
   const sanitizedObj = {};
 
   for (const key in obj) {
@@ -31,10 +33,11 @@ function sanitizeObject(obj) {
       sanitizedObj[key] = sanitizeInput(obj[key]);
     }
   }
-  return sanitizedObj;
-}
 
-function sanitizeInput(input) {
+  return sanitizedObj;
+};
+
+const sanitizeInput = (input) => {
   switch (typeof input) {
     case 'string':
       return sanitizeString(input);
@@ -45,6 +48,6 @@ function sanitizeInput(input) {
     default:
       return input;
   }
-}
+};
 
 export { sanitizeInput, sanitizeString, sanitizeNumber, sanitizeObject };

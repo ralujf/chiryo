@@ -63,23 +63,23 @@ async function run(data) {
     ],
   });
 
-  const result = await chatSession.sendMessage(data);
+  const result = await chatSession.sendMessage(data.toString());
   const diagnosis = await result.response.text();
   return JSON.parse(diagnosis);
 }
 
 const matchUserWithTherapist = async (req, res, next) => {
-  const { user } = req.body.data;
-  const currentUser = await User.findOne({ username: user.username }).exec();
+  const { userId } = req.body.data;
+  const currentUser = await User.findById(userId).exec();
 
   if (!currentUser) {
     return res.status(404).send('No user found for this ID');
   }
 
-  const { age, race, religion, problem } = user;
+  const { age, race, religion, problem } = currentUser;
 
   const response = await run(problem);
-  console.log(response);
+
   if (!response.diagnosis) {
     return res.status(500).send('Failed to diagnose user');
   }
@@ -93,12 +93,12 @@ const matchUserWithTherapist = async (req, res, next) => {
 
   try {
     let output = await matchObject(userForMatching);
-    console.log(output);
+
     res.locals.matches = output;
     return next();
   } catch (err) {
     console.error(`There has been an unexpected error: ${err}`);
-    return res.status(500).send('Server error, matching unsuccessful');
+    return res.status(500).send('Server error, matching unsuccessful' + err);
   }
 };
 

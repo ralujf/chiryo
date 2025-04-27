@@ -14,7 +14,6 @@ The above will provide the environment variable values for:
 ```javascript
 // Backend
 GEMINI_API_KEY=value
-MONGO_URI=value
 MONGO_TEST=value
 MONGO_URL=value
 
@@ -23,6 +22,13 @@ MONGO_URL=value
 // The following value should be a random uuid
 VITE_CRYPTO_KEY=value
 ```
-NOTE: MONGO_URL is not required and is for production deployment
+NOTE: MONGO_URL is for PRODUCTION only
 
-After you should be able to use the following custom scripts to download and run all the dependencies required to run the project.
+After, use the following custom scripts to download and run all the dependencies required to run the project.
+
+```powershell
+cd client ; npm install ; npm run dev
+
+cd ../server ; npm install ; npm run start
+```
+

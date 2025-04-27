@@ -1,19 +1,26 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { privateStorage } from './privateStorage';
+import { INTRO_STATE_OPTIONS } from '../components/introState';
 
-const useCredentialStore = create(
+const useIdentityStore = create(
   persist(
     (set) => ({
-      userId: 'fake',
-      adminId: 'fake',
-      username: '',
-      password: '',
-      role: 'user',
+      userId: '',
+      adminId: '',
+      role: '',
       firstLogin: null,
-      currentQuestionIndex: 0,
-      answers: [],
-      introState: 'GENCRED',
+      introState: INTRO_STATE_OPTIONS.START,
+      resetUser: () =>
+        set(() => ({
+          username: '',
+          password: '',
+          adminId: '',
+          userId: '',
+          role: '',
+          firstLogin: null,
+          introState: INTRO_STATE_OPTIONS.START,
+        })),
       setUser: (user) =>
         set(() => {
           return {
@@ -23,12 +30,7 @@ const useCredentialStore = create(
             firstLogin: user.firstLogin,
           };
         }),
-      setUsername: (username) => set((state) => ({ ...state, username })),
-      setPassword: (password) => set((state) => ({ ...state, password })),
-      setCurrentQuestionIndex: (number) =>
-        set((state) => ({ ...state, currentQuestionIndex: number })),
-      setIntroState: (introValue) =>
-        set((state) => ({ ...state, introState: introValue })),
+      setIntroState: (introValue) => set(() => ({ introState: introValue })),
     }),
     {
       name: 'chiryo-user',
@@ -37,4 +39,16 @@ const useCredentialStore = create(
   ),
 );
 
-export { useCredentialStore };
+const useLoginStore = create((set) => ({
+  username: '',
+  password: '',
+  resetLoginStore: () =>
+    set(() => ({
+      username: '',
+      password: '',
+    })),
+  setUsername: (username) => set(() => ({ username })),
+  setPassword: (password) => set(() => ({ password })),
+}));
+
+export { useIdentityStore, useLoginStore };

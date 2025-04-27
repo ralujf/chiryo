@@ -7,21 +7,23 @@ const { scrapeTherapists } = require('./scraper');
 const sendApplication = async (req, res) => {
   try {
     const applicationInformation = req.body.data;
-    console.log(applicationInformation.password);
+
     if (!applicationInformation.password) {
-      return res.status(500).json({ message: 'Incorrect format' + err });
+      return res.status(500).send('Incorrect format' + err);
     }
 
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
+    const SALT_ROUNDS = 10;
+
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hash = await bcrypt.hash(applicationInformation.password, salt);
+
     applicationInformation.password = hash;
 
     const application = new Application(applicationInformation);
     await application.save();
     return res.status(200).send('Application Submitted');
   } catch (err) {
-    return res.status(500).json({ message: 'Incorrect format' + err });
+    return res.status(500).send('Incorrect format' + err);
   }
 };
 
@@ -51,7 +53,7 @@ const viewApplications = async (req, res) => {
       .limit(LIMIT)
       .exec();
 
-    return res.status(200).json({ data: applicants, total: applicants.length });
+    return res.status(200).send({ data: applicants, total: applicants.length });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Server side error occurred');
@@ -61,7 +63,9 @@ const viewApplications = async (req, res) => {
 const approveApplication = async (req, res) => {
   try {
     const { applicationInformation } = req.body.data;
+
     applicationInformation.username = `${applicationInformation.firstName}${applicationInformation.lastName}`;
+
     const therapist = new Therapist(applicationInformation);
     await therapist.save();
 

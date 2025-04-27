@@ -5,43 +5,36 @@ import {
   generateRandomUsername,
 } from '../api/generateUser';
 import { motion } from 'motion/react';
+
 import { animationOptions3, questionAniOptions } from '../styles/animations';
-import { QUESTIONS, createProblem } from '../api/questions';
 import IsLoading from './isLoading';
-import Stars from '../components/stars';
-import { notifyError, notifySuccess } from '../components/notifications';
+import { QUESTIONS, createProblem } from '../api/questions';
 import { registerUser } from '../api/crud';
-import quizSound from '../assets/correct.mp3';
-import { useCredentialStore } from '../state/state';
+import { sanitizeInput } from '../api/sanitizers';
 import { fetchJWT } from '../api/auth';
+import { useIdentityStore, useLoginStore } from '../state/state';
+
+import Stars from '../components/stars';
+import {
+  notifyError,
+  notifySuccess,
+  responseHandler,
+} from '../components/notifications';
 import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
-import { sanitizeInput } from '../api/sanitizers';
-
-const INTRO_STATE_OPTIONS = {
-  START: 'START',
-  MATCH: 'MATCH',
-  GENCRED: 'GENCRED',
-};
-
-Object.freeze(INTRO_STATE_OPTIONS);
+import { INTRO_STATE_OPTIONS } from '../components/introState';
+import quizSound from '../assets/correct.mp3';
 
 const Questionnaire = () => {
-  const {
-    role,
-    currentQuestionIndex,
-    setCurrentQuestionIndex,
-    introState,
-    setIntroState,
-    userId,
-    setUser,
-    username,
-    setUsername,
-    password,
-    setPassword,
-  } = useCredentialStore((state) => state);
+  const { introState, setIntroState, role, userId, setUser, resetUser } =
+    useIdentityStore((state) => state);
+
+  const { username, setUsername, password, setPassword } = useLoginStore(
+    (state) => state,
+  );
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const textareaRef = useRef(null);
 
@@ -53,87 +46,83 @@ const Questionnaire = () => {
     }
   }, []);
 
-  const togglePassword = (e) => {
-    if (e.currentTarget.innerText == '•••••••••••') {
-      e.currentTarget.innerText = password;
-    } else {
-      e.currentTarget.innerText = '•••••••••••';
+  const clearAnswers = () => {
+    setAnswers(Array(answers.length).fill(null));
+  };
+
+  const fetchPrevAnswers = (index) => {
+    if (answers[index]) {
+      textareaRef.current.value = answers[index];
     }
   };
 
-  const copyDetails = async () => {
-    try {
-      const details = `Username: ${
-        username ? username : 'placeholder'
-      }\nPassword: ${password ? password : 'password'}`;
-      await navigator.clipboard.writeText(details);
-      console.log(details);
-      notifySuccess('Details saved to clipboard!');
-    } catch (err) {
-      console.error(err);
-      notifyError('Failed to copy details, have you given permission?');
-    }
+  const redoQuestions = () => {
+    setIntroState(INTRO_STATE_OPTIONS.START);
+    setCurrentQuestionIndex(0);
+    clearAnswers();
+    resetUser();
   };
-  //
 
-  /**
-   * @description - Generates a random username for a new user
-   * @returns - User credentials (password and username)
-   */
-  const updateGlobalCredentials = () => {
-    const username = generateRandomUsername();
-    const password = generateRandomPassword();
-    setUsername(username);
-    setPassword(password);
-    return { username, password };
+  const setPrevQuestion = () => {
+    const prevQuestion = currentQuestionIndex - 1;
+    setCurrentQuestionIndex(prevQuestion);
+    fetchPrevAnswers(prevQuestion);
   };
 
   const handleAnswer = (formResponse) => {
     const sanitizedAnswer = sanitizeInput(formResponse.get('answer'));
+    const nextQuestion = currentQuestionIndex + 1;
+
     if (
       introState === INTRO_STATE_OPTIONS.START &&
       currentQuestionIndex <= QUESTIONS.length - 1
     ) {
-      setAnswers([...answers, sanitizedAnswer]);
+      const newArr = answers;
+      newArr[currentQuestionIndex] = sanitizedAnswer;
+
+      setAnswers(newArr);
       setAnimate(true);
 
       textareaRef.current.value = '';
 
       setTimeout(() => {
         setAnimate(false);
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setCurrentQuestionIndex(nextQuestion);
+        fetchPrevAnswers(nextQuestion);
       }, 1150);
 
-      notifySuccess('Nice Job! +100 Points✨');
+      notifySuccess('Nice Job! +100 Points ✨');
     } else {
       // Completion State
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex(nextQuestion);
     }
   };
 
-  /**
-   *
-   * @param {Object} formResponse
-   * @description - Takes in the users responses, creates and registers a user, beings the process of matching a user to a therapist
-   */
-  const handleOptionalForm = async (formResponse) => {
-    const sanitizedFormResponse = Object.fromEntries(
-      Array.from(formResponse.entries()).map(([key, value]) => [
-        key,
-        sanitizeInput(value),
-      ]),
-    );
-    const { username, password } = updateGlobalCredentials();
-    const PROBLEM = createProblem(answers);
-    const USER_DETAILS = JSON.parse(JSON.stringify(sanitizedFormResponse));
-    const token = fetchJWT();
+  const createUserCredentials = () => {
+    const username = generateRandomUsername();
+    const password = generateRandomPassword();
 
-    if (userId && token && role != 'therapist') {
+    setUsername(username);
+    setPassword(password);
+
+    return { username, password };
+  };
+
+  const createUser = async ({ token, userDetails, problem }) => {
+    if (
+      (userId && token && role != 'therapist') ||
+      (userId && token && role != 'admin')
+    ) {
       // If the user already exists, do not create another
       setIntroState(INTRO_STATE_OPTIONS.MATCH);
     } else {
-      // New User
-      const { email, age, race, background, religion, location } = USER_DETAILS;
+      const { username, password } = createUserCredentials();
+      const { email, age, race, background, religion, location } = userDetails;
+
+      if (!username || !password) {
+        notifyError('Credentials were not set, try again!');
+      }
+
       const response = await registerUser({
         data: {
           username: username,
@@ -144,24 +133,96 @@ const Questionnaire = () => {
           background: background,
           religion: religion,
           location: location,
-          problem: PROBLEM,
+          problem: problem,
         },
       });
 
-      if (response.errors === null && response.id) {
-        const user = { userId: response.id, role: 'user', firstLogin: true };
-        await setUser(user);
-        setTimeout(() => {
-          // Wait for zustand to update global store
-          setIntroState(INTRO_STATE_OPTIONS.MATCH);
-        }, 1500);
-      } else {
-        notifyError(response.errors);
-      }
+      responseHandler({
+        res: response,
+        setter: setUser,
+        storeSetter: setIntroState,
+        defaultVar: {
+          userId: response.id ? response.id : '',
+          role: response.id ? 'user' : '',
+          firstLogin: true,
+        },
+        stateVar: INTRO_STATE_OPTIONS.MATCH,
+      });
+
+      // if (response.id) {
+      //   const user = { userId: response.id, role: 'user', firstLogin: true };
+      //   setUser(user);
+      //   setIntroState(INTRO_STATE_OPTIONS.MATCH);
+      // } else {
+      //   notifyError(response);
+      // }
     }
   };
+
+  const togglePassword = (e) => {
+    if (e.currentTarget.innerText == '•••••••••••') {
+      e.currentTarget.innerText = password;
+    } else {
+      e.currentTarget.innerText = '•••••••••••';
+    }
+  };
+
+  const copyDetails = async () => {
+    try {
+      const details = `Username: ${username ? username : ''}\nPassword: ${
+        password ? password : 'password'
+      }`;
+      await navigator.clipboard.writeText(details);
+      notifySuccess('Details saved to clipboard!');
+    } catch (err) {
+      console.error(err);
+      notifyError('Failed to copy details, have you given permission?');
+    }
+  };
+
+  /**
+   *
+   * @param {Object} formResponses - users inputs from form
+   * @description - begins the process of matching a user to a therapist
+   */
+  const createUserWrapper = async (formResponses) => {
+    const sanitizedFormResponse = Object.fromEntries(
+      Array.from(formResponses.entries()).map(([key, value]) => [
+        key,
+        sanitizeInput(value),
+      ]),
+    );
+
+    const PROBLEM = createProblem(answers);
+    const USER_DETAILS = JSON.parse(JSON.stringify(sanitizedFormResponse));
+
+    const token = fetchJWT();
+
+    createUser({ token: token, userDetails: USER_DETAILS, problem: PROBLEM });
+  };
+
+  const handleFormSubmission = (e) => {
+    const formData = new FormData(e.currentTarget);
+
+    if (!formData) {
+      return null;
+    }
+
+    correctAudio.play();
+
+    if (currentQuestionIndex >= QUESTIONS.length) {
+      createUserWrapper(formData);
+    } else {
+      handleAnswer(formData);
+    }
+  };
+
   if (role === 'therapist') {
-    return <div>Therapist are not allowed to do this stuff..</div>;
+    return (
+      <div className="min-vh-100 min-vw-100 d-flex justify-content-center align-items-center">
+        Therapist are not allowed to do this stuff..
+      </div>
+    );
   } else if (introState === INTRO_STATE_OPTIONS.START) {
     return (
       <div
@@ -195,21 +256,17 @@ const Questionnaire = () => {
             initial="hidden"
             animate={animate ? 'hidden' : 'visible'}
             onSubmit={(e) => {
-              correctAudio.play();
               e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              if (currentQuestionIndex >= QUESTIONS.length) {
-                handleOptionalForm(formData);
-              } else {
-                handleAnswer(formData);
-              }
+              handleFormSubmission(e);
             }}
           >
             {currentQuestionIndex >= QUESTIONS.length && (
               <div>
-                <small className="text-muted text-center mb-4">
-                  While these fields are not necessary, they&apos;d really help
-                  find better matches! However, if you want to skip, press next
+                <small className="text-muted text-center mb-5">
+                  This information is required to find you a perfect match
+                  they&apos;d really help find better matches! However, if you
+                  want to skip, enter anonymous information, and press next.
+                  This will provide random results
                 </small>
                 <div className="mb-3">
                   <label className="fw-bold">Email</label>
@@ -344,11 +401,7 @@ const Questionnaire = () => {
                   type="button"
                   data-cy="back"
                   className="chiryo_primary_active chiryo_rounded mt-5 d-flex justify-content-center"
-                  onClick={() => {
-                    setCurrentQuestionIndex(currentQuestionIndex - 1);
-                    textareaRef.current.value =
-                      answers[currentQuestionIndex - 1];
-                  }}
+                  onClick={() => setPrevQuestion()}
                 >
                   Back
                 </button>
@@ -401,45 +454,52 @@ const Questionnaire = () => {
                 </p>
                 <p>Your user credentials have been generated successfully.</p>
                 <h5>{username}</h5>
-                <small>Click the password to reveal</small>
-                <h5 data-cy="password" onClick={togglePassword}>
-                  *******
-                </h5>
-                <div className="d-flex justify-content-center">
-                  <button
-                    className="btn chiryo_rounded bg-white border-2"
-                    onClick={() => copyDetails()}
-                  >
-                    <span
-                      className=""
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: '10px',
-                      }}
-                    >
-                      <i className="bi bi-clipboard"></i>
-                      <p style={{ margin: 0 }}>Copy</p>
-                    </span>
-                  </button>
-                </div>
+
+                {username && password && (
+                  <>
+                    <small>Click the password to reveal</small>
+                    <h5 data-cy="password" onClick={() => togglePassword()}>
+                      *******
+                    </h5>
+                    <div className="d-flex justify-content-center">
+                      <button
+                        className="btn chiryo_rounded bg-white border-2"
+                        onClick={() => copyDetails()}
+                      >
+                        <span
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: '10px',
+                          }}
+                        >
+                          <i className="bi bi-clipboard"></i>
+                          <p style={{ margin: 0 }}>Copy</p>
+                        </span>
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="modal-footer d-flex justify-content-center gap-3">
                 <button
-                  onClick={() => setIntroState(INTRO_STATE_OPTIONS.START)}
+                  onClick={() => redoQuestions()}
                   className="btn chiryo_rounded bg-white border-2"
                 >
                   Redo
                 </button>
-                <Link
-                  href="/login"
-                  type="button"
-                  className="btn chiryo_primary chiryo_rounded"
-                  data-cy="login-link"
-                >
-                  Login
-                </Link>
+                {username && password && (
+                  <Link
+                    disabled={username && password ? false : true}
+                    href="/login"
+                    type="button"
+                    className="btn chiryo_primary chiryo_rounded"
+                    data-cy="login-link"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { Switch, Route } from 'wouter';
-import { PrivateRoute } from './api/routes';
+import { PrivateRoute } from './api/privateRoutes';
 
 import Navbar from './components/navbar';
 import Footer from './components/footer';

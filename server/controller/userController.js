@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ username: user.username }).exec();
 
     if (existingUser) {
-      return res.status(400).json({ errors: 'Username already exists' });
+      return res.status(400).send('Username already exists');
     }
 
     const saltRounds = 13;
@@ -21,12 +21,10 @@ const registerUser = async (req, res) => {
     const newUser = new User(user);
     await newUser.save();
 
-    return res.status(201).json({ id: newUser._id, errors: null });
+    return res.status(201).send({ id: newUser._id });
   } catch (err) {
     console.error(err);
-    return res
-      .status(500)
-      .json({ id: null, errors: 'Error registering new user: ' + err });
+    return res.status(500).send('Error registering new user: ' + err);
   }
 };
 
@@ -47,8 +45,6 @@ const loginUser = async (req, res, next) => {
     if (!user) {
       user = await Therapist.findOne({ username: username }).exec();
     }
-
-    console.log(user);
 
     if (!user) {
       console.error('Login unsuccessful');
@@ -74,14 +70,12 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    const token = req.headers.authorization;
+
+    if (!token) {
       return res.status(400).send('Authorization header is required');
     }
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      return res.status(400).send('Token is required');
-    }
+
     return res.status(200).send('Logout successful');
   } catch (err) {
     return res.status(500).send('Error logging out user');
@@ -105,8 +99,6 @@ const updateUser = async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    console.error(password);
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -122,8 +114,6 @@ const updateUser = async (req, res) => {
       return res.status(500).send('Failed to update');
     }
 
-    console.log(user.password);
-
     return res.status(200).send('User details updated successfully');
   } catch (err) {
     console.error(err);
@@ -133,7 +123,6 @@ const updateUser = async (req, res) => {
 
 const setFirstLogin = async (req, res) => {
   const { userId, firstLogin, role } = req.body.data;
-  console.log('setfirst logintest' + userId);
 
   if (!userId || !role) {
     return res.status(400).send('Missing userId or role');
@@ -168,7 +157,7 @@ const updatePassword = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-    console.error(oldPassword);
+
     const isMatch = await bcrypt.compare(oldPassword, user.password);
 
     if (isMatch) {

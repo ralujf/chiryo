@@ -1,67 +1,57 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
+import { useIdentityStore } from '../state/state';
 
-import DashboardSidebar from '../components/dashboardSidebar';
-import { NotificationContainer } from '../components/notificationContainer';
-import { notifyError, notifySuccess } from '../components/notifications';
-
-import { useCredentialStore } from '../state/state';
 import {
-  fetchApplicants,
+  loadApplicants,
   acceptApplicant,
   rejectApplicant,
   searchForTherapists,
 } from '../api/crud';
+
+import DashboardSidebar from '../components/dashboardSidebar';
+import { NotificationContainer } from '../components/notificationContainer';
+import { responseHandler } from '../components/notifications';
 import Pagination from '../components/pagination';
 
 const Admin = () => {
-  const { adminId, username } = useCredentialStore((state) => state);
+  const { adminId } = useIdentityStore((state) => state);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [tableData, setTableData] = useState({});
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     let offset = currentPage;
     const updateData = () => {
-      const newTableData = fetchApplicants(
-        { data: { adminId, username } },
-        offset,
-      );
-      console.log('Admin Data:', newTableData.tableData);
-      setTableData(newTableData.tableData);
-      setTotalPages(newTableData.total);
+      const response = loadApplicants({ data: { adminId } }, offset);
+      const tableData = responseHandler(response);
+
+      console.log('Admin Data:', tableData.data);
+
+      setTableData(tableData.data);
+      setTotalPages(tableData.total);
     };
 
     updateData();
-  }, [currentPage, adminId, username]);
+  }, [currentPage, adminId]);
 
   const handleRejectApplicant = (email) => {
-    const result = rejectApplicant({
+    const response = rejectApplicant({
       data: {
         email: email,
         adminId,
-        username,
       },
     });
-
-    if (result) {
-      notifySuccess();
-    } else {
-      notifyError();
-    }
+    responseHandler(response);
   };
 
   const handleAcceptApplicant = (data) => {
-    const result = acceptApplicant({
-      data: { applicationInformation: data, adminId, username },
+    const response = acceptApplicant({
+      data: { applicationInformation: data, adminId },
     });
-
-    if (result) {
-      notifySuccess();
-    } else {
-      notifyError();
-    }
+    responseHandler(response);
   };
 
   return (
@@ -70,6 +60,14 @@ const Admin = () => {
       <motion.h1 {...animationOptions3} className="display-3 fw-bolder mb-5">
         Applicants | {currentPage + 1}
       </motion.h1>
+
+      <motion.button
+        onClick={() => searchForTherapists({ data: { adminId: adminId } })}
+        className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
+      >
+        {' '}
+        Find Applicants
+      </motion.button>
 
       <motion.div
         {...animationOptions3}
@@ -84,17 +82,7 @@ const Admin = () => {
             <tr>
               <th className="chiryo_primary align-middle">Name</th>
               <th className="chiryo_primary align-middle">Qualifications</th>
-              <th className="chiryo_primary">
-                <button
-                  onClick={() =>
-                    searchForTherapists({ data: { adminId: adminId } })
-                  }
-                  className="btn chiryo_rounded chiryo_primary_action w-100"
-                >
-                  {' '}
-                  Enrol Applicants
-                </button>
-              </th>
+              <th className="chiryo_primary align-middle">Accept?</th>
             </tr>
           </thead>
           <tbody>
@@ -102,7 +90,7 @@ const Admin = () => {
               tableData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="align-middle">
                   <td>
-                    <DashboardSidebar {...row} id={rowIndex} />
+                    <DashboardSidebar {...row} elementId={String(rowIndex)} />
                   </td>
 
                   <td>
@@ -133,6 +121,7 @@ const Admin = () => {
           </tbody>
         </table>
       </motion.div>
+
       <Pagination
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

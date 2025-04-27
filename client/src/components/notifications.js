@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 const CLOSE_TIME = 2000;
 
-const createMessage = (type) => {
+const createNotifMessage = (type) => {
   switch (type) {
     case 'Phone':
       return 'Phone number was copied!';
@@ -16,14 +16,12 @@ const createMessage = (type) => {
 };
 
 const copyToClipBoard = async (value, type) => {
-  let message = createMessage(type);
-  console.log(type);
+  let message = createNotifMessage(type);
   try {
     await navigator.clipboard.writeText(value);
     notifySuccess(message);
   } catch (err) {
-    notifyError();
-    console.error('Could not copy text: ', err);
+    notifyError('Could not copy text: ' + err);
   }
 };
 
@@ -56,4 +54,38 @@ const notifySuccess = (message) =>
     type: 'success',
   });
 
-export { notifySuccess, notifyError, copyToClipBoard };
+const responseHandler = ({
+  res,
+  setter = null,
+  storeSetter = null,
+  defaultVar,
+  stateVar,
+  redirect = null,
+}) => {
+  console.log(res);
+  try {
+    if (parseInt(res.status) < 400) {
+      notifySuccess(res.message ? res.message : res.statusText);
+
+      if (setter && defaultVar) {
+        setter(defaultVar);
+      }
+
+      if (storeSetter && stateVar) {
+        storeSetter(stateVar);
+      }
+
+      if (redirect) {
+        redirect;
+      }
+
+      return res.data;
+    } else {
+      notifyError(res.message ? res.message : res.statusText);
+    }
+  } catch (err) {
+    notifyError(err);
+  }
+};
+
+export { notifySuccess, notifyError, responseHandler, copyToClipBoard };

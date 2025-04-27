@@ -1,31 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { useCredentialStore } from '../state/state';
+import { useIdentityStore } from '../state/state';
+
 import { fetchJWT } from '../api/auth';
 import { logoutUserRedirect } from '../api/crud';
 
 const Navbar = () => {
   const [validated, setIsValidated] = useState('');
-  const { userId, adminId, setUser } = useCredentialStore((state) => state);
+  const { userId, adminId, role, resetUser, setCurrentQuestionIndex } =
+    useIdentityStore((state) => state);
 
   useEffect(() => {
     const fetchToken = () => {
       const token = fetchJWT();
-      if (token) {
+
+      if (token && (userId || adminId)) {
         setIsValidated(true);
       } else {
         setIsValidated(false);
       }
     };
     fetchToken();
-  }, []);
+  }, [userId, adminId]);
 
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
       style={{ boxShadow: '0 2px 40px rgba(0, 0, 0, 0.1)' }}
     >
-      <div className="container">
+      <div className="container-fluid px-5">
         <Link className="navbar-brand" to="/" style={{ color: 'darkgrey' }}>
           Chiryō
         </Link>
@@ -56,15 +59,17 @@ const Navbar = () => {
               </Link>
             </li>
 
-            <li className="nav-item">
-              <Link
-                className="nav-link"
-                to="/become-a-therapist"
-                style={{ color: 'darkgrey' }}
-              >
-                Apply to be a Therapist
-              </Link>
-            </li>
+            {role != 'therapist' && (
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to="/become-a-therapist"
+                  style={{ color: 'darkgrey' }}
+                >
+                  Apply to be a Therapist
+                </Link>
+              </li>
+            )}
 
             <li className="nav-item dropdown">
               <Link
@@ -95,7 +100,7 @@ const Navbar = () => {
               </div>
             </li>
 
-            {userId && (
+            {validated && (
               <>
                 <li className="nav-item">
                   <Link
@@ -132,16 +137,13 @@ const Navbar = () => {
               </>
             )}
           </ul>
+
           {validated ? (
             <button
               className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
               onClick={() => {
-                setUser({
-                  adminId: null,
-                  userId: null,
-                  role: null,
-                  firstLogin: null,
-                });
+                resetUser();
+                setCurrentQuestionIndex(0);
                 logoutUserRedirect();
               }}
             >
@@ -151,8 +153,9 @@ const Navbar = () => {
             <Link
               className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
               to="/login"
+              onClick={() => resetUser()}
             >
-              Login
+              Log in
             </Link>
           )}
         </div>

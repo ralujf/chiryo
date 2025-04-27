@@ -1,6 +1,6 @@
-const storeJWT = (response) => {
-  const token = response.headers.get('Authorization');
+const storeJWT = (token) => {
   if (token) {
+    console.log('STORING TOKEN');
     localStorage.setItem('jwtToken', token.replace('Bearer ', ''));
   }
 };

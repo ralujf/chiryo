@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import DatePicker from 'react-datepicker';
-import Intro from '../components/intro';
-import DashboardSidebar from '../components/dashboardSidebar';
-import { copyToClipBoard } from '../components/notifications';
+import 'react-datepicker/dist/react-datepicker.css';
+import { useIdentityStore } from '../state/state';
+
 import {
   loadTableData,
   removeRowFromTable,
@@ -13,16 +13,18 @@ import {
   updateRowFromTable,
   setFirstLogin,
 } from '../api/crud';
-import 'react-datepicker/dist/react-datepicker.css';
-import { useCredentialStore } from '../state/state';
+
+import Intro from '../components/intro';
+import DashboardSidebar from '../components/dashboardSidebar';
+import { copyToClipBoard } from '../components/notifications';
 import Pagination from '../components/pagination';
 import { NotificationContainer } from '../components/notificationContainer';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState();
-  const [tableData, setTableData] = useState();
-  const { userId, role, firstLogin } = useCredentialStore((state) => state);
+  const [totalPages, setTotalPages] = useState(0);
+  const [tableData, setTableData] = useState([]);
+  const { userId, role, firstLogin } = useIdentityStore((state) => state);
 
   useEffect(() => {
     setFirstLogin({
@@ -61,7 +63,7 @@ const Dashboard = () => {
       data: {
         userId: updatedTableData[rowIndex].userId,
         therapistId: updatedTableData[rowIndex].therapistId,
-        ...updatedTableData[rowIndex],
+        rowData: { ...updatedTableData[rowIndex] },
       },
     });
   };
@@ -125,7 +127,7 @@ const Dashboard = () => {
                 <tr key={rowIndex} className="align-middle">
                   <td>
                     <DashboardSidebar
-                      id={rowIndex}
+                      elementId={String(rowIndex)}
                       username={
                         role === 'user'
                           ? row.therapist.username

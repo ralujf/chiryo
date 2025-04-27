@@ -108,7 +108,6 @@ describe('Admin Routes', () => {
         data: {
           applicationInformation: therapistsData[1],
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -128,7 +127,6 @@ describe('Admin Routes', () => {
         data: {
           applicationInformation: invalidApplicationInformation,
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -143,7 +141,6 @@ describe('Admin Routes', () => {
         data: {
           email: therapistsData[2].email,
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -159,7 +156,6 @@ describe('Admin Routes', () => {
         data: {
           email: 'nonexistent@example.com',
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -173,7 +169,6 @@ describe('Admin Routes', () => {
       .send({
         data: {
           email: therapistsData[3].email,
-          username,
         },
       });
 
@@ -203,7 +198,7 @@ describe('Admin Routes', () => {
       });
 
     expect(response.status).toBe(500);
-    expect(response.body.message).toContain('Incorrect format');
+    expect(response.text).toContain('Incorrect format');
   });
 
   it('should fail with invalid offset in view applications', async () => {
@@ -213,7 +208,6 @@ describe('Admin Routes', () => {
       .send({
         data: {
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -231,7 +225,6 @@ describe('Admin Routes', () => {
       .send({
         data: {
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -251,7 +244,6 @@ describe('Admin Routes', () => {
         data: {
           applicationInformation: therapistsData[1],
           adminId: process.env.ADMIN,
-          username,
         },
       });
 
@@ -271,7 +263,6 @@ describe('Admin Routes', () => {
         data: {
           email: therapistsData[2].email,
           adminId: process.env.ADMIN,
-          username,
         },
       });
 

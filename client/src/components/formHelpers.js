@@ -7,16 +7,20 @@ const handleResponseStatus = (e, errors = null) => {
 const extractDetailsFromClipboard = async () => {
   try {
     const clipboardText = await navigator.clipboard.readText();
+
     const details = clipboardText.split('\n').reduce((acc, line) => {
       const [key, value] = line.split(':').map((str) => str.trim());
+
       if (key && value) {
         acc[key.toLowerCase()] = value;
       }
+
       return acc;
     }, {});
+
     return details;
-    // eslint-disable-next-line no-unused-vars
-  } catch (e) {
+  } catch (err) {
+    console.error(err);
     return null;
   }
 };

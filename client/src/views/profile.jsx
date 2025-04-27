@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form';
-import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
+import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
 import { sanitizeInput } from '../api/sanitizers';
 
-import { useCredentialStore } from '../state/state';
+import { useIdentityStore } from '../state/state';
 import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
-import { notifyError } from '../components/notifications';
+import { responseHandler } from '../components/notifications';
 
 const Profile = () => {
   const {
@@ -15,12 +15,13 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const role = useCredentialStore((state) => state.role);
+  const role = useIdentityStore((state) => state.role);
 
   const onSubmitUpdate = async (data) => {
     const sanitizedData = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
     );
+
     const response = await updateProfileInfo({
       data: {
         username: sanitizedData.username,
@@ -28,16 +29,15 @@ const Profile = () => {
         ...sanitizedData,
       },
     });
-    console.log(response);
-    if (response.errors != null) {
-      notifyError(response.errors);
-    }
+
+    responseHandler(response);
   };
 
   const onSubmitChangePass = async (data) => {
     const sanitizedData = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
     );
+
     const response = await updatePassword({
       data: {
         username: sanitizedData.username,
@@ -46,16 +46,15 @@ const Profile = () => {
         role: role,
       },
     });
-    console.log(response);
-    if (response.errors != null) {
-      notifyError(response.errors);
-    }
+
+    responseHandler(response);
   };
 
   const onSubmitDelete = async (data) => {
     const sanitizedData = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
     );
+
     const response = await deleteUser({
       data: {
         username: sanitizedData.username,
@@ -63,10 +62,8 @@ const Profile = () => {
         role: role,
       },
     });
-    console.log(response);
-    if (response.errors != null) {
-      notifyError(response.errors);
-    }
+
+    responseHandler(response);
   };
 
   return (
@@ -118,6 +115,9 @@ const Profile = () => {
                   }}
                 />
                 {errors.password && <span>This field is required</span>}
+                <small>
+                  The fields above are required to update the information below
+                </small>
               </div>
               <h3 className="my-3">Information to Update</h3>
               <div className="mb-3">

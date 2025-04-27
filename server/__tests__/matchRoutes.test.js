@@ -40,6 +40,8 @@ describe('Matching Routes', () => {
       });
 
     token = loginResponse.body.token;
+    userId = loginResponse.body.userSubset.userId;
+    console.log(loginResponse.body);
   });
 
   afterAll(async () => {
@@ -56,7 +58,7 @@ describe('Matching Routes', () => {
       .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        data: { user: userFixture[0], username: userFixture[0].username },
+        data: { userId: userId },
       });
 
     expect(response.status).toBe(302);
@@ -67,7 +69,7 @@ describe('Matching Routes', () => {
     const response = await request(app)
       .post('/api/matching/find-matches')
       .send({
-        data: { user: userFixture[0], username: userFixture[0].username },
+        data: { userId: userId },
       });
 
     expect(response.status).toBe(403);
@@ -79,7 +81,7 @@ describe('Matching Routes', () => {
       .post('/api/matching/find-matches')
       .set('Authorization', `Bearer Fake Token`)
       .send({
-        data: { user: userFixture[0], username: userFixture[0].username },
+        data: { userId: userId },
       });
 
     expect(response.status).toBe(403);
@@ -90,10 +92,10 @@ describe('Matching Routes', () => {
     const response = await request(app)
       .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
-      .send({ data: { user: {}, username: userFixture[0].username } });
+      .send({ data: { userId: 0 } });
 
     expect(response.status).toBe(404);
-    expect(response.text).toContain('No user found for this ID');
+    expect(response.text).toContain('This user does not exist');
   });
 
   it('should return fail due to no available matches for the user', async () => {
@@ -104,7 +106,7 @@ describe('Matching Routes', () => {
       .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        data: { user: userFixture[0], username: userFixture[0].username },
+        data: { userId: userId },
       });
 
     expect(response.status).toBe(500);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getTherapists } from '../api/crud';
-import { useCredentialStore } from '../state/state';
+import { useIdentityStore } from '../state/state';
 
 const LOADING_TEXT = [
   'Watching the rain fall... 🌧️',
@@ -25,17 +25,20 @@ const LOADING_TEXT = [
 Object.freeze(LOADING_TEXT);
 
 const IsLoading = ({ introStateOptions }) => {
-  const { setIntroState, userId } = useCredentialStore((state) => state);
+  const { setIntroState, userId } = useIdentityStore((state) => state);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [text, setText] = useState('Generating your match...');
 
   const COMPLETION = 100;
   const INCREMENT = 3.33;
 
-  getTherapists(userId);
+  useEffect(() => {
+    getTherapists({ data: { userId: userId } });
+  }, [userId]);
 
   useEffect(() => {
     let incrementor = Math.floor(Math.random() * 10);
+
     const interval = setInterval(() => {
       setLoadingProgress((prevProgress) => {
         if (
@@ -63,6 +66,7 @@ const IsLoading = ({ introStateOptions }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       let num = Math.floor(Math.random() * LOADING_TEXT.length);
+
       setText(LOADING_TEXT[num]);
     }, 1200);
     return () => clearInterval(interval);

@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
+import { Route, Redirect } from 'wouter';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { useCredentialStore } from '../state/state';
+
+import { useIdentityStore } from '../state/state';
 import {
   extractDetailsFromClipboard,
   handleResponseStatus,
 } from './formHelpers';
+
+import { storeJWT } from '../api/auth';
 import { sanitizeInput } from '../api/sanitizers';
-import { notifyError } from './notifications';
+
+import { responseHandler } from './notifications';
 import { NotificationContainer } from './notificationContainer';
 
 const Form = ({ formTitle, submissionMethod, submissionText }) => {
@@ -17,10 +22,11 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     setValue,
     formState: { errors },
   } = useForm();
-  const setUser = useCredentialStore((state) => state.setUser);
+
+  const setUser = useIdentityStore((state) => state.setUser);
 
   useEffect(() => {
-    const getDetails = async () => {
+    const prefillForm = async () => {
       const details = await extractDetailsFromClipboard();
 
       if (details) {
@@ -28,7 +34,8 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
         setValue('password', details.password);
       }
     };
-    getDetails();
+
+    prefillForm();
   }, [setValue]);
 
   const onSubmit = async (data) => {
@@ -37,11 +44,22 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     );
     const response = await submissionMethod({ data: sanitizedData });
 
-    setUser(...response.userSubset);
+    responseHandler({
+      res: response,
+      setter: setUser,
+      storeSetter: storeJWT,
+      defaultVar: response?.userSubset,
+      stateVar: response?.token,
+      redirect: <Route component={<Redirect to="/dashboard" />} />,
+    });
 
-    if (response.errors != null) {
-      notifyError(response);
-    }
+    // if (response === undefined || response.errors) {
+    //   notifyError('Incorrect Details');
+    // } else {
+    //   setUser(response.userSubset);
+    //   storeJWT(response.token);
+    //   <Route component={<Redirect to="/dashboard" />} />;
+    // }
   };
 
   return (

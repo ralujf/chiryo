@@ -11,7 +11,6 @@ const Therapist = require('../models/therapist');
 const generateJWT = async (_, res) => {
   try {
     if (!res.locals._id) {
-      console.error('User not valid');
       return res.status(404).send(`This user does not exist`);
     }
 
@@ -26,73 +25,144 @@ const generateJWT = async (_, res) => {
     const userSubset = {
       userId: res.locals._id,
       username: res.locals.user.username,
-      // This needs to be added directly to the admin in DB
       adminId: res.locals.user.adminId,
       role: res.locals.user.role,
       firstLogin: res.locals.user.firstLogin,
     };
 
-    console.log(userSubset);
-
-    return res
-      .status(200)
-      .json({ message: 'Login successful', token, userSubset });
+    return res.status(200).send({ token, userSubset });
   } catch (err) {
     return res.status(500).send(`There was an error ${err}`);
   }
 };
 
 /**
- *
- * @params - req.headers['auth'] token, username on body.data
- * @returns - 403 if token present and not valid, username 404 if token valid and not username is not found, 500 if the user cannot be found at all
- * @description - Takes in a users details, if it is valid then a JWT returned
+ * Verifies the JWT token and decodes it
+ * @param {string} token - The JWT token to verify
+ * @returns {object|null} - Decoded token if valid, null otherwise
  */
-const validateJWT = async (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  const { username } = req.body.data;
-
-  let user;
-
+const verifyToken = (token) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded.email) {
-      return res.status(403).send('Invalid token, user not authenticated');
-    }
+    return jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-    return res.status(403).send('Invalid token, user not authenticated');
-  }
-
-  try {
-    user = await User.find({ username: username });
-
-    if (!user) {
-      user = await Therapist.find({ username: username });
-    }
-
-    if (!user) {
-      return res.status(404).send(`This user does not exist`);
-    }
-
-    res.locals.user = user;
-    return next();
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send('Cannot find user');
+    return null;
   }
 };
 
-const checkIdAdmin = (req, res, next) => {
+/**
+ * Finds a user by username or userId
+ * @param {object} query - The query to find the user (username or userId)
+ * @returns {object|null} - The user if found, null otherwise
+ */
+const findUser = async (query) => {
   try {
-    const adminId = req.body.data.adminId;
-    if (!adminId || adminId !== process.env.ADMIN || adminId === undefined) {
-      return res.status(403).send('User forbidden');
+    let user = await User.findOne(query).exec();
+
+    if (!user) {
+      user = await Therapist.findOne(query).exec();
     }
-  } catch (error) {
-    return res.status(403).send('Invalid ID');
+
+    return user;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Validates the JWT token and user existence
+ * @params - req.headers['auth'] token, username on body.data
+ * @returns - 403 if token present and not valid, username 404 if token valid and not username is not found, 500 if the user cannot be found at all
+ */
+const validateJWT = async (req, res, next) => {
+  try {
+    const token = req.headers['authorization']?.split(' ')[1];
+    const { username } = req.body.data;
+
+    const decoded = verifyToken(token);
+
+    if (!decoded || !decoded.email) {
+      return res.status(403).send('Invalid token, user not authenticated');
+    }
+
+    try {
+      const user = await findUser({ username });
+      if (!user) {
+        return res.status(404).send(`This user does not exist`);
+      }
+
+      res.locals.user = user;
+      return next();
+    } catch (err) {
+      console.error(err);
+      return res.status(500).send('Cannot find user');
+    }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+/**
+ * Validates the JWT token and user existence by userId
+ * @params - req.headers['auth'] token, userId on body.data
+ * @returns - 403 if token present and not valid, userId 404 if token valid and not userId is not found, 500 if the user cannot be found at all
+ */
+const validateInternalJWT = async (req, res, next) => {
+  try {
+    const token = req.headers['authorization']?.split(' ')[1];
+    const { userId } = req.body.data;
+
+    const decoded = verifyToken(token);
+
+    if (!decoded || !decoded.email) {
+      return res.status(403).send('Invalid token, user not authenticated');
+    }
+
+    try {
+      const user = await findUser({ _id: userId });
+
+      if (!user) {
+        return res.status(404).send(`This user does not exist`);
+      }
+
+      res.locals.user = user;
+      return next();
+    } catch (err) {
+      console.error(err);
+      return res.status(500).send('Cannot find user');
+    }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+
+const validateAdmin = (req, res, next) => {
+  try {
+    const token = req.headers['authorization']?.split(' ')[1];
+    const { adminId } = req.body.data;
+
+    const decoded = verifyToken(token);
+
+    if (!decoded || !decoded.email) {
+      return res.status(403).send('Invalid token, user not authenticated');
+    }
+
+    try {
+      if (!adminId || adminId !== process.env.ADMIN || adminId === undefined) {
+        return res.status(403).send('User forbidden');
+      }
+    } catch (err) {
+      return res.status(403).send('Invalid ID');
+    }
+  } catch (err) {
+    return res.status(500).send(err);
   }
 
   return next();
 };
 
-module.exports = { generateJWT, validateJWT, checkIdAdmin };
+module.exports = {
+  generateJWT,
+  validateJWT,
+  validateInternalJWT,
+  validateAdmin,
+};

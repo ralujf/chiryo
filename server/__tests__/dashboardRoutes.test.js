@@ -93,17 +93,17 @@ describe('Dashboard Routes', () => {
       .send({ data: { userId: '67b9904733b91379fcb743ae', therapistId } });
 
     expect(response.status).toBe(404);
-    expect(response.text).toBe('No records found to update');
+    expect(response.text).toBe('This user does not exist');
   });
 
   it('should fail to delete a non-existent record due to invalid userId', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-row')
       .set('Authorization', `Bearer ${token}`)
-      .send({ data: { userId: 'nonexistent', therapistId } });
+      .send({ data: { userId, therapistId: '67b9904733b91379fcb743ae' } });
 
-    expect(response.status).toBe(400);
-    expect(response.text).toBe('Invalid ObjectId');
+    expect(response.status).toBe(404);
+    expect(response.text).toBe('No records found to update');
   });
 
   it('should delete all records', async () => {
@@ -125,14 +125,14 @@ describe('Dashboard Routes', () => {
     expect(response.text).toBe('Records updated successfully');
   });
 
-  it('should fail to delete all records for non-existent user', async () => {
+  it('should fail to delete all records user with no dashboards', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-table')
       .set('Authorization', `Bearer ${token}`)
-      .send({ data: { role: 'user', userId: 'nonexistent' } });
+      .send({ data: { role: 'user', userId } });
 
-    expect(response.status).toBe(400);
-    expect(response.text).toBe('Invalid ObjectId');
+    expect(response.status).toBe(404);
+    expect(response.text).toBe('No records found to update');
   });
 
   it('should fail to delete all records for non-existent user', async () => {
@@ -142,7 +142,7 @@ describe('Dashboard Routes', () => {
       .send({ data: { role: 'user', userId: '67b9904733b91379fcb743ae' } });
 
     expect(response.status).toBe(404);
-    expect(response.text).toBe('No records found to update');
+    expect(response.text).toBe('This user does not exist');
   });
 
   it('should update a record', async () => {
@@ -172,8 +172,8 @@ describe('Dashboard Routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         data: {
-          userId: 'nonexistent',
-          therapistId,
+          userId: userId,
+          therapistId: 'nonexistent',
           rowData: { diagnosis: 'updated' },
         },
       });
@@ -188,8 +188,8 @@ describe('Dashboard Routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         data: {
-          userId: '67b9904733b91379fcb743ae',
-          therapistId,
+          userId,
+          therapistId: '67b9904733b91379fcb743ae',
           rowData: { diagnosis: 'updated' },
         },
       });

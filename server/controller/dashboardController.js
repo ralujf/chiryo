@@ -27,7 +27,7 @@ const fetchDashboard = async (req, res) => {
   try {
     const rows = await Dashboard.find(query).skip(offset).limit(LIMIT).exec();
     return rows.length
-      ? res.status(200).json({ data: rows, total: rows.length })
+      ? res.status(200).send({ data: rows, total: rows.length })
       : res.status(200).send('No results found for this valid user');
   } catch (err) {
     return res.status(500).send('An error occurred with the submitted ID');
@@ -127,10 +127,11 @@ const updateRecord = async (req, res) => {
 };
 
 const insertToDashboard = async (req, res) => {
-  const { user } = req.body.data;
+  const { userId } = req.body.data;
   const data = res.locals.matches;
 
-  const currentUser = await User.findOne({ username: user.username }).exec();
+  const currentUser = await User.findById(userId).exec();
+
   if (!currentUser) {
     return res.status(404).send('There was no user for the ID');
   }

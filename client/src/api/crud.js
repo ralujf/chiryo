@@ -18,31 +18,14 @@ import {
   SCRAPE_URL,
   SET_LOGIN_URL,
 } from './config';
-import { fetchJWT, storeJWT } from './auth';
+import { fetchJWT } from './auth';
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
 // Proxy Data
 import applicantData from '../api/applicants.json';
 import dashboardData from '../api/dashboard.json';
 
-function errorLog(error) {
-  if (error.response) {
-    console.error('Error response:', error.response.data);
-    console.error('Error status:', error.response.status);
-    console.error('Error headers:', error.response.headers);
-  } else if (error.request) {
-    console.error('Error request:', error.request);
-  } else {
-    console.error('Error message:', error.message);
-  }
-  console.error('Error config:', error.config);
-  if (error.response?.statusText) {
-    return error.response.statusText;
-  }
-  return error.response;
-}
-
-function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
+const createURL = ({ baseURL = '', userId = null, resourceId = null } = {}) => {
   let url = baseURL;
   if (userId) {
     url += `/${userId}`;
@@ -51,12 +34,12 @@ function createURL({ baseURL = '', userId = null, resourceId = null } = {}) {
     url += `/${resourceId}`;
   }
   return url;
-}
+};
 
 const handleRequest = async (method, url, data = null, params = null) => {
   const requestConfig = {
     method: method,
-    url: url,
+    url: params ? url + '/' + params : url,
     data: data,
     params: params,
     headers: {
@@ -64,21 +47,38 @@ const handleRequest = async (method, url, data = null, params = null) => {
     },
   };
 
-  console.log('Request Config:', requestConfig);
-  console.log(requestConfig.data);
-
   try {
     const response = await axios(requestConfig);
-    if (response.headers['authorization']) {
-      storeJWT(response.headers['authorization']);
-    }
-    console.log(response);
-    return response.data;
-  } catch (error) {
-    const statusMessage = errorLog(error);
-    return statusMessage;
+    return response;
+  } catch (err) {
+    return {
+      message: err.message,
+      status: 'ERROR',
+      statusText: err.message,
+      data: null,
+    };
   }
 };
+
+const errorLog = (error) => {
+  if (error.response) {
+    console.error('Error response:', error.response.data);
+    console.error('Error status:', error.response.status);
+    console.error('Error headers:', error.response.headers);
+  } else if (error.request) {
+    console.error('Error request:', error.request);
+  } else if (error.text) {
+    console.error('Error Text:' + error.text);
+  } else {
+    console.error('Error message:', error.message);
+    return error.message;
+  }
+
+  console.error('Error config:', error.config);
+  console.error('Error Message Not Found');
+  return error.response;
+};
+
 /**
  *
  * @param {object} userData - { data: { username, password }}
@@ -89,8 +89,8 @@ const loginUser = async (userData) =>
   handleRequest('post', LOGIN_URL, userData);
 
 const logoutUserRedirect = () => {
-  const message = handleRequest('post', LOGOUT_URL);
   localStorage.removeItem('jwtToken');
+  const message = handleRequest('post', LOGOUT_URL);
   window.location.href = '/';
   return message;
 };
@@ -147,20 +147,22 @@ const updatePassword = (profileData) =>
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
 const loadTableData = (userData, offset) => {
-  const result = handleRequest(
+  const response = handleRequest(
     'post',
     createURL({ baseURL: GET_TABLE_URL }),
     userData,
     { offset },
   );
 
-  console.log(result);
-  // return result;
+  console.log(response);
+  return response;
 
-  return {
-    tableData: dashboardData.slice(offset * 10),
-    total: Math.ceil(dashboardData.length / 10),
-  };
+  // dashboardData.map((dashboard) => (dashboard.time = new Date(dashboard.time)));
+
+  // return {
+  //   data: dashboardData.slice(offset * 10),
+  //   total: Math.ceil(dashboardData.length / 10),
+  // };
 };
 
 /**
@@ -192,7 +194,7 @@ const updateRowFromTable = (dashboardData) =>
 
 /**
  *
- * @param {Object} userData - { data: { user, username }}
+ * @param {Object} userData - { data: { userId }}
  * @returns {types.Therapist[]}
  * @description - Return the therapists that the user has matched with in ranked order of perceived compatibility
  */
@@ -220,19 +222,19 @@ const sendApplication = (applicationData) =>
  * @returns {Promise<Array>} - A promise that resolves to an array of data
  * @description - Fetches a list of applicants from the database for review
  */
-const fetchApplicants = (adminData, offset) => {
-  let data = handleRequest(
+const loadApplicants = (adminData, offset) => {
+  let response = handleRequest(
     'get',
     createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
     adminData,
   );
-  console.log(data);
-  // return data
+  console.log(response);
+  return response;
 
-  return {
-    tableData: applicantData.slice(offset * 10),
-    total: Math.ceil(applicantData.length / 10),
-  };
+  // return {
+  //   data: applicantData.slice(offset * 10),
+  //   total: Math.ceil(applicantData.length / 10),
+  // };
 };
 
 /**
@@ -247,7 +249,7 @@ const acceptApplicant = (adminData) =>
 
 /**
  *
- * @param {types.Applicant} adminData - { data: { applicantEmail, adminId }}
+ * @param {types.Applicant} adminData - { data: { email, adminId }}
  * @param {string} offset
  * @returns
  * @description - Reject therapist into the account
@@ -264,6 +266,7 @@ const searchForTherapists = (adminData) =>
   handleRequest('get', SCRAPE_URL, adminData);
 
 export {
+  errorLog,
   searchForTherapists,
   registerUser,
   deleteUser,
@@ -277,7 +280,7 @@ export {
   getTherapists,
   sendApplication,
   updateProfileInfo,
-  fetchApplicants,
+  loadApplicants,
   rejectApplicant,
   acceptApplicant,
   setFirstLogin,

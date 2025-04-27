@@ -4,9 +4,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+let server;
 const app = express();
 const PORT = process.env.PORT || 3000;
-const { validateJWT, checkIdAdmin } = require('./middleware/auth');
+
+const { validateAdmin, validateInternalJWT } = require('./middleware/auth');
 
 // Routers
 const adminRouter = require('./routes/admin');
@@ -19,6 +21,7 @@ const dashboardRouter = require('./routes/dashboard');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // Debugging
 app.use('/api', (_, __, next) => {
@@ -29,11 +32,9 @@ app.use('/api', (_, __, next) => {
 app.use('/api', applicationsRouter);
 app.use('/api', userRouter);
 
-app.use('/api/admin', validateJWT, checkIdAdmin, adminRouter);
-app.use('/api/matching', validateJWT, matchRouter);
-app.use('/api/dashboard', validateJWT, dashboardRouter);
-
-let server;
+app.use('/api/matching', validateInternalJWT, matchRouter);
+app.use('/api/dashboard', validateInternalJWT, dashboardRouter);
+app.use('/api/admin', validateAdmin, adminRouter);
 
 const startServer = async () => {
   try {
@@ -44,7 +45,11 @@ const startServer = async () => {
       mongoUrl = process.env.MONGO_TEST;
     }
 
-    await mongoose.connect(mongoUrl);
+    try {
+      await mongoose.connect(mongoUrl);
+    } catch (err) {
+      console.error(err);
+    }
 
     if (process.env.NODE_ENV === 'production') {
       console.log('MongoDB connected to production');
@@ -72,9 +77,7 @@ const startServer = async () => {
 
 const closeServer = async () => {
   if (server) {
-    server.close(() => {
-      console.log('Server closed');
-    });
+    server.close();
   }
   mongoose.disconnect();
 };
