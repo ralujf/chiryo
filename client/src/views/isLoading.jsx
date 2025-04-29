@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getTherapists } from '../api/crud';
+import { matchUserWithTherapists } from '../api/crud';
 import { useIdentityStore } from '../state/state';
+import { INTRO_STATE_OPTIONS } from '../components/introState';
 
 const LOADING_TEXT = [
   'Watching the rain fall... 🌧️',
@@ -31,13 +32,18 @@ const IsLoading = ({ introStateOptions }) => {
 
   const COMPLETION = 100;
   const INCREMENT = 3.33;
+  const LIMIT = 10;
 
   useEffect(() => {
-    getTherapists({ data: { userId: userId } });
-  }, [userId]);
+    if (userId) {
+      matchUserWithTherapists({ data: { userId: userId } });
+    } else {
+      setIntroState(INTRO_STATE_OPTIONS.START);
+    }
+  }, [userId, setIntroState]);
 
   useEffect(() => {
-    let incrementor = Math.floor(Math.random() * 10);
+    let incrementor = Math.floor(Math.random() * LIMIT);
 
     const interval = setInterval(() => {
       setLoadingProgress((prevProgress) => {
@@ -69,16 +75,14 @@ const IsLoading = ({ introStateOptions }) => {
 
       setText(LOADING_TEXT[num]);
     }, 1200);
+
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div
-      className="d-flex flex-column align-items-center"
-      style={{ minHeight: '100vh' }}
-    >
+    <div className="d-flex flex-column align-items-center min-vh-100">
       <p className="display-4">{text}</p>
-      <div className="progress" style={{ width: '80%' }}>
+      <div className="progress w-75">
         <div
           className="progress-bar"
           role="progressbar"

@@ -123,7 +123,7 @@ const Questionnaire = () => {
         notifyError('Credentials were not set, try again!');
       }
 
-      const response = await registerUser({
+      await registerUser({
         data: {
           username: username,
           password: password,
@@ -135,27 +135,24 @@ const Questionnaire = () => {
           location: location,
           problem: problem,
         },
-      });
-
-      responseHandler({
-        res: response,
-        setter: setUser,
-        storeSetter: setIntroState,
-        defaultVar: {
-          userId: response.id ? response.id : '',
-          role: response.id ? 'user' : '',
-          firstLogin: true,
-        },
-        stateVar: INTRO_STATE_OPTIONS.MATCH,
-      });
-
-      // if (response.id) {
-      //   const user = { userId: response.id, role: 'user', firstLogin: true };
-      //   setUser(user);
-      //   setIntroState(INTRO_STATE_OPTIONS.MATCH);
-      // } else {
-      //   notifyError(response);
-      // }
+      })
+        .then((response) => {
+          responseHandler({
+            res: response,
+            setter: setUser,
+            storeSetter: setIntroState,
+            defaultVar: {
+              userId: response.data.id,
+              role: response.data.id ? 'user' : '',
+              firstLogin: true,
+            },
+            stateVar: INTRO_STATE_OPTIONS.MATCH,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          notifyError(err);
+        });
     }
   };
 

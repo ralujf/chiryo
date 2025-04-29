@@ -14,8 +14,8 @@ const Main = () => {
           </motion.div>
         </div>
 
-        <div className="col chiryo_rounded chiryo_primary p-3 p-md-5 h-full d-flex flex-column justify-content-between">
-          <h1 className="text-center display-4 fw-bolder mb-3">
+        <div className="col chiryo_rounded chiryo_primary p-3 p-md-5 h-auto d-flex flex-column justify-content-between">
+          <h1 className="text-center display-5 fw-bolder mb-3">
             Find a Therapist
           </h1>
           <p className="text-center display-6">
@@ -35,40 +35,47 @@ const Main = () => {
         </div>
       </div>
 
-      <div className="py-5">
+      <div className="position-relative py-5 vh-50">
         <div className="row">
           <motion.img
             {...animationOptions3}
             src={mentalHealthChart}
             alt="hero"
-            width={'25%'}
+            className="position-absolute top-0 w-100 end-50 z-n2 opacity-75"
+            style={{
+              filter: 'drop-shadow(30px 50px 15px rgb(189, 189, 189))',
+              mixBlendMode: 'multiply',
+            }}
           />
           <motion.h1
+            className="position-absolute w-100 start-75 display-5 fw-bolder z-3"
             {...animationOptions3}
             style={{
-              position: 'absolute',
-              left: '50%',
-              top: '140%',
               fontSize: '20vw',
-              fontWeight: 'bolder',
             }}
           >
             20%
           </motion.h1>
-          <div className="d-flex justify-content-center">
+          <div className="d-flex justify-content-end w-100">
             <motion.p
-              className="text-center display-3 fw-bolder"
+              className="text-right display-3 fw-bolder z-3 ml-auto w-50"
               {...animationOptions3}
             >
-              1 in 5 Young adults suffer from mental health issues, you
-              aren&apos;t alone
+              1 in 5 young adults suffer from mental health issues,{' '}
+              <span
+                style={{
+                  color: 'rgb(135, 206, 235)',
+                }}
+              >
+                you aren&apos;t alone
+              </span>
             </motion.p>
           </div>
         </div>
       </div>
 
       <div className="row justify-content-center chiryo_rounded mt-5 pt-5">
-        <div className="col mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5">
+        <div className="col mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 z-3">
           <h1 className="text-center display-3 fw-bolder mb-3">
             Why Use Chiryo?
           </h1>

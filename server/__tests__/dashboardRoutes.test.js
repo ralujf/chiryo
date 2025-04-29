@@ -18,24 +18,23 @@ describe('Dashboard Routes', () => {
 
     user = new User(userFixture[0]);
     await user.save();
-    userId = user._id;
-    userEmail = user.email;
-    token = jwt.sign({ email: userEmail }, process.env.JWT_SECRET);
 
     const therapist = new Therapist(therapistFixture[0]);
     await therapist.save();
+
+    userId = user._id;
+    userEmail = user.email;
+
+    token = jwt.sign({ email: userEmail }, process.env.JWT_SECRET);
+
     therapistId = therapist._id;
-    console.error(therapistId);
-    console.error(userId);
   });
 
   afterAll(async () => {
     await User.deleteMany({});
     await Therapist.deleteMany({});
     await Dashboard.deleteMany({});
-    setTimeout(() => {
-      closeServer();
-    }, 6500);
+    await closeServer();
   });
 
   it('should fetch user dashboard', async () => {
@@ -55,6 +54,7 @@ describe('Dashboard Routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBeGreaterThan(0);
+    expect(response.body.total).toBeGreaterThan(0);
   });
 
   it('should fail to fetch user dashboard with invalid offset', async () => {

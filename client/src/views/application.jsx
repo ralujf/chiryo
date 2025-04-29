@@ -26,7 +26,7 @@ const Application = () => {
     const applicationData = { ...sanitizedData, pdfInformation: pdfBlob.bytes };
 
     const response = await sendApplication({ data: applicationData });
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   return (

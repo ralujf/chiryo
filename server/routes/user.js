@@ -27,8 +27,7 @@ const loginValidation = [
 ];
 
 const updateProfileValidation = [
-  body('data.username').trim().isLength({ min: MIN_LENGTH_NAME }).escape(),
-  body('data.password').isLength({ min: MIN_LENGTH_PASS }).escape(),
+  loginValidation,
   body('data.email').optional().isEmail().normalizeEmail(),
 ];
 

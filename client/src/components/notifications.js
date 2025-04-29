@@ -63,23 +63,36 @@ const responseHandler = ({
   redirect = null,
 }) => {
   console.log(res);
+
   try {
     if (parseInt(res.status) < 400) {
       notifySuccess(res.message ? res.message : res.statusText);
 
       if (setter && defaultVar) {
+        console.log(defaultVar);
         setter(defaultVar);
       }
 
-      if (storeSetter && stateVar) {
+      if (storeSetter && stateVar && defaultVar) {
         storeSetter(stateVar);
       }
 
       if (redirect) {
-        redirect;
+        setTimeout(() => {
+          redirect;
+        }, 2000);
       }
 
-      return res.data;
+      if (res.data && res.total) {
+        return {
+          data: res.data,
+          total: res.total,
+        };
+      }
+
+      if (res.data) {
+        return res.data;
+      }
     } else {
       notifyError(res.message ? res.message : res.statusText);
     }

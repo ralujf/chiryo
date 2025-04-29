@@ -131,6 +131,7 @@ const validateInternalJWT = async (req, res, next) => {
       return res.status(500).send('Cannot find user');
     }
   } catch (err) {
+    console.error(err);
     return res.status(500).send(err);
   }
 };

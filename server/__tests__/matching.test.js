@@ -20,8 +20,8 @@ describe('matching algorithm tests', () => {
     };
   });
 
-  afterAll(() => {
-    closeServer();
+  afterAll(async () => {
+    await closeServer();
   });
 
   test('calculating correlation between two objects', () => {

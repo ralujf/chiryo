@@ -6,6 +6,8 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const therapistsData = require('../__fixtures__/therapists.data.json');
 
+// jest.setTimeout(30000);
+
 describe('Admin Routes', () => {
   let token;
   let username = 'adminUser';
@@ -37,9 +39,7 @@ describe('Admin Routes', () => {
     await Application.deleteMany({});
     await Therapist.deleteMany({});
     await User.deleteMany({});
-    setTimeout(() => {
-      closeServer();
-    }, 6500);
+    await closeServer();
   });
 
   it('should handle application submission', async () => {
@@ -90,6 +90,7 @@ describe('Admin Routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.length).toBeGreaterThan(0);
+    expect(response.body.total).toBeGreaterThan(0);
   });
 
   it('view all applications without token', async () => {

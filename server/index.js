@@ -25,7 +25,7 @@ app.use(express.static('public'));
 
 // Debugging
 app.use('/api', (_, __, next) => {
-  console.log('STATUS: Active');
+  console.log('\x1b[33m%s\x1b[0m', 'STATUS: Active', '\x1b[0m');
   next();
 });
 
@@ -39,6 +39,7 @@ app.use('/api/admin', validateAdmin, adminRouter);
 const startServer = async () => {
   try {
     let mongoUrl;
+
     if (process.env.NODE_ENV === 'production') {
       mongoUrl = process.env.MONGO_URL;
     } else {

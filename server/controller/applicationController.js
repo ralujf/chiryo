@@ -21,8 +21,10 @@ const sendApplication = async (req, res) => {
 
     const application = new Application(applicationInformation);
     await application.save();
+
     return res.status(200).send('Application Submitted');
   } catch (err) {
+    console.error(err);
     return res.status(500).send('Incorrect format' + err);
   }
 };
@@ -30,16 +32,19 @@ const sendApplication = async (req, res) => {
 const findTherapistsExternal = async (_, res) => {
   try {
     const arr = await scrapeTherapists();
+
     arr.forEach((therapist) => therapist.save());
+
     return res.status(201).send('Therapists successfully added');
   } catch (err) {
+    console.error(err);
     return res.status(500).send('Scrape failed' + err);
   }
 };
 
 const viewApplications = async (req, res) => {
-  const LIMIT = 10;
   const { offset = 0 } = req.params;
+  const LIMIT = 10;
   let parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
@@ -47,13 +52,17 @@ const viewApplications = async (req, res) => {
   }
 
   try {
+    const totalApplicants = await Application.countDocuments({}).exec();
     const applicants = await Application.find({})
       .skip(parsedOffset)
       .sort({ createdAt: 1 })
       .limit(LIMIT)
       .exec();
 
-    return res.status(200).send({ data: applicants, total: applicants.length });
+    return res.status(200).send({
+      data: applicants,
+      total: Math.ceil(totalApplicants / LIMIT),
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Server side error occurred');
@@ -114,6 +123,7 @@ const approveApplication = async (req, res) => {
 const rejectApplication = async (req, res) => {
   try {
     const { email } = req.body.data;
+
     const result = await Application.findOneAndDelete({
       email: email,
     });

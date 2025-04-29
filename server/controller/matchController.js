@@ -72,6 +72,8 @@ const matchUserWithTherapist = async (req, res, next) => {
   const { userId } = req.body.data;
   const currentUser = await User.findById(userId).exec();
 
+  console.log(currentUser);
+
   if (!currentUser) {
     return res.status(404).send('No user found for this ID');
   }
@@ -97,6 +99,7 @@ const matchUserWithTherapist = async (req, res, next) => {
     res.locals.matches = output;
     return next();
   } catch (err) {
+    console.log(err);
     console.error(`There has been an unexpected error: ${err}`);
     return res.status(500).send('Server error, matching unsuccessful' + err);
   }

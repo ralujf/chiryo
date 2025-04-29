@@ -21,9 +21,6 @@ import {
 import { fetchJWT } from './auth';
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
-// Proxy Data
-import applicantData from '../api/applicants.json';
-import dashboardData from '../api/dashboard.json';
 
 const createURL = ({ baseURL = '', userId = null, resourceId = null } = {}) => {
   let url = baseURL;
@@ -49,6 +46,7 @@ const handleRequest = async (method, url, data = null, params = null) => {
 
   try {
     const response = await axios(requestConfig);
+    console.log(response);
     return response;
   } catch (err) {
     return {
@@ -148,7 +146,7 @@ const updatePassword = (profileData) =>
  */
 const loadTableData = (userData, offset) => {
   const response = handleRequest(
-    'post',
+    'get',
     createURL({ baseURL: GET_TABLE_URL }),
     userData,
     { offset },
@@ -158,11 +156,6 @@ const loadTableData = (userData, offset) => {
   return response;
 
   // dashboardData.map((dashboard) => (dashboard.time = new Date(dashboard.time)));
-
-  // return {
-  //   data: dashboardData.slice(offset * 10),
-  //   total: Math.ceil(dashboardData.length / 10),
-  // };
 };
 
 /**
@@ -198,9 +191,9 @@ const updateRowFromTable = (dashboardData) =>
  * @returns {types.Therapist[]}
  * @description - Return the therapists that the user has matched with in ranked order of perceived compatibility
  */
-const getTherapists = async (userData) => {
+const matchUserWithTherapists = async (userData) => {
   return handleRequest(
-    'get',
+    'post',
     createURL({ baseURL: POST_SYMPTOMS_URL }),
     userData,
   );
@@ -230,11 +223,6 @@ const loadApplicants = (adminData, offset) => {
   );
   console.log(response);
   return response;
-
-  // return {
-  //   data: applicantData.slice(offset * 10),
-  //   total: Math.ceil(applicantData.length / 10),
-  // };
 };
 
 /**
@@ -277,7 +265,7 @@ export {
   removeRowFromTable,
   clearTable,
   updateRowFromTable,
-  getTherapists,
+  matchUserWithTherapists,
   sendApplication,
   updateProfileInfo,
   loadApplicants,

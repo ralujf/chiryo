@@ -3,8 +3,6 @@ const { app, startServer, closeServer } = require('../index');
 const User = require('../models/user');
 const userFixture = require('../__fixtures__/users.data.json');
 
-jest.setTimeout(15000);
-
 describe('User Routes', () => {
   let token;
   let userId;
@@ -36,9 +34,7 @@ describe('User Routes', () => {
 
   afterAll(async () => {
     await User.deleteMany({});
-    setTimeout(() => {
-      closeServer();
-    }, 6500);
+    await closeServer();
   });
 
   it('should register a user', async () => {

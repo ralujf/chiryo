@@ -3,9 +3,9 @@ const Dashboard = require('../models/dashboard');
 const User = require('../models/user');
 
 const fetchDashboard = async (req, res) => {
-  const LIMIT = 10;
   const { offset = 0 } = req.params;
   const { userId, role } = req.body.data;
+  const LIMIT = 10;
   const parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
@@ -25,10 +25,11 @@ const fetchDashboard = async (req, res) => {
   }
 
   try {
+    const totalRecords = await Dashboard.countDocuments(query).exec();
     const rows = await Dashboard.find(query).skip(offset).limit(LIMIT).exec();
-    return rows.length
-      ? res.status(200).send({ data: rows, total: rows.length })
-      : res.status(200).send('No results found for this valid user');
+    return res
+      .status(200)
+      .send({ data: rows, total: Math.ceil(totalRecords / LIMIT) });
   } catch (err) {
     return res.status(500).send('An error occurred with the submitted ID');
   }
@@ -162,6 +163,7 @@ const insertToDashboard = async (req, res) => {
   if (newRecords.length > 0) {
     return res.redirect('/dashboard');
   } else {
+    console.error('No suitable therapists found');
     return res.status(500).send('Unable to return matches');
   }
 };

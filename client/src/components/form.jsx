@@ -42,6 +42,7 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     const sanitizedData = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [key, sanitizeInput(value)]),
     );
+
     const response = await submissionMethod({ data: sanitizedData });
 
     responseHandler({

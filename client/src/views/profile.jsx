@@ -30,7 +30,7 @@ const Profile = () => {
       },
     });
 
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   const onSubmitChangePass = async (data) => {
@@ -47,7 +47,7 @@ const Profile = () => {
       },
     });
 
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   const onSubmitDelete = async (data) => {
@@ -63,7 +63,7 @@ const Profile = () => {
       },
     });
 
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   return (

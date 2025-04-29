@@ -25,13 +25,13 @@ const Admin = () => {
   useEffect(() => {
     let offset = currentPage;
     const updateData = () => {
-      const response = loadApplicants({ data: { adminId } }, offset);
-      const tableData = responseHandler(response);
+      const initResponse = loadApplicants({ data: { adminId } }, offset);
+      const response = responseHandler({ res: initResponse });
 
-      console.log('Admin Data:', tableData.data);
+      console.log('Admin Data:', response.data);
 
-      setTableData(tableData.data);
-      setTotalPages(tableData.total);
+      setTableData(response.data);
+      setTotalPages(response.total);
     };
 
     updateData();
@@ -44,14 +44,14 @@ const Admin = () => {
         adminId,
       },
     });
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   const handleAcceptApplicant = (data) => {
     const response = acceptApplicant({
       data: { applicationInformation: data, adminId },
     });
-    responseHandler(response);
+    responseHandler({ res: response });
   };
 
   return (

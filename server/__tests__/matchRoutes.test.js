@@ -6,7 +6,7 @@ const Dashboard = require('../models/dashboard');
 const therapistFixture = require('../__fixtures__/therapists.data.json');
 const userFixture = require('../__fixtures__/users.data.json');
 
-jest.setTimeout(30000); // These tests are longgg
+jest.setTimeout(30000);
 
 describe('Matching Routes', () => {
   let token;
@@ -48,9 +48,7 @@ describe('Matching Routes', () => {
     await User.deleteMany({});
     await Therapist.deleteMany({});
     await Dashboard.deleteMany({});
-    setTimeout(() => {
-      closeServer();
-    }, 10000);
+    await closeServer();
   });
 
   it('should match user with a therapist', async () => {

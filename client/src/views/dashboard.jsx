@@ -9,16 +9,17 @@ import {
   loadTableData,
   removeRowFromTable,
   clearTable,
-  getTherapists,
+  matchUserWithTherapists,
   updateRowFromTable,
   setFirstLogin,
 } from '../api/crud';
 
+import Pagination from '../components/pagination';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
 import { copyToClipBoard } from '../components/notifications';
-import Pagination from '../components/pagination';
 import { NotificationContainer } from '../components/notificationContainer';
+import { responseHandler } from '../components/notifications';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -34,14 +35,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     let offset = currentPage;
+
     const updateData = () => {
-      const newTableData = loadTableData(
+      const initResponse = loadTableData(
         { data: { userId: userId, role: role } },
         offset,
       );
-      console.log('Dashboard Data:', newTableData);
-      setTableData(newTableData.tableData);
-      setTotalPages(newTableData.total);
+
+      const response = responseHandler({ res: initResponse });
+
+      console.log('Dashboard Data:', response.data);
+
+      setTableData(response.data);
+      setTotalPages(response.total);
     };
     updateData();
   }, [currentPage, userId, role]);
@@ -55,10 +61,13 @@ const Dashboard = () => {
    */
   const handleRowUpdate = (rowIndex, valueArr, keyArr) => {
     const updatedTableData = [...tableData];
+
     keyArr.forEach((key, index) => {
       updatedTableData[rowIndex][key] = valueArr[index];
     });
+
     setTableData(updatedTableData);
+
     updateRowFromTable({
       data: {
         userId: updatedTableData[rowIndex].userId,
@@ -79,7 +88,7 @@ const Dashboard = () => {
         <motion.button
           {...animationOptions3}
           className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
-          onClick={() => getTherapists({ data: { userId: userId } })}
+          onClick={() => matchUserWithTherapists({ data: { userId: userId } })}
         >
           Request New Therapists
         </motion.button>

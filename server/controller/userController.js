@@ -57,7 +57,6 @@ const loginUser = async (req, res, next) => {
       res.locals.user = user;
       res.locals._id = user.toObject()._id;
 
-      console.log('ID of logged in user: ' + res.locals._id);
       return next();
     } else {
       return res.status(401).send('Authentication failed. Wrong password.');

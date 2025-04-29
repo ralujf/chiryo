@@ -13,8 +13,6 @@ const useIdentityStore = create(
       introState: INTRO_STATE_OPTIONS.START,
       resetUser: () =>
         set(() => ({
-          username: '',
-          password: '',
           adminId: '',
           userId: '',
           role: '',
