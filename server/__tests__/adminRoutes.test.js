@@ -6,18 +6,18 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const therapistsData = require('../__fixtures__/therapists.data.json');
 
-// jest.setTimeout(30000);
-
 describe('Admin Routes', () => {
   let token;
   let username = 'adminUser';
 
   beforeAll(async () => {
     await startServer();
+
     therapistsData.forEach(async (therapistJSON) => {
       const item = new Application(therapistJSON);
       item.save();
     });
+
     const user = {
       adminId: process.env.ADMIN,
       username: 'adminUser',
@@ -25,14 +25,14 @@ describe('Admin Routes', () => {
       password: 'securepassword123',
       age: 25,
     };
+
     const admin = new User(user);
     admin.save();
+
     token = jwt.sign(
       { email: 'example@example.com', username },
       process.env.JWT_SECRET,
     );
-
-    console.error(token);
   });
 
   afterAll(async () => {
@@ -79,7 +79,7 @@ describe('Admin Routes', () => {
         data: { applicationInformation: invalidApplicationInformation },
       });
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
   });
 
   it('should view all applications', async () => {
@@ -198,8 +198,8 @@ describe('Admin Routes', () => {
         },
       });
 
-    expect(response.status).toBe(500);
-    expect(response.text).toContain('Incorrect format');
+    expect(response.status).toBe(400);
+    expect(response.text).toContain('Password not found');
   });
 
   it('should fail with invalid offset in view applications', async () => {

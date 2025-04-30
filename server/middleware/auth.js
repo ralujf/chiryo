@@ -91,6 +91,7 @@ const validateJWT = async (req, res, next) => {
       }
 
       res.locals.user = user;
+
       return next();
     } catch (err) {
       console.error(err);
@@ -125,6 +126,7 @@ const validateInternalJWT = async (req, res, next) => {
       }
 
       res.locals.user = user;
+
       return next();
     } catch (err) {
       console.error(err);

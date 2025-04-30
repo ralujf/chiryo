@@ -45,6 +45,7 @@ describe('Dashboard Routes', () => {
       time: new Date(),
       diagnosis: 'test',
     });
+
     await dashboardItem.save();
 
     const response = await request(app)

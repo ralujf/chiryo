@@ -1,9 +1,14 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Therapist = require('../models/therapist');
 
 const registerUser = async (req, res) => {
   const user = req.body.data;
+
+  if (!user) {
+    return res.status(400).send('No user data');
+  }
 
   try {
     const existingUser = await User.findOne({ username: user.username }).exec();
@@ -21,7 +26,11 @@ const registerUser = async (req, res) => {
     const newUser = new User(user);
     await newUser.save();
 
-    return res.status(201).send({ id: newUser._id });
+    const token = jwt.sign({ email: newUser.email }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    return res.status(201).send({ id: newUser._id, token: token });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Error registering new user: ' + err);
@@ -47,7 +56,6 @@ const loginUser = async (req, res, next) => {
     }
 
     if (!user) {
-      console.error('Login unsuccessful');
       return res.status(404).send('User not found');
     }
 
@@ -82,10 +90,10 @@ const logoutUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const userInformation = req.body.data;
-  const { username, password } = userInformation;
-
   try {
+    const userInformation = req.body.data;
+    const { username, password } = userInformation;
+
     let user = await User.findOne({ username }).exec();
     let role = 'user';
 
@@ -160,11 +168,13 @@ const updatePassword = async (req, res) => {
     const isMatch = await bcrypt.compare(oldPassword, user.password);
 
     if (isMatch) {
-      const saltRounds = 13;
-      const salt = await bcrypt.genSalt(saltRounds);
+      const SALT_ROUNDS = 13;
+
+      const salt = await bcrypt.genSalt(SALT_ROUNDS);
       const hash = await bcrypt.hash(newPassword, salt);
 
       user.password = hash;
+
       await user.save();
       return res.status(200).send('Password updated successfully');
     }
@@ -179,9 +189,9 @@ const updatePassword = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const { username, password, role } = req.body.data;
-
   try {
+    const { username, password, role } = req.body.data;
+
     const user =
       role === 'therapist'
         ? await Therapist.findOne({ username }).exec()

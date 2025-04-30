@@ -6,7 +6,8 @@ const Dashboard = require('../models/dashboard');
 const therapistFixture = require('../__fixtures__/therapists.data.json');
 const userFixture = require('../__fixtures__/users.data.json');
 
-jest.setTimeout(30000);
+const SECONDS = 10 * 1000;
+jest.setTimeout(SECONDS);
 
 describe('Matching Routes', () => {
   let token;
@@ -51,7 +52,7 @@ describe('Matching Routes', () => {
     await closeServer();
   });
 
-  it('should match user with a therapist', async () => {
+  it('should match user with therapists', async () => {
     const response = await request(app)
       .post('/api/matching/find-matches')
       .set('Authorization', `Bearer ${token}`)
@@ -96,7 +97,7 @@ describe('Matching Routes', () => {
     expect(response.text).toContain('This user does not exist');
   });
 
-  it('should return fail due to no available matches for the user', async () => {
+  it('should return no available matches for the user', async () => {
     await Dashboard.deleteMany({});
     await Therapist.deleteMany({});
 
@@ -107,7 +108,6 @@ describe('Matching Routes', () => {
         data: { userId: userId },
       });
 
-    expect(response.status).toBe(500);
-    expect(response.text).toContain('Unable to return matches');
+    expect(response.status).toBe(302);
   });
 });

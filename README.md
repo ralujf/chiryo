@@ -16,13 +16,19 @@ The above will provide the environment variable values for:
 GEMINI_API_KEY=value
 MONGO_TEST=value
 MONGO_URL=value
-
+// Fixed 
+JWT_SECRET=value
+// Id of admin for mongodb user
+ADMIN=value
+// Google account password
+ADMINPASS=value
 
 // Frontend
 // The following value should be a random uuid
 VITE_CRYPTO_KEY=value
 ```
 NOTE: MONGO_URL is for PRODUCTION only
+EXTRA SECURITY MEASURES: ADMIN can only be created with access to the DB
 
 After, use the following custom scripts to download and run all the dependencies required to run the project.
 

@@ -27,8 +27,11 @@ describe('User Routes', () => {
         },
       });
 
+    console.log(loginResponse.text);
+    console.log(loginResponse.statusCode);
+    console.log(loginResponse.statusText);
+
     token = loginResponse.body.token;
-    console.log(loginResponse);
     userId = loginResponse.body.userSubset.userId;
   });
 

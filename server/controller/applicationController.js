@@ -1,5 +1,6 @@
 const Application = require('../models/application');
 const Therapist = require('../models/therapist');
+
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const { scrapeTherapists } = require('./scraper');
@@ -9,7 +10,7 @@ const sendApplication = async (req, res) => {
     const applicationInformation = req.body.data;
 
     if (!applicationInformation.password) {
-      return res.status(500).send('Incorrect format' + err);
+      return res.status(400).send('Password not found');
     }
 
     const SALT_ROUNDS = 10;

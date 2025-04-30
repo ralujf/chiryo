@@ -36,9 +36,9 @@ const fetchDashboard = async (req, res) => {
 };
 
 const deleteRecord = async (req, res) => {
-  try {
-    const { userId, therapistId } = req.body.data;
+  const { userId, therapistId } = req.body.data;
 
+  try {
     if (
       !mongoose.Types.ObjectId.isValid(userId) ||
       !mongoose.Types.ObjectId.isValid(therapistId)
@@ -128,43 +128,43 @@ const updateRecord = async (req, res) => {
 };
 
 const insertToDashboard = async (req, res) => {
-  const { userId } = req.body.data;
-  const data = res.locals.matches;
+  try {
+    const { userId } = req.body.data;
+    const data = res.locals.matches;
 
-  const currentUser = await User.findById(userId).exec();
+    const currentUser = await User.findById(userId).exec();
 
-  if (!currentUser) {
-    return res.status(404).send('There was no user for the ID');
-  }
+    if (!currentUser) {
+      return res.status(404).send('There was no user for the ID');
+    }
 
-  const dashboardData = await data.matches.map((therapist) => ({
-    user: {
-      _id: currentUser._id,
-      username: currentUser.username,
-      email: currentUser.email,
-    },
-    therapist: {
-      _id: therapist._id,
-      username: therapist.username,
-      firstName: therapist.firstName,
-      lastName: therapist.lastName,
-      expertise: therapist.expertise,
-    },
-    location: therapist.location || 'virtual',
-    locationLink: '',
-    time: new Date(),
-    diagnosis: data.diagnosis,
-    markResolvedUser: therapist.markResolvedUser || false,
-    markResolvedTherapist: therapist.markResolvedTherapist || false,
-  }));
+    const dashboardData = await data.matches.map((therapist) => ({
+      user: {
+        _id: currentUser._id,
+        username: currentUser.username,
+        email: currentUser.email,
+      },
+      therapist: {
+        _id: therapist._id,
+        username: therapist.username,
+        firstName: therapist.firstName,
+        lastName: therapist.lastName,
+        expertise: therapist.expertise,
+      },
+      location: therapist.location || 'virtual',
+      locationLink: '',
+      time: new Date(),
+      diagnosis: data.diagnosis,
+      markResolvedUser: therapist.markResolvedUser || false,
+      markResolvedTherapist: therapist.markResolvedTherapist || false,
+    }));
 
-  const newRecords = await Dashboard.insertMany(dashboardData);
+    await Dashboard.insertMany(dashboardData);
 
-  if (newRecords.length > 0) {
     return res.redirect('/dashboard');
-  } else {
-    console.error('No suitable therapists found');
-    return res.status(500).send('Unable to return matches');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Something went wrong!');
   }
 };
 

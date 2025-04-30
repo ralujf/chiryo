@@ -11,7 +11,7 @@ import IsLoading from './isLoading';
 import { QUESTIONS, createProblem } from '../api/questions';
 import { registerUser } from '../api/crud';
 import { sanitizeInput } from '../api/sanitizers';
-import { fetchJWT } from '../api/auth';
+import { fetchJWT, storeJWT } from '../api/auth';
 import { useIdentityStore, useLoginStore } from '../state/state';
 
 import Stars from '../components/stars';
@@ -119,11 +119,12 @@ const Questionnaire = () => {
       const { username, password } = createUserCredentials();
       const { email, age, race, background, religion, location } = userDetails;
 
-      if (!username || !password) {
+      if (!username || !password || !email || !age || !race || !location) {
         notifyError('Credentials were not set, try again!');
+        return null;
       }
 
-      await registerUser({
+      const response = await registerUser({
         data: {
           username: username,
           password: password,
@@ -135,24 +136,31 @@ const Questionnaire = () => {
           location: location,
           problem: problem,
         },
-      })
-        .then((response) => {
-          responseHandler({
-            res: response,
-            setter: setUser,
-            storeSetter: setIntroState,
-            defaultVar: {
-              userId: response.data.id,
-              role: response.data.id ? 'user' : '',
-              firstLogin: true,
-            },
-            stateVar: INTRO_STATE_OPTIONS.MATCH,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          notifyError(err);
-        });
+      });
+
+      const token = await response.data.token;
+      const id = await response.data.id;
+
+      if (!token || !id) {
+        console.log('VARIABLES NOT SET');
+        return null;
+      }
+
+      storeJWT(token);
+
+      const res = await responseHandler({
+        res: response,
+        setter: setUser,
+        defaultVar: {
+          userId: id,
+          role: id ? 'user' : '',
+          firstLogin: true,
+        },
+      });
+
+      if (res) {
+        setIntroState(INTRO_STATE_OPTIONS.MATCH);
+      }
     }
   };
 
@@ -488,6 +496,9 @@ const Questionnaire = () => {
                 </button>
                 {username && password && (
                   <Link
+                    onClick={() => {
+                      localStorage.removeItem('jwtToken');
+                    }}
                     disabled={username && password ? false : true}
                     href="/login"
                     type="button"

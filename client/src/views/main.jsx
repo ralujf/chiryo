@@ -15,7 +15,7 @@ const Main = () => {
         </div>
 
         <div className="col chiryo_rounded chiryo_primary p-3 p-md-5 h-auto d-flex flex-column justify-content-between">
-          <h1 className="text-center display-5 fw-bolder mb-3">
+          <h1 className="text-center display-4 fw-bolder mb-3">
             Find a Therapist
           </h1>
           <p className="text-center display-6">
