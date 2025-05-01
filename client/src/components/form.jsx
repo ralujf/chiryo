@@ -53,14 +53,6 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
       stateVar: response?.token,
       redirect: <Route component={<Redirect to="/dashboard" />} />,
     });
-
-    // if (response === undefined || response.errors) {
-    //   notifyError('Incorrect Details');
-    // } else {
-    //   setUser(response.userSubset);
-    //   storeJWT(response.token);
-    //   <Route component={<Redirect to="/dashboard" />} />;
-    // }
   };
 
   return (

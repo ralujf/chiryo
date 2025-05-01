@@ -46,10 +46,6 @@ const Questionnaire = () => {
     }
   }, []);
 
-  const clearAnswers = () => {
-    setAnswers(Array(answers.length).fill(null));
-  };
-
   const fetchPrevAnswers = (index) => {
     if (answers[index]) {
       textareaRef.current.value = answers[index];
@@ -67,6 +63,10 @@ const Questionnaire = () => {
     const prevQuestion = currentQuestionIndex - 1;
     setCurrentQuestionIndex(prevQuestion);
     fetchPrevAnswers(prevQuestion);
+  };
+
+  const clearAnswers = () => {
+    setAnswers(Array(answers.length).fill(null));
   };
 
   const handleAnswer = (formResponse) => {
@@ -95,6 +95,26 @@ const Questionnaire = () => {
     } else {
       // Completion State
       setCurrentQuestionIndex(nextQuestion);
+    }
+  };
+
+  const handleFormSubmission = (e) => {
+    const formData = new FormData(e.currentTarget);
+
+    if (!formData) {
+      return null;
+    }
+
+    if (correctAudio && correctAudio.src) {
+      correctAudio.play().catch((err) => {
+        console.error('Playback failed: ', err);
+      });
+    }
+
+    if (currentQuestionIndex >= QUESTIONS.length) {
+      createUserWrapper(formData);
+    } else {
+      handleAnswer(formData);
     }
   };
 
@@ -164,27 +184,6 @@ const Questionnaire = () => {
     }
   };
 
-  const togglePassword = (e) => {
-    if (e.currentTarget.innerText == '•••••••••••') {
-      e.currentTarget.innerText = password;
-    } else {
-      e.currentTarget.innerText = '•••••••••••';
-    }
-  };
-
-  const copyDetails = async () => {
-    try {
-      const details = `Username: ${username ? username : ''}\nPassword: ${
-        password ? password : 'password'
-      }`;
-      await navigator.clipboard.writeText(details);
-      notifySuccess('Details saved to clipboard!');
-    } catch (err) {
-      console.error(err);
-      notifyError('Failed to copy details, have you given permission?');
-    }
-  };
-
   /**
    *
    * @param {Object} formResponses - users inputs from form
@@ -206,23 +205,24 @@ const Questionnaire = () => {
     createUser({ token: token, userDetails: USER_DETAILS, problem: PROBLEM });
   };
 
-  const handleFormSubmission = (e) => {
-    const formData = new FormData(e.currentTarget);
-
-    if (!formData) {
-      return null;
-    }
-
-    if (correctAudio && correctAudio.src) {
-      correctAudio.play().catch((err) => {
-        console.error('Audio playback failed: ', err);
-      });
-    }
-
-    if (currentQuestionIndex >= QUESTIONS.length) {
-      createUserWrapper(formData);
+  const togglePassword = (e) => {
+    if (e.currentTarget.innerText == '•••••••••••') {
+      e.currentTarget.innerText = password;
     } else {
-      handleAnswer(formData);
+      e.currentTarget.innerText = '•••••••••••';
+    }
+  };
+
+  const copyDetails = async () => {
+    try {
+      const details = `Username: ${username ? username : ''}\nPassword: ${
+        password ? password : 'password'
+      }`;
+      await navigator.clipboard.writeText(details);
+      notifySuccess('Details saved to clipboard!');
+    } catch (err) {
+      console.error(err);
+      notifyError('Failed to copy details, have you given permission?');
     }
   };
 
