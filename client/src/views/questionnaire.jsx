@@ -142,7 +142,7 @@ const Questionnaire = () => {
       const id = await response.data.id;
 
       if (!token || !id) {
-        console.log('VARIABLES NOT SET');
+        notifyError('Not authenticated, try clicking submit again');
         return null;
       }
 
@@ -213,7 +213,11 @@ const Questionnaire = () => {
       return null;
     }
 
-    correctAudio.play();
+    if (correctAudio && correctAudio.src) {
+      correctAudio.play().catch((err) => {
+        console.error('Audio playback failed: ', err);
+      });
+    }
 
     if (currentQuestionIndex >= QUESTIONS.length) {
       createUserWrapper(formData);

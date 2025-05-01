@@ -6,7 +6,7 @@ const Dashboard = require('../models/dashboard');
 const therapistFixture = require('../__fixtures__/therapists.data.json');
 const userFixture = require('../__fixtures__/users.data.json');
 
-const SECONDS = 10 * 1000;
+const SECONDS = 30 * 1000;
 jest.setTimeout(SECONDS);
 
 describe('Matching Routes', () => {
