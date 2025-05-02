@@ -496,7 +496,7 @@ const Questionnaire = () => {
                           }}
                         >
                           <i className="bi bi-clipboard"></i>
-                          <p style={{ margin: 0 }}>Copy</p>
+                          <p className="m-0">Copy</p>
                         </span>
                       </button>
                     </div>
@@ -513,7 +513,8 @@ const Questionnaire = () => {
                 {username && password && (
                   <Link
                     onClick={() => {
-                      localStorage.removeItem('jwtToken');
+                      localStorage.removeItem('loginToken');
+                      localStorage.removeItem('signinToken');
                     }}
                     disabled={username && password ? false : true}
                     href="/login"

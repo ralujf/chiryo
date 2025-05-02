@@ -90,8 +90,11 @@ const loginUser = async (userData) =>
   handleRequest('post', LOGIN_URL, userData);
 
 const logoutUserRedirect = () => {
-  localStorage.removeItem('jwtToken');
+  localStorage.removeItem('loginToken');
+  localStorage.removeItem('signinToken');
+
   const message = handleRequest('post', LOGOUT_URL);
+
   window.location.href = '/';
   return message;
 };
