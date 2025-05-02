@@ -43,7 +43,7 @@ const handleRequest = async (method, url, data = null, params = null) => {
     data: data,
     params: params,
     headers: {
-      Authorization: fetchToken('jwtToken'),
+      Authorization: fetchToken('loginToken'),
     },
   };
 
