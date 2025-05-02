@@ -13,10 +13,12 @@ The above will provide the environment variable values for:
 
 ```javascript
 // Backend
+// Google AI Studio key
 GEMINI_API_KEY=value
+// MongoDB Cluster and DB Connection values
 MONGO_TEST=value
 MONGO_URL=value
-// Fixed 
+// Random UUID 
 JWT_SECRET=value
 // Id of admin for mongodb user
 ADMIN=value
@@ -24,7 +26,7 @@ ADMIN=value
 ADMINPASS=value
 
 // Frontend
-// The following value should be a random uuid
+// Random UUID
 VITE_CRYPTO_KEY=value
 ```
 NOTE: MONGO_URL is for PRODUCTION only
