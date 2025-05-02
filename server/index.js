@@ -1,12 +1,19 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
+const bodyParser = require('body-parser');
+
 require('dotenv').config();
 
 let server;
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+});
 
 const { validateAdmin, validateInternalJWT } = require('./middleware/auth');
 
@@ -41,6 +48,7 @@ const startServer = async () => {
     let mongoUrl;
 
     if (process.env.NODE_ENV === 'production') {
+      app.use(limiter);
       mongoUrl = process.env.MONGO_URL;
     } else {
       mongoUrl = process.env.MONGO_TEST;

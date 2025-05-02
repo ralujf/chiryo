@@ -11,7 +11,7 @@ import IsLoading from './isLoading';
 import { QUESTIONS, createProblem } from '../api/questions';
 import { registerUser } from '../api/crud';
 import { sanitizeInput } from '../api/sanitizers';
-import { fetchJWT, storeJWT } from '../api/auth';
+import { fetchToken, storeToken } from '../api/auth';
 import { useIdentityStore, useLoginStore } from '../state/state';
 
 import Stars from '../components/stars';
@@ -158,15 +158,27 @@ const Questionnaire = () => {
         },
       });
 
+      console.log(response.data);
+      console.log(response.data.token);
+
       const token = await response.data.token;
       const id = await response.data.id;
 
+      const maxRetries = 50;
+      let retries = 0;
+
+      while ((!token || !id) && retries < maxRetries) {
+        // Wait for 100ms before checking again
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        retries++;
+      }
+
       if (!token || !id) {
-        notifyError('Not authenticated, try clicking submit again');
+        notifyError('Failed to create account. Please try again');
         return null;
       }
 
-      storeJWT(token);
+      storeToken({ key: 'signinToken', value: token });
 
       const res = await responseHandler({
         res: response,
@@ -200,7 +212,7 @@ const Questionnaire = () => {
     const PROBLEM = createProblem(answers);
     const USER_DETAILS = JSON.parse(JSON.stringify(sanitizedFormResponse));
 
-    const token = fetchJWT();
+    const token = fetchToken('signinToken');
 
     createUser({ token: token, userDetails: USER_DETAILS, problem: PROBLEM });
   };

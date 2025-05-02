@@ -9,7 +9,7 @@ import {
   handleResponseStatus,
 } from './formHelpers';
 
-import { storeJWT } from '../api/auth';
+import { storeToken } from '../api/auth';
 import { sanitizeInput } from '../api/sanitizers';
 
 import { responseHandler } from './notifications';
@@ -48,9 +48,9 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
     responseHandler({
       res: response,
       setter: setUser,
-      storeSetter: storeJWT,
+      storeSetter: storeToken,
       defaultVar: response?.userSubset,
-      stateVar: response?.token,
+      stateVar: { key: 'loginToken', value: response.token },
       redirect: <Route component={<Redirect to="/dashboard" />} />,
     });
   };

@@ -1,15 +1,12 @@
-const storeJWT = (token) => {
-  if (token) {
-    localStorage.setItem('jwtToken', token.replace('Bearer ', ''));
+const storeToken = ({ key = null, value = null }) => {
+  if (value && key) {
+    sessionStorage.setItem(key, value);
   }
 };
 
-const fetchJWT = () => {
-  const token = localStorage.getItem('jwtToken');
-  if (token) {
-    return `Bearer ${token}`;
-  }
-  return null;
+const fetchToken = (key) => {
+  const value = sessionStorage.getItem(key);
+  return value || null;
 };
 
-export { fetchJWT, storeJWT };
+export { fetchToken, storeToken };

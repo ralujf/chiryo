@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { useIdentityStore } from '../state/state';
 
-import { fetchJWT } from '../api/auth';
+import { fetchToken } from '../api/auth';
 import { logoutUserRedirect } from '../api/crud';
 
 const Navbar = () => {
@@ -11,8 +11,8 @@ const Navbar = () => {
     useIdentityStore((state) => state);
 
   useEffect(() => {
-    const fetchToken = () => {
-      const token = fetchJWT();
+    const loadToken = () => {
+      const token = fetchToken('loginToken');
 
       if (token && (userId || adminId)) {
         setIsValidated(true);
@@ -20,7 +20,8 @@ const Navbar = () => {
         setIsValidated(false);
       }
     };
-    fetchToken();
+
+    loadToken();
   }, [userId, adminId]);
 
   return (

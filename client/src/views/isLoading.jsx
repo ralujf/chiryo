@@ -43,7 +43,7 @@ const IsLoading = ({ introStateOptions }) => {
   }, [userId, setIntroState]);
 
   useEffect(() => {
-    let incrementor = Math.floor(Math.random() * LIMIT);
+    let incrementor = Math.floor(Math.random() * (LIMIT + 1)) + 1;
 
     const interval = setInterval(() => {
       setLoadingProgress((prevProgress) => {

@@ -18,18 +18,21 @@ import {
   SCRAPE_URL,
   SET_LOGIN_URL,
 } from './config';
-import { fetchJWT } from './auth';
+import { fetchToken } from './auth';
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
 
 const createURL = ({ baseURL = '', userId = null, resourceId = null } = {}) => {
   let url = baseURL;
+
   if (userId) {
     url += `/${userId}`;
   }
+
   if (resourceId) {
     url += `/${resourceId}`;
   }
+
   return url;
 };
 
@@ -40,13 +43,12 @@ const handleRequest = async (method, url, data = null, params = null) => {
     data: data,
     params: params,
     headers: {
-      Authorization: fetchJWT(),
+      Authorization: fetchToken('jwtToken'),
     },
   };
 
   try {
     const response = await axios(requestConfig);
-    console.log(response);
     return response;
   } catch (err) {
     return {
@@ -74,6 +76,7 @@ const errorLog = (error) => {
 
   console.error('Error config:', error.config);
   console.error('Error Message Not Found');
+
   return error.response;
 };
 
@@ -152,7 +155,6 @@ const loadTableData = (userData, offset) => {
     { offset },
   );
 
-  console.log(response);
   return response;
 
   // dashboardData.map((dashboard) => (dashboard.time = new Date(dashboard.time)));
@@ -221,7 +223,7 @@ const loadApplicants = (adminData, offset) => {
     createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
     adminData,
   );
-  console.log(response);
+
   return response;
 };
 

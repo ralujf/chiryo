@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'wouter';
-import { fetchJWT } from './auth';
+import { fetchToken } from './auth';
 
 function PrivateRoute({ component: Component, ...rest }) {
-  const isAuthenticated = fetchJWT();
+  const isAuthenticated = fetchToken('loginToken');
   return (
     <Route
       {...rest}
