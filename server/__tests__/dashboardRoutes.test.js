@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const therapistFixture = require('../__fixtures__/therapists.data.json');
 const userFixture = require('../__fixtures__/users.data.json');
 
+const SECONDS = 30 * 1000;
+jest.setTimeout(SECONDS);
+
 describe('Dashboard Routes', () => {
   let token;
   let userId;
@@ -49,8 +52,8 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .get('/api/dashboard/load-user-dashboard/0')
-      .set('Authorization', `Bearer ${token}`)
+      .put('/api/dashboard/load-user-dashboard/0')
+      .set('Authorization', token)
       .send({ data: { userId, role: 'user' } });
 
     expect(response.status).toBe(200);
@@ -60,8 +63,8 @@ describe('Dashboard Routes', () => {
 
   it('should fail to fetch user dashboard with invalid offset', async () => {
     const response = await request(app)
-      .get('/api/dashboard/load-user-dashboard/invalid')
-      .set('Authorization', `Bearer ${token}`)
+      .put('/api/dashboard/load-user-dashboard/invalid')
+      .set('Authorization', token)
       .send({ data: { userId, role: 'user' } });
 
     expect(response.status).toBe(400);
@@ -80,7 +83,7 @@ describe('Dashboard Routes', () => {
 
     const response = await request(app)
       .put('/api/dashboard/delete-row')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { userId, therapistId } });
 
     expect(response.status).toBe(200);
@@ -90,7 +93,7 @@ describe('Dashboard Routes', () => {
   it('should fail to delete due to non-existent userId', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-row')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { userId: '67b9904733b91379fcb743ae', therapistId } });
 
     expect(response.status).toBe(404);
@@ -100,7 +103,7 @@ describe('Dashboard Routes', () => {
   it('should fail to delete a non-existent record due to invalid userId', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-row')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { userId, therapistId: '67b9904733b91379fcb743ae' } });
 
     expect(response.status).toBe(404);
@@ -119,7 +122,7 @@ describe('Dashboard Routes', () => {
 
     const response = await request(app)
       .put('/api/dashboard/delete-table')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { role: 'user', userId } });
 
     expect(response.status).toBe(200);
@@ -129,7 +132,7 @@ describe('Dashboard Routes', () => {
   it('should fail to delete all records user with no dashboards', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-table')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { role: 'user', userId } });
 
     expect(response.status).toBe(404);
@@ -139,7 +142,7 @@ describe('Dashboard Routes', () => {
   it('should fail to delete all records for non-existent user', async () => {
     const response = await request(app)
       .put('/api/dashboard/delete-table')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { role: 'user', userId: '67b9904733b91379fcb743ae' } });
 
     expect(response.status).toBe(404);
@@ -158,7 +161,7 @@ describe('Dashboard Routes', () => {
 
     const response = await request(app)
       .put('/api/dashboard/add-field')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: { userId, therapistId, rowData: { diagnosis: 'updated' } },
       });
@@ -170,7 +173,7 @@ describe('Dashboard Routes', () => {
   it('should fail to update a non-existent record', async () => {
     const response = await request(app)
       .put('/api/dashboard/add-field')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           userId: userId,
@@ -186,7 +189,7 @@ describe('Dashboard Routes', () => {
   it('should fail to update a non-existent but valid objectId', async () => {
     const response = await request(app)
       .put('/api/dashboard/add-field')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           userId,

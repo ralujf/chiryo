@@ -20,6 +20,7 @@ import DashboardSidebar from '../components/dashboardSidebar';
 import { copyToClipBoard } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
+import { useTokenValidation } from '../hooks/useTokenValidation';
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -27,30 +28,37 @@ const Dashboard = () => {
   const [tableData, setTableData] = useState([]);
   const { userId, role, firstLogin } = useIdentityStore((state) => state);
 
+  const validated = useTokenValidation({ userId });
+
   useEffect(() => {
-    setFirstLogin({
-      data: { userId: userId, firstLogin: firstLogin, role: role },
-    });
-  }, [firstLogin, userId, role]);
+    if (validated) {
+      setFirstLogin({
+        data: { userId: userId, firstLogin: firstLogin, role: role },
+      });
+    }
+  }, [firstLogin, userId, role, validated]);
 
   useEffect(() => {
     let offset = currentPage;
 
-    const updateData = () => {
-      const initResponse = loadTableData(
-        { data: { userId: userId, role: role } },
-        offset,
-      );
+    const updateData = async () => {
+      if (validated) {
+        const initResponse = await loadTableData(
+          { data: { userId: userId, role: role } },
+          offset,
+        );
 
-      const response = responseHandler({ res: initResponse });
+        const response = responseHandler({ res: initResponse, silence: true });
 
-      console.log('Dashboard Data:', response.data);
+        console.log('Dashboard Data:', response);
 
-      setTableData(response.data);
-      setTotalPages(response.total);
+        setTableData(response.data);
+        setTotalPages(response.total);
+      }
     };
+
     updateData();
-  }, [currentPage, userId, role]);
+  }, [currentPage, userId, role, validated]);
 
   /**
    *
@@ -77,7 +85,7 @@ const Dashboard = () => {
     });
   };
 
-  return (
+  return validated ? (
     <div className="container-fluid main-container vw-100 p-5 mt-5">
       {firstLogin && <Intro />}
       <NotificationContainer />
@@ -337,6 +345,8 @@ const Dashboard = () => {
         totalPages={totalPages}
       />
     </div>
+  ) : (
+    <div className="vh-100 vw-100"></div>
   );
 };
 

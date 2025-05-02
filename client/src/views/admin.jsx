@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { useIdentityStore } from '../state/state';
+import { useTokenValidation } from '../hooks/useTokenValidation';
 
 import {
   loadApplicants,
@@ -22,20 +23,25 @@ const Admin = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [tableData, setTableData] = useState([]);
 
+  const validated = useTokenValidation({ userId: null, adminId });
+
   useEffect(() => {
     let offset = currentPage;
+
     const updateData = () => {
-      const initResponse = loadApplicants({ data: { adminId } }, offset);
-      const response = responseHandler({ res: initResponse });
+      if (validated) {
+        const initResponse = loadApplicants({ data: { adminId } }, offset);
+        const response = responseHandler({ res: initResponse, silence: true });
 
-      console.log('Admin Data:', response.data);
+        console.log('Admin Data:', response);
 
-      setTableData(response.data);
-      setTotalPages(response.total);
+        setTableData(response.data);
+        setTotalPages(response.total);
+      }
     };
 
     updateData();
-  }, [currentPage, adminId]);
+  }, [currentPage, adminId, validated]);
 
   const handleRejectApplicant = (email) => {
     const response = rejectApplicant({
@@ -54,7 +60,7 @@ const Admin = () => {
     responseHandler({ res: response });
   };
 
-  return (
+  return validated ? (
     <div className="container-fluid main-container vw-100 p-5 mt-5">
       <NotificationContainer />
       <motion.h1 {...animationOptions3} className="display-3 fw-bolder mb-5">
@@ -128,6 +134,8 @@ const Admin = () => {
         totalPages={totalPages}
       />
     </div>
+  ) : (
+    <div className="vh-100 vw-100"></div>
   );
 };
 

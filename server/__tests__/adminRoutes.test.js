@@ -84,8 +84,8 @@ describe('Admin Routes', () => {
 
   it('should view all applications', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants/0')
-      .set('Authorization', `Bearer ${token}`)
+      .put('/api/admin/view-all-applicants/0')
+      .set('Authorization', token)
       .send({ data: { adminId: process.env.ADMIN, username } });
 
     expect(response.status).toBe(200);
@@ -95,7 +95,7 @@ describe('Admin Routes', () => {
 
   it('view all applications without token', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants/0')
+      .put('/api/admin/view-all-applicants/0')
       .send({ data: { adminId: process.env.ADMIN, username } });
 
     expect(response.status).toBe(403);
@@ -104,7 +104,7 @@ describe('Admin Routes', () => {
   it('should approve an application', async () => {
     const response = await request(app)
       .post('/api/admin/approve-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           applicationInformation: therapistsData[1],
@@ -123,7 +123,7 @@ describe('Admin Routes', () => {
     };
     const response = await request(app)
       .post('/api/admin/approve-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           applicationInformation: invalidApplicationInformation,
@@ -137,7 +137,7 @@ describe('Admin Routes', () => {
   it('should reject an application', async () => {
     const response = await request(app)
       .delete(`/api/admin/reject-applicant`)
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           email: therapistsData[2].email,
@@ -152,7 +152,7 @@ describe('Admin Routes', () => {
   it('should fail to reject a non-existent application', async () => {
     const response = await request(app)
       .delete('/api/admin/reject-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           email: 'nonexistent@example.com',
@@ -166,7 +166,7 @@ describe('Admin Routes', () => {
   it('should fail to reject a due to no admin ID', async () => {
     const response = await request(app)
       .delete('/api/admin/reject-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           email: therapistsData[3].email,
@@ -179,7 +179,7 @@ describe('Admin Routes', () => {
   it('should handle application submission with invalid password', async () => {
     const response = await request(app)
       .post('/api/apply')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           firstName: 'applytest',
@@ -204,8 +204,8 @@ describe('Admin Routes', () => {
 
   it('should fail with invalid offset in view applications', async () => {
     const response = await request(app)
-      .get('/api/admin/view-all-applicants/invalid')
-      .set('Authorization', `Bearer ${token}`)
+      .put('/api/admin/view-all-applicants/invalid')
+      .set('Authorization', token)
       .send({
         data: {
           adminId: process.env.ADMIN,
@@ -221,8 +221,8 @@ describe('Admin Routes', () => {
     });
 
     const response = await request(app)
-      .get('/api/admin/view-all-applicants/0')
-      .set('Authorization', `Bearer ${token}`)
+      .put('/api/admin/view-all-applicants/0')
+      .set('Authorization', token)
       .send({
         data: {
           adminId: process.env.ADMIN,
@@ -240,7 +240,7 @@ describe('Admin Routes', () => {
 
     const response = await request(app)
       .post('/api/admin/approve-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           applicationInformation: therapistsData[1],
@@ -259,7 +259,7 @@ describe('Admin Routes', () => {
 
     const response = await request(app)
       .delete('/api/admin/reject-applicant')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: {
           email: therapistsData[2].email,

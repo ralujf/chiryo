@@ -4,7 +4,9 @@ import { animationOptions3 } from '../styles/animations';
 import { deleteUser, updatePassword, updateProfileInfo } from '../api/crud';
 import { sanitizeInput } from '../api/sanitizers';
 
+import { useTokenValidation } from '../hooks/useTokenValidation';
 import { useIdentityStore } from '../state/state';
+
 import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
@@ -15,7 +17,8 @@ const Profile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const role = useIdentityStore((state) => state.role);
+  const { role, userId, adminId } = useIdentityStore((state) => state);
+  const validated = useTokenValidation({ userId, adminId });
 
   const onSubmitUpdate = async (data) => {
     const sanitizedData = Object.fromEntries(
@@ -66,7 +69,7 @@ const Profile = () => {
     responseHandler({ res: response });
   };
 
-  return (
+  return validated ? (
     <>
       <div className="container-fluid p-5 mt-5">
         <NotificationContainer />
@@ -361,6 +364,8 @@ const Profile = () => {
         </div>
       </div>
     </>
+  ) : (
+    <div className="vh-100 vw-100"></div>
   );
 };
 

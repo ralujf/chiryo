@@ -7,9 +7,9 @@ const {
 const express = require('express');
 const router = express.Router();
 
-router.get('/search-for-therapist', findTherapistsExternal);
+router.put('/search-for-therapist', findTherapistsExternal);
 
-router.get('/view-all-applicants/:offset', viewApplications);
+router.put('/view-all-applicants/:offset', viewApplications);
 
 router.post('/approve-applicant', approveApplication);
 

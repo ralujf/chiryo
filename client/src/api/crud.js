@@ -36,16 +36,24 @@ const createURL = ({ baseURL = '', userId = null, resourceId = null } = {}) => {
   return url;
 };
 
-const handleRequest = async (method, url, data = null, params = null) => {
+const handleRequest = async ({
+  method,
+  url,
+  data = null,
+  params = null,
+  token = 'loginToken',
+}) => {
   const requestConfig = {
     method: method,
-    url: params ? url + '/' + params : url,
+    url: params ? url + '/' + params.offset : url,
     data: data,
     params: params,
     headers: {
-      Authorization: fetchToken('loginToken'),
+      Authorization: fetchToken(token),
     },
   };
+
+  console.log(requestConfig);
 
   try {
     const response = await axios(requestConfig);
@@ -87,13 +95,13 @@ const errorLog = (error) => {
  * @description - login information
  */
 const loginUser = async (userData) =>
-  handleRequest('post', LOGIN_URL, userData);
+  handleRequest({ method: 'post', url: LOGIN_URL, data: userData });
 
 const logoutUserRedirect = () => {
   localStorage.removeItem('loginToken');
   localStorage.removeItem('signinToken');
 
-  const message = handleRequest('post', LOGOUT_URL);
+  const message = handleRequest({ method: 'post', url: LOGOUT_URL });
 
   window.location.href = '/';
   return message;
@@ -106,7 +114,7 @@ const logoutUserRedirect = () => {
  * @description - take in user data appended on data object, return
  */
 const registerUser = (userData) =>
-  handleRequest('post', REGISTER_URL, userData);
+  handleRequest({ method: 'post', url: REGISTER_URL, data: userData });
 
 /**
  *
@@ -115,7 +123,11 @@ const registerUser = (userData) =>
  * @description - enable user to delete account
  */
 const deleteUser = (userData) =>
-  handleRequest('delete', createURL({ baseURL: DELETE_USER_URL }), userData);
+  handleRequest({
+    method: 'delete',
+    url: createURL({ baseURL: DELETE_USER_URL }),
+    data: userData,
+  });
 
 /**
  *
@@ -123,7 +135,7 @@ const deleteUser = (userData) =>
  * @returns
  */
 const setFirstLogin = (userData) =>
-  handleRequest('patch', SET_LOGIN_URL, userData);
+  handleRequest({ method: 'patch', url: SET_LOGIN_URL, data: userData });
 
 /**
  *
@@ -132,7 +144,11 @@ const setFirstLogin = (userData) =>
  * @description - update the user field
  */
 const updateProfileInfo = (profileData) =>
-  handleRequest('patch', UPDATE_PROFILE_URL, profileData);
+  handleRequest({
+    method: 'patch',
+    url: UPDATE_PROFILE_URL,
+    data: profileData,
+  });
 
 /**
  *
@@ -141,7 +157,7 @@ const updateProfileInfo = (profileData) =>
  * @description - update the user field
  */
 const updatePassword = (profileData) =>
-  handleRequest('patch', NEW_PASS_URL, profileData);
+  handleRequest({ method: 'patch', url: NEW_PASS_URL, data: profileData });
 
 /**
  *
@@ -151,12 +167,12 @@ const updatePassword = (profileData) =>
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
 const loadTableData = (userData, offset) => {
-  const response = handleRequest(
-    'get',
-    createURL({ baseURL: GET_TABLE_URL }),
-    userData,
-    { offset },
-  );
+  const response = handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: GET_TABLE_URL }),
+    data: userData,
+    params: { offset },
+  });
 
   return response;
 
@@ -170,7 +186,11 @@ const loadTableData = (userData, offset) => {
  * @description - finds and dereferences a specific row from a specific users view, does not delete data
  */
 const removeRowFromTable = (userData) =>
-  handleRequest('put', createURL({ baseURL: REMOVE_ROW_URL }), userData);
+  handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: REMOVE_ROW_URL }),
+    data: userData,
+  });
 
 /**
  *
@@ -179,7 +199,11 @@ const removeRowFromTable = (userData) =>
  * @description - Removes the users reference to be able to retrieve data
  */
 const clearTable = (userData) =>
-  handleRequest('put', createURL({ baseURL: REMOVE_ALL_URL }), userData);
+  handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: REMOVE_ALL_URL }),
+    data: userData,
+  });
 
 /**
  *
@@ -188,7 +212,11 @@ const clearTable = (userData) =>
  * @description - Update a specific item of a specific record by overwriting with new row data
  */
 const updateRowFromTable = (dashboardData) =>
-  handleRequest('put', createURL({ baseURL: UPDATE_ROW_URL }), dashboardData);
+  handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: UPDATE_ROW_URL }),
+    data: dashboardData,
+  });
 
 /**
  *
@@ -197,11 +225,12 @@ const updateRowFromTable = (dashboardData) =>
  * @description - Return the therapists that the user has matched with in ranked order of perceived compatibility
  */
 const matchUserWithTherapists = async (userData) => {
-  return handleRequest(
-    'post',
-    createURL({ baseURL: POST_SYMPTOMS_URL }),
-    userData,
-  );
+  return handleRequest({
+    method: 'post',
+    url: createURL({ baseURL: POST_SYMPTOMS_URL }),
+    data: userData,
+    token: 'signinToken',
+  });
 };
 
 /**
@@ -211,7 +240,11 @@ const matchUserWithTherapists = async (userData) => {
  * @description - Post an applicants details to the database to be ported into a HR system and reviewed
  */
 const sendApplication = (applicationData) =>
-  handleRequest('post', APPLICATION_URL, applicationData);
+  handleRequest({
+    method: 'post',
+    url: APPLICATION_URL,
+    data: applicationData,
+  });
 
 /**
  *
@@ -221,11 +254,11 @@ const sendApplication = (applicationData) =>
  * @description - Fetches a list of applicants from the database for review
  */
 const loadApplicants = (adminData, offset) => {
-  let response = handleRequest(
-    'get',
-    createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
-    adminData,
-  );
+  let response = handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
+    data: adminData,
+  });
 
   return response;
 };
@@ -238,7 +271,11 @@ const loadApplicants = (adminData, offset) => {
  * @description - Approve therapist into the account
  */
 const acceptApplicant = (adminData) =>
-  handleRequest('post', ACCEPT_APPLICATION_URL, adminData);
+  handleRequest({
+    method: 'post',
+    url: ACCEPT_APPLICATION_URL,
+    data: adminData,
+  });
 
 /**
  *
@@ -248,7 +285,11 @@ const acceptApplicant = (adminData) =>
  * @description - Reject therapist into the account
  */
 const rejectApplicant = (adminData) =>
-  handleRequest('delete', REJECT_APPLICATION_URL, adminData);
+  handleRequest({
+    method: 'delete',
+    url: REJECT_APPLICATION_URL,
+    data: adminData,
+  });
 
 /**
  *
@@ -256,7 +297,7 @@ const rejectApplicant = (adminData) =>
  * @returns
  */
 const searchForTherapists = (adminData) =>
-  handleRequest('get', SCRAPE_URL, adminData);
+  handleRequest({ method: 'put', url: SCRAPE_URL, data: adminData });
 
 export {
   errorLog,

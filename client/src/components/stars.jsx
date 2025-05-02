@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { QUESTIONS } from '../api/questions';
 
 const Stars = ({ number }) => {
   const starRef = useRef();
@@ -23,31 +24,13 @@ const Stars = ({ number }) => {
   return (
     <div style={{ position: 'absolute', top: '12.5%', right: '2.5%' }}>
       <div ref={starRef} className="container-fluid d-flex">
-        <i
-          key="1"
-          className="bi bi-star"
-          style={{ margin: '0 2px', fontSize: '2rem' }}
-        ></i>
-        <i
-          key="2"
-          className="bi bi-star"
-          style={{ margin: '0 2px', fontSize: '2rem' }}
-        ></i>
-        <i
-          key="3"
-          className="bi bi-star"
-          style={{ margin: '0 2px', fontSize: '2rem' }}
-        ></i>
-        <i
-          key="4"
-          className="bi bi-star"
-          style={{ margin: '0 2px', fontSize: '2rem' }}
-        ></i>
-        <i
-          key="5"
-          className="bi bi-star"
-          style={{ margin: '0 2px', fontSize: '2rem' }}
-        ></i>
+        {Array.from({ length: QUESTIONS.length }).map((_, index) => (
+          <i
+            key={index}
+            className="bi bi-star"
+            style={{ margin: '0 2px', fontSize: '2rem' }}
+          ></i>
+        ))}
       </div>
     </div>
   );

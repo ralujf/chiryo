@@ -20,7 +20,7 @@ MONGO_TEST=value
 MONGO_URL=value
 // Random UUID 
 JWT_SECRET=value
-// Id of admin for mongodb user
+// ObjectId of admin for Mongodb User
 ADMIN=value
 // Google account password
 ADMINPASS=value
@@ -32,7 +32,7 @@ VITE_CRYPTO_KEY=value
 NOTE: MONGO_URL is for PRODUCTION only
 EXTRA SECURITY MEASURES: ADMIN can only be created with access to the DB
 
-After, use the following custom scripts to download and run all the dependencies required to run the project.
+After, navigate to the main directory of the project and use the following custom scripts to download and run all the dependencies required to run the project.
 
 ```powershell
 cd client ; npm install ; npm run dev
@@ -40,3 +40,6 @@ cd client ; npm install ; npm run dev
 cd ../server ; npm install ; npm run start
 ```
 
+Within your MongoDB cluster, ensure that the ADMIN env matches the adminID of the user
+
+Due to the nature of this project and the rapid speed of innovation, the Gemini API may be deprecated 

@@ -8,7 +8,7 @@ const {
 const express = require('express');
 const router = express.Router();
 
-router.get('/load-user-dashboard/:offset', fetchDashboard);
+router.put('/load-user-dashboard/:offset', fetchDashboard);
 
 router.put('/delete-row', deleteRecord);
 

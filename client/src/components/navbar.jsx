@@ -2,27 +2,20 @@ import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { useIdentityStore } from '../state/state';
 
-import { fetchToken } from '../api/auth';
 import { logoutUserRedirect } from '../api/crud';
 
+import { useTokenValidation } from '../hooks/useTokenValidation';
+
 const Navbar = () => {
-  const [validated, setIsValidated] = useState('');
   const { userId, adminId, role, resetUser, setCurrentQuestionIndex } =
     useIdentityStore((state) => state);
 
+  const validated = useTokenValidation({ userId, adminId, redirect: false });
+  const [signIn, setSignIn] = useState(false);
+
   useEffect(() => {
-    const loadToken = () => {
-      const token = fetchToken('loginToken');
-
-      if (token && (userId || adminId)) {
-        setIsValidated(true);
-      } else {
-        setIsValidated(false);
-      }
-    };
-
-    loadToken();
-  }, [userId, adminId]);
+    setSignIn(localStorage.getItem('signinToken') ? true : false);
+  }, [userId]);
 
   return (
     <nav
@@ -101,7 +94,7 @@ const Navbar = () => {
               </div>
             </li>
 
-            {validated && (
+            {validated && signIn === false && (
               <>
                 <li className="nav-item">
                   <Link
@@ -124,7 +117,7 @@ const Navbar = () => {
               </>
             )}
 
-            {adminId && (
+            {adminId && signIn === false && (
               <>
                 <li className="nav-item">
                   <Link
@@ -139,7 +132,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {validated ? (
+          {validated && signIn === false ? (
             <button
               className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
               onClick={() => {

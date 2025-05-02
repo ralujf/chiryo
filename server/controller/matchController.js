@@ -7,26 +7,22 @@ const AI = new GoogleGenAI({
 });
 
 const CONFIG = {
-  temperature: 1,
+  temperature: 0.4,
   topP: 0.95,
-  topK: 64,
   responseMimeType: 'application/json',
   responseSchema: {
     type: Type.OBJECT,
     required: ['diagnosis'],
     properties: {
       diagnosis: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          required: ['name', 'description'],
-          properties: {
-            name: {
-              type: Type.STRING,
-            },
-            description: {
-              type: Type.STRING,
-            },
+        type: Type.OBJECT,
+        required: ['name', 'description'],
+        properties: {
+          name: {
+            type: Type.STRING,
+          },
+          description: {
+            type: Type.STRING,
           },
         },
       },
@@ -100,9 +96,7 @@ const parseFromJSON = (geminiResponse) => {
     return parsedResponse;
   } catch (err) {
     console.error('Failed to parse JSON response:', err);
-    return res
-      .status(500)
-      .send('Model failed to respond, please try again later');
+    return null;
   }
 };
 
@@ -118,7 +112,7 @@ const matchUserWithTherapist = async (req, res, next) => {
 
   const response = await run(problem);
 
-  if (!response.diagnosis) {
+  if (!response || !response.diagnosis) {
     return res.status(500).send('Failed to diagnose user');
   }
 
@@ -126,13 +120,13 @@ const matchUserWithTherapist = async (req, res, next) => {
     age: age,
     race: race,
     religion: religion,
-    diagnosis: response?.diagnosis[response.diagnosis.length - 1].name,
+    diagnosis: response.diagnosis.name,
   };
 
   try {
     let output = await matchObject(userForMatching);
 
-    res.locals.matches = output;
+    res.locals.data = output;
 
     return next();
   } catch (err) {

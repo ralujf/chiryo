@@ -15,6 +15,12 @@ const limiter = rateLimit({
   max: 5,
 });
 
+// Middleware
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
 const { validateAdmin, validateInternalJWT } = require('./middleware/auth');
 
 // Routers
@@ -23,12 +29,6 @@ const applicationsRouter = require('./routes/enrol');
 const userRouter = require('./routes/user');
 const matchRouter = require('./routes/matching');
 const dashboardRouter = require('./routes/dashboard');
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static('public'));
 
 // Debugging
 app.use('/api', (_, __, next) => {

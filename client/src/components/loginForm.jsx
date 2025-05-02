@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Route, Redirect } from 'wouter';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
@@ -14,8 +13,9 @@ import { sanitizeInput } from '../api/sanitizers';
 
 import { responseHandler } from './notifications';
 import { NotificationContainer } from './notificationContainer';
+import { Redirect } from 'wouter';
 
-const Form = ({ formTitle, submissionMethod, submissionText }) => {
+const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
   const {
     register,
     handleSubmit,
@@ -45,14 +45,19 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
 
     const response = await submissionMethod({ data: sanitizedData });
 
+    const { token, userSubset } = await response.data;
+
+    console.log(userSubset);
+
     responseHandler({
       res: response,
       setter: setUser,
-      storeSetter: storeToken,
-      defaultVar: response?.userSubset,
-      stateVar: { key: 'loginToken', value: response.token },
-      redirect: <Route component={<Redirect to="/dashboard" />} />,
+      storeSetter: (value) => storeToken(value),
+      defaultVar: userSubset,
+      stateVar: { key: 'loginToken', value: token },
     });
+
+    return <Redirect to="/dashboard" />;
   };
 
   return (
@@ -106,10 +111,10 @@ const Form = ({ formTitle, submissionMethod, submissionText }) => {
   );
 };
 
-Form.propTypes = {
+LoginForm.propTypes = {
   formTitle: PropTypes.string.isRequired,
   submissionMethod: PropTypes.func,
   submissionText: PropTypes.string.isRequired,
 };
 
-export default Form;
+export default LoginForm;

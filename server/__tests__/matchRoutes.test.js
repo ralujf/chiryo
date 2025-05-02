@@ -42,7 +42,6 @@ describe('Matching Routes', () => {
 
     token = loginResponse.body.token;
     userId = loginResponse.body.userSubset.userId;
-    console.log(loginResponse.body);
   });
 
   afterAll(async () => {
@@ -55,13 +54,12 @@ describe('Matching Routes', () => {
   it('should match user with therapists', async () => {
     const response = await request(app)
       .post('/api/matching/find-matches')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: { userId: userId },
       });
 
-    expect(response.status).toBe(302);
-    expect(response.text).toContain('Found. Redirecting to /dashboard');
+    expect(response.status).toBe(201);
   });
 
   it('should fail due to no JWT when matching user with a therapist', async () => {
@@ -90,7 +88,7 @@ describe('Matching Routes', () => {
   it('should fail due to JWT validation, no user', async () => {
     const response = await request(app)
       .post('/api/matching/find-matches')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({ data: { userId: 0 } });
 
     expect(response.status).toBe(404);
@@ -103,11 +101,11 @@ describe('Matching Routes', () => {
 
     const response = await request(app)
       .post('/api/matching/find-matches')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', token)
       .send({
         data: { userId: userId },
       });
 
-    expect(response.status).toBe(302);
+    expect(response.status).toBe(201);
   });
 });

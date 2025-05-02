@@ -1,10 +1,22 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
+
+import { useIdentityStore } from '../state/state';
+import { useTokenValidation } from '../hooks/useTokenValidation';
 import { loginUser } from '../api/crud';
-import Form from '../components/form';
+
+import LoginForm from '../components/loginForm';
+import { Redirect } from 'wouter';
 
 const Login = () => {
-  return (
+  const { userId, adminId } = useIdentityStore((state) => state);
+  const validated = useTokenValidation({ userId, adminId });
+
+  return validated ? (
+    <div className="vh-100">
+      <Redirect to="/dashboard" />
+    </div>
+  ) : (
     <div className="chiryo_login_background vh-100">
       <motion.div
         {...animationOptions3}
@@ -14,7 +26,7 @@ const Login = () => {
           margin: '0vh 5vw',
         }}
       >
-        <Form
+        <LoginForm
           formTitle={'Login'}
           submissionMethod={loginUser}
           submissionText="Login"

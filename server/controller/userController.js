@@ -17,8 +17,9 @@ const registerUser = async (req, res) => {
       return res.status(400).send('Username already exists');
     }
 
-    const saltRounds = 13;
-    const salt = await bcrypt.genSalt(saltRounds);
+    const SALT_ROUNDS = 13;
+
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hash = await bcrypt.hash(user.password, salt);
 
     user.password = hash;

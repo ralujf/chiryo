@@ -158,20 +158,9 @@ const Questionnaire = () => {
         },
       });
 
-      console.log(response.data);
-      console.log(response.data.token);
+      console.log(response);
 
-      const token = await response.data.token;
-      const id = await response.data.id;
-
-      const maxRetries = 50;
-      let retries = 0;
-
-      while ((!token || !id) && retries < maxRetries) {
-        // Wait for 100ms before checking again
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        retries++;
-      }
+      const { token, id } = await response.data;
 
       if (!token || !id) {
         notifyError('Failed to create account. Please try again');
@@ -230,7 +219,9 @@ const Questionnaire = () => {
       const details = `Username: ${username ? username : ''}\nPassword: ${
         password ? password : 'password'
       }`;
+
       await navigator.clipboard.writeText(details);
+
       notifySuccess('Details saved to clipboard!');
     } catch (err) {
       console.error(err);
@@ -241,7 +232,17 @@ const Questionnaire = () => {
   if (role === 'therapist') {
     return (
       <div className="min-vh-100 min-vw-100 d-flex justify-content-center align-items-center">
-        Therapist are not allowed to do this stuff..
+        <p>Therapist are not allowed to do this stuff..</p>
+        <div>
+          <Link
+            href="/dashboard"
+            type="button"
+            className="btn chiryo_primary chiryo_rounded"
+            data-cy="login-link"
+          >
+            Go to dashboard
+          </Link>
+        </div>
       </div>
     );
   } else if (introState === INTRO_STATE_OPTIONS.START) {
@@ -252,7 +253,6 @@ const Questionnaire = () => {
           padding: '20vh 5vw',
         }}
       >
-        <NotificationContainer />
         {currentQuestionIndex < QUESTIONS.length && (
           <Stars number={currentQuestionIndex} />
         )}
@@ -394,7 +394,7 @@ const Questionnaire = () => {
                 <div className="mb-3">
                   <p>Anything else?</p>
                   <input
-                    placeholder="Enter any additional information i.e. previous experiences, related issues etc..."
+                    placeholder="Enter any additional information i.e. previous treatment experiences, related issues etc..."
                     type="text"
                     name="additional"
                     className="form-control mb-3"
@@ -440,6 +440,7 @@ const Questionnaire = () => {
               </button>
             </div>
           </motion.form>
+          <NotificationContainer />
         </div>
       </div>
     );
@@ -503,7 +504,7 @@ const Questionnaire = () => {
                   </>
                 )}
               </div>
-              <div className="modal-footer d-flex justify-content-center gap-3">
+              <div className="modal-footer d-flex justify-content-center gap-5">
                 <button
                   onClick={() => redoQuestions()}
                   className="btn chiryo_rounded bg-white border-2"
@@ -511,19 +512,21 @@ const Questionnaire = () => {
                   Redo
                 </button>
                 {username && password && (
-                  <Link
-                    onClick={() => {
-                      localStorage.removeItem('loginToken');
-                      localStorage.removeItem('signinToken');
-                    }}
-                    disabled={username && password ? false : true}
-                    href="/login"
-                    type="button"
-                    className="btn chiryo_primary chiryo_rounded"
-                    data-cy="login-link"
-                  >
-                    Login
-                  </Link>
+                  <div>
+                    <Link
+                      onClick={() => {
+                        localStorage.removeItem('loginToken');
+                        localStorage.removeItem('signinToken');
+                      }}
+                      disabled={username && password ? false : true}
+                      href="/login"
+                      type="button"
+                      className="btn chiryo_primary chiryo_rounded"
+                      data-cy="login-link"
+                    >
+                      Login
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

@@ -130,9 +130,13 @@ const updateRecord = async (req, res) => {
 const insertToDashboard = async (req, res) => {
   try {
     const { userId } = req.body.data;
-    const data = res.locals.matches;
+    const { data } = res.locals;
 
     const currentUser = await User.findById(userId).exec();
+
+    if (!data) {
+      return res.status(500).send('Unable to complete matching');
+    }
 
     if (!currentUser) {
       return res.status(404).send('There was no user for the ID');
@@ -160,8 +164,7 @@ const insertToDashboard = async (req, res) => {
     }));
 
     await Dashboard.insertMany(dashboardData);
-
-    return res.redirect('/dashboard');
+    return res.status(201).send('Matches successfully inserted');
   } catch (err) {
     console.error(err);
     return res.status(500).send('Something went wrong!');

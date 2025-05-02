@@ -75,7 +75,7 @@ const findUser = async (query) => {
  */
 const validateJWT = async (req, res, next) => {
   try {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const token = req.headers.authorization;
     const { username } = req.body.data;
 
     const decoded = verifyToken(token);
@@ -109,7 +109,7 @@ const validateJWT = async (req, res, next) => {
  */
 const validateInternalJWT = async (req, res, next) => {
   try {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const token = req.headers.authorization;
     const { userId } = req.body.data;
 
     const decoded = verifyToken(token);
@@ -140,7 +140,7 @@ const validateInternalJWT = async (req, res, next) => {
 
 const validateAdmin = (req, res, next) => {
   try {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const token = req.headers.authorization;
     const { adminId } = req.body.data;
 
     const decoded = verifyToken(token);
