@@ -82,17 +82,17 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/dashboard/delete-row')
+      .put('/api/dashboard/delete-row/0')
       .set('Authorization', token)
-      .send({ data: { userId, therapistId } });
+      .send({ data: { role: 'user', userId, therapistId } });
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Records updated successfully');
+    expect(response.body.data).not.toBeNull();
   });
 
   it('should fail to delete due to non-existent userId', async () => {
     const response = await request(app)
-      .put('/api/dashboard/delete-row')
+      .put('/api/dashboard/delete-row/0')
       .set('Authorization', token)
       .send({ data: { userId: '67b9904733b91379fcb743ae', therapistId } });
 
@@ -102,7 +102,7 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete a non-existent record due to invalid userId', async () => {
     const response = await request(app)
-      .put('/api/dashboard/delete-row')
+      .put('/api/dashboard/delete-row/0')
       .set('Authorization', token)
       .send({ data: { userId, therapistId: '67b9904733b91379fcb743ae' } });
 
@@ -121,17 +121,16 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/dashboard/delete-table')
+      .put('/api/dashboard/delete-table/0')
       .set('Authorization', token)
       .send({ data: { role: 'user', userId } });
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Records updated successfully');
   });
 
   it('should fail to delete all records user with no dashboards', async () => {
     const response = await request(app)
-      .put('/api/dashboard/delete-table')
+      .put('/api/dashboard/delete-table/0')
       .set('Authorization', token)
       .send({ data: { role: 'user', userId } });
 
@@ -141,7 +140,7 @@ describe('Dashboard Routes', () => {
 
   it('should fail to delete all records for non-existent user', async () => {
     const response = await request(app)
-      .put('/api/dashboard/delete-table')
+      .put('/api/dashboard/delete-table/0')
       .set('Authorization', token)
       .send({ data: { role: 'user', userId: '67b9904733b91379fcb743ae' } });
 
@@ -160,19 +159,24 @@ describe('Dashboard Routes', () => {
     await dashboardItem.save();
 
     const response = await request(app)
-      .put('/api/dashboard/add-field')
+      .put('/api/dashboard/add-field/0')
       .set('Authorization', token)
       .send({
-        data: { userId, therapistId, rowData: { diagnosis: 'updated' } },
+        data: {
+          role: 'user',
+          userId,
+          therapistId,
+          rowData: { diagnosis: 'updated' },
+        },
       });
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Row deleted successfully');
+    expect(response.body.data).not.toBeNull();
   });
 
   it('should fail to update a non-existent record', async () => {
     const response = await request(app)
-      .put('/api/dashboard/add-field')
+      .put('/api/dashboard/add-field/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -188,7 +192,7 @@ describe('Dashboard Routes', () => {
 
   it('should fail to update a non-existent but valid objectId', async () => {
     const response = await request(app)
-      .put('/api/dashboard/add-field')
+      .put('/api/dashboard/add-field/0')
       .set('Authorization', token)
       .send({
         data: {

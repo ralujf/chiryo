@@ -180,15 +180,17 @@ const loadTableData = (userData, offset) => {
 
 /**
  *
- * @param {Object} userData - { data: { userId, therapistId }}
+ * @param {Object} userData - { data: { role, userId, therapistId }}
+ * @param {String} offset
  * @returns - void
  * @description - finds and dereferences a specific row from a specific users view, does not delete data
  */
-const removeRowFromTable = (userData) =>
+const removeRowFromTable = (userData, offset) =>
   handleRequest({
     method: 'put',
     url: createURL({ baseURL: REMOVE_ROW_URL }),
     data: userData,
+    offset: offset,
   });
 
 /**
@@ -206,15 +208,16 @@ const clearTable = (userData) =>
 
 /**
  *
- * @param {Object} dashboardData - { data: { userId, therapistId, rowData: { ...data} }}}
+ * @param {Object} dashboardData - { data: { role, userId, therapistId, rowData: { ...data} }}}
  * @returns - void
  * @description - Update a specific item of a specific record by overwriting with new row data
  */
-const updateRowFromTable = (dashboardData) =>
+const updateRowFromTable = (dashboardData, offset) =>
   handleRequest({
     method: 'put',
     url: createURL({ baseURL: UPDATE_ROW_URL }),
     data: dashboardData,
+    offset: offset,
   });
 
 /**

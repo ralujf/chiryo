@@ -47,20 +47,32 @@ const Admin = () => {
   }, [currentPage, adminId, validated]);
 
   const handleRejectApplicant = async (email) => {
+    let offset = String(currentPage);
+
     const initResponse = await rejectApplicant({
       data: {
         email: email,
         adminId,
       },
+      offset,
     });
-    responseHandler({ res: initResponse });
+    const response = responseHandler({ res: initResponse });
+
+    setTableData(response.data);
+    setTotalPages(response.total);
   };
 
   const handleAcceptApplicant = async (data) => {
+    let offset = String(currentPage);
+
     const initResponse = await acceptApplicant({
       data: { applicationInformation: data, adminId },
+      offset,
     });
-    responseHandler({ res: initResponse });
+    const response = responseHandler({ res: initResponse });
+
+    setTableData(response.data);
+    setTotalPages(response.total);
   };
 
   return validated ? (

@@ -36,7 +36,7 @@ const fetchDashboard = async (req, res) => {
   }
 };
 
-const deleteRecord = async (req, res) => {
+const deleteRecord = async (req, res, next) => {
   const { userId, therapistId } = req.body.data;
 
   try {
@@ -56,7 +56,7 @@ const deleteRecord = async (req, res) => {
     );
 
     if (result.modifiedCount > 0) {
-      return res.status(200).send('Records updated successfully');
+      return next();
     } else {
       return res.status(404).send('No records found to update');
     }
@@ -66,7 +66,7 @@ const deleteRecord = async (req, res) => {
   }
 };
 
-const deleteAllRecords = async (req, res) => {
+const deleteAllRecords = async (req, res, next) => {
   try {
     const { role, userId } = req.body.data;
 
@@ -89,7 +89,7 @@ const deleteAllRecords = async (req, res) => {
     });
 
     if (result.modifiedCount > 0) {
-      return res.status(200).send('Records updated successfully');
+      return next();
     } else {
       return res.status(404).send('No records found to update');
     }
@@ -99,7 +99,7 @@ const deleteAllRecords = async (req, res) => {
   }
 };
 
-const updateRecord = async (req, res) => {
+const updateRecord = async (req, res, next) => {
   try {
     const { userId, therapistId, rowData } = req.body.data;
 
@@ -119,7 +119,7 @@ const updateRecord = async (req, res) => {
     );
 
     if (result.modifiedCount === 1) {
-      return res.status(200).send('Row deleted successfully');
+      return next();
     }
 
     return res.status(404).send('No row found');

@@ -71,31 +71,44 @@ const Dashboard = () => {
   const handleRowUpdate = async (rowIndex, valueArr, keyArr) => {
     const updatedTableData = [...tableData];
 
+    let offset = String(currentPage);
+
     keyArr.forEach((key, index) => {
       updatedTableData[rowIndex][key] = valueArr[index];
     });
 
-    setTableData(updatedTableData);
-
     const initResponse = await updateRowFromTable({
       data: {
+        role: role,
         userId: updatedTableData[rowIndex].userId,
         therapistId: updatedTableData[rowIndex].therapistId,
         rowData: { ...updatedTableData[rowIndex] },
       },
+      offset,
     });
 
-    responseHandler({ res: initResponse });
+    const response = responseHandler({ res: initResponse });
+
+    setTableData(response.data);
+    setTotalPages(response.total);
   };
 
   const handleRemoveRow = async ({ userId, therapistId }) => {
+    let offset = String(currentPage);
+
     const initResponse = await removeRowFromTable({
       data: {
-        userId,
-        therapistId,
+        role: role,
+        userId: userId,
+        therapistId: therapistId,
       },
+      offset,
     });
-    responseHandler({ res: initResponse });
+
+    const response = responseHandler({ res: initResponse });
+
+    setTableData(response.data);
+    setTotalPages(response.total);
   };
 
   const handleClearTable = async ({ role, userId }) => {
@@ -107,6 +120,9 @@ const Dashboard = () => {
     });
 
     responseHandler({ res: initResponse });
+
+    setTableData([]);
+    setTotalPages(0);
   };
 
   return validated ? (

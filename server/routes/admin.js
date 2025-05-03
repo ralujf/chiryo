@@ -11,8 +11,8 @@ router.put('/search-for-therapist', findTherapistsExternal);
 
 router.put('/view-all-applicants/:offset', viewApplications);
 
-router.post('/approve-applicant', approveApplication);
+router.post('/approve-applicant/:offset', approveApplication, viewApplications);
 
-router.delete('/reject-applicant', rejectApplication);
+router.delete('/reject-applicant/:offset', rejectApplication, viewApplications);
 
 module.exports = router;

@@ -103,7 +103,7 @@ describe('Admin Routes', () => {
 
   it('should approve an application', async () => {
     const response = await request(app)
-      .post('/api/admin/approve-applicant')
+      .post('/api/admin/approve-applicant/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -112,8 +112,8 @@ describe('Admin Routes', () => {
         },
       });
 
-    expect(response.status).toBe(201);
-    expect(response.text).toBe('Applicant accepted!');
+    expect(response.status).toBe(200);
+    expect(response.body.data).not.toBeNull();
   });
 
   it('should fail to approve an application with invalid email', async () => {
@@ -122,7 +122,7 @@ describe('Admin Routes', () => {
       email: 'invalid-email',
     };
     const response = await request(app)
-      .post('/api/admin/approve-applicant')
+      .post('/api/admin/approve-applicant/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -136,7 +136,7 @@ describe('Admin Routes', () => {
 
   it('should reject an application', async () => {
     const response = await request(app)
-      .delete(`/api/admin/reject-applicant`)
+      .delete(`/api/admin/reject-applicant/0`)
       .set('Authorization', token)
       .send({
         data: {
@@ -146,12 +146,11 @@ describe('Admin Routes', () => {
       });
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Applicant deleted from system');
   });
 
   it('should fail to reject a non-existent application', async () => {
     const response = await request(app)
-      .delete('/api/admin/reject-applicant')
+      .delete('/api/admin/reject-applicant/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -165,7 +164,7 @@ describe('Admin Routes', () => {
 
   it('should fail to reject a due to no admin ID', async () => {
     const response = await request(app)
-      .delete('/api/admin/reject-applicant')
+      .delete('/api/admin/reject-applicant/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -239,7 +238,7 @@ describe('Admin Routes', () => {
     });
 
     const response = await request(app)
-      .post('/api/admin/approve-applicant')
+      .post('/api/admin/approve-applicant/0')
       .set('Authorization', token)
       .send({
         data: {
@@ -258,7 +257,7 @@ describe('Admin Routes', () => {
     });
 
     const response = await request(app)
-      .delete('/api/admin/reject-applicant')
+      .delete('/api/admin/reject-applicant/0')
       .set('Authorization', token)
       .send({
         data: {

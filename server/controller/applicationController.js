@@ -46,6 +46,7 @@ const findTherapistsExternal = async (_, res) => {
 const viewApplications = async (req, res) => {
   const { offset = 0 } = req.params;
   const LIMIT = 10;
+
   let parsedOffset = parseInt(offset, 10);
 
   if (isNaN(parsedOffset)) {
@@ -70,7 +71,7 @@ const viewApplications = async (req, res) => {
   }
 };
 
-const approveApplication = async (req, res) => {
+const approveApplication = async (req, res, next) => {
   try {
     const { applicationInformation } = req.body.data;
 
@@ -111,7 +112,7 @@ const approveApplication = async (req, res) => {
       //   }
       // });
 
-      return res.status(201).send('Applicant accepted!');
+      return next();
     }
 
     return res.status(404).send('Applicant not found');
@@ -121,7 +122,7 @@ const approveApplication = async (req, res) => {
   }
 };
 
-const rejectApplication = async (req, res) => {
+const rejectApplication = async (req, res, next) => {
   try {
     const { email } = req.body.data;
 
@@ -132,7 +133,7 @@ const rejectApplication = async (req, res) => {
     if (!result) {
       return res.status(404).send('Applicant not found');
     }
-    return res.status(200).send('Applicant deleted from system');
+    return next();
   } catch (err) {
     console.error(err);
     return res
