@@ -27,6 +27,7 @@ const fetchDashboard = async (req, res) => {
   try {
     const totalRecords = await Dashboard.countDocuments(query).exec();
     const rows = await Dashboard.find(query).skip(offset).limit(LIMIT).exec();
+    console.log(rows);
     return res
       .status(200)
       .send({ data: rows, total: Math.ceil(totalRecords / LIMIT) });

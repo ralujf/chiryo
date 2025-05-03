@@ -90,7 +90,7 @@ const approveApplication = async (req, res) => {
       //   service: 'gmail',
       //   auth: {
       //     user: ADMIN,
-      //     pass: process.env.ADMINPASS,
+      //     pass: process.env.ADMIN_PASS,
       //   },
       // });
 

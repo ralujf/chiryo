@@ -9,9 +9,9 @@ const userInfo = () => {
           Why is mental health important?
         </h1>
         <p className="text-center display-6">
-          Mental health isn&apos;t just about handling big life
-          challenges—it&apos;s the foundation for everything we do, from how we
-          handle stress to how we connect with others. Just like we exercise to
+          Mental health isn&apos;t just about handling big life challenges,
+          it&apos;s the foundation for everything we do, from how we handle
+          stress to how we connect with others. Just like how we exercise to
           keep our bodies strong, taking care of our minds helps us stay
           balanced, focused, and ready to tackle whatever life throws our way.
           Whether it&apos;s therapy, self-care, or just taking a deep breath on

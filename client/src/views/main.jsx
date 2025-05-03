@@ -1,5 +1,9 @@
 import { motion } from 'motion/react';
-import { animationOptions2, animationOptions3 } from '../styles/animations';
+import {
+  animationOptions2,
+  animationOptions3,
+  animationOptions4,
+} from '../styles/animations';
 import topHero from '../assets/chiryohero1.png';
 import mentalHealthChart from '../assets/chart.png';
 import bottomHero from '../assets/chiryohero2.png';
@@ -49,7 +53,7 @@ const Main = () => {
           />
           <motion.h1
             className="position-absolute w-100 start-75 display-5 fw-bolder z-3"
-            {...animationOptions3}
+            {...animationOptions4}
             style={{
               fontSize: '20vw',
             }}

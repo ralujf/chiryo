@@ -23,7 +23,9 @@ const DashboardSidebar = (props) => {
         data-bs-target={`#offcanvasSidebar-${elementId}`}
         aria-controls={`offcanvasSidebar-${elementId}`}
       >
-        <p className="mb-0 me-2 mr-full">{username}</p>
+        <p className="mb-0 me-2 mr-full">
+          {username ? username : firstName + lastName}
+        </p>
         <i className="bi bi-person-lines-fill"></i>
       </button>
 
@@ -38,7 +40,7 @@ const DashboardSidebar = (props) => {
             className="offcanvas-title"
             id={`offcanvasUserLabel-${elementId}`}
           >
-            {username}&apos;s Profile
+            {username ? username : firstName}&apos;s Profile
           </h5>
           <button
             type="button"

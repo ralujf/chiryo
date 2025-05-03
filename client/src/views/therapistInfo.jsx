@@ -19,9 +19,9 @@ const therapistInfo = () => {
             Technology and Reliability
           </h1>
           <p className="text-center display-6">
-            Online therapy can be a different experience compared to in-person
-            sessions. Some clients may need help adjusting to a virtual setting,
-            and others may expect immediate availability.
+            Online therapy can be a different experience compared to
+            in&ndash;person sessions. Some clients may need help adjusting to a
+            virtual setting, and others may expect immediate availability.
             <br></br>
             <br></br>
             Setting clear boundaries for response times, session lengths, and
@@ -50,8 +50,8 @@ const therapistInfo = () => {
             and others may expect immediate availability. Setting clear
             boundaries for response times, session lengths, and communication
             outside of scheduled sessions is important to prevent burnout and
-            maintain a healthy work-life balance. Though this platform is not a
-            platform to host sessions, it is important to understand and
+            maintain a healthy work&ndash;life balance. Though this platform is
+            not a one to host sessions, it is important to understand and
             sympathize with any issues that the user may face with non face to
             face appointments.
           </p>
@@ -69,8 +69,8 @@ const therapistInfo = () => {
           <p className="text-center display-6">
             Chiryo is designed with security in mind, using encrypted messaging
             and video calls to protect client confidentiality. However,
-            it&apos;s still essential to follow GDPA/HIPAA (or relevant privacy
-            laws in your region) when managing client data.
+            it&apos;s still essential to follow GDPA/HIPAA (or whatever relevant
+            privacy laws in your region) when managing client data.
           </p>
         </motion.div>
       </section>
@@ -89,9 +89,9 @@ const therapistInfo = () => {
               clients as you like. Your time, your rules.
             </li>
             <li className="mb-5">
-              <b>Secure & Seamless</b> &ndash; Our platform is designed with
-              privacy and security in mind, so both you and your clients can
-              feel at ease.
+              <b>Secure & Seamless</b> &ndash; Chiryo is designed with privacy
+              and security in mind, so both you and your clients can feel at
+              ease.
             </li>
             <li>
               <b>Expand Your Reach</b> &ndash; Connect with clients beyond your

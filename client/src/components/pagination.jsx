@@ -11,7 +11,9 @@ const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
           <li className="page-item">
             <a
               href="#"
-              className="page-link"
+              className={
+                'page-link' + (currentPage === 0 ? ' disabled opacity-50' : '')
+              }
               disabled={currentPage === 0}
               onClick={() => {
                 if (currentPage > 0) {

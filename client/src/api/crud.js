@@ -45,7 +45,7 @@ const handleRequest = async ({
 }) => {
   const requestConfig = {
     method: method,
-    url: params ? url + '/' + params.offset : url,
+    url: params ? url + '/' : url,
     data: data,
     params: params,
     headers: {
@@ -103,7 +103,6 @@ const logoutUserRedirect = () => {
 
   const message = handleRequest({ method: 'post', url: LOGOUT_URL });
 
-  window.location.href = '/';
   return message;
 };
 
@@ -258,6 +257,7 @@ const loadApplicants = (adminData, offset) => {
     method: 'put',
     url: createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
     data: adminData,
+    params: { offset },
   });
 
   return response;

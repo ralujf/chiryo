@@ -19,8 +19,7 @@ const extractDetailsFromClipboard = async () => {
     }, {});
 
     return details;
-  } catch (err) {
-    console.error(err);
+  } catch {
     return null;
   }
 };

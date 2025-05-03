@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
+import { Redirect } from 'wouter';
 
 import { useIdentityStore } from '../state/state';
 import {
@@ -11,9 +12,8 @@ import {
 import { storeToken } from '../api/auth';
 import { sanitizeInput } from '../api/sanitizers';
 
-import { responseHandler } from './notifications';
+import { notifyError, responseHandler } from './notifications';
 import { NotificationContainer } from './notificationContainer';
-import { Redirect } from 'wouter';
 
 const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
   const {
@@ -45,19 +45,23 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
 
     const response = await submissionMethod({ data: sanitizedData });
 
-    const { token, userSubset } = await response.data;
+    try {
+      const { token, userSubset } = await response.data;
 
-    console.log(userSubset);
+      console.log(userSubset);
 
-    responseHandler({
-      res: response,
-      setter: setUser,
-      storeSetter: (value) => storeToken(value),
-      defaultVar: userSubset,
-      stateVar: { key: 'loginToken', value: token },
-    });
+      responseHandler({
+        res: response,
+        setter: setUser,
+        storeSetter: (value) => storeToken(value),
+        defaultVar: userSubset,
+        stateVar: { key: 'loginToken', value: token },
+      });
 
-    return <Redirect to="/dashboard" />;
+      return <Redirect to="/dashboard" />;
+    } catch (err) {
+      notifyError('Incorrect password or username: ' + err);
+    }
   };
 
   return (

@@ -23,7 +23,7 @@ const Navbar = () => {
       style={{ boxShadow: '0 2px 40px rgba(0, 0, 0, 0.1)' }}
     >
       <div className="container-fluid px-5">
-        <Link className="navbar-brand" to="/" style={{ color: 'darkgrey' }}>
+        <Link className="navbar-brand chiryo_nav_secondary_link" to="/">
           Chiryō
         </Link>
         <button
@@ -43,11 +43,10 @@ const Navbar = () => {
           aria-labelledby="navbarNavDropdown"
         >
           <ul className="navbar-nav w-full" style={{ marginRight: 'auto' }}>
-            <li className="nav-item">
+            <li className="nav-item d-flex justify-content-center align-items-center">
               <Link
-                className="nav-link"
+                className="chiryo_nav_link chiryo_rounded"
                 to="/questionnaire"
-                style={{ color: 'darkgrey' }}
               >
                 Seek Help
               </Link>
@@ -56,9 +55,8 @@ const Navbar = () => {
             {role != 'therapist' && (
               <li className="nav-item">
                 <Link
-                  className="nav-link"
+                  className="nav-link chiryo_nav_secondary_link"
                   to="/become-a-therapist"
-                  style={{ color: 'darkgrey' }}
                 >
                   Apply to be a Therapist
                 </Link>
@@ -67,7 +65,7 @@ const Navbar = () => {
 
             <li className="nav-item dropdown">
               <Link
-                className="nav-link dropdown-toggle"
+                className="nav-link chiryo_nav_secondary_link dropdown-toggle"
                 to="#"
                 id="navbarDropdownMenuLink"
                 role="button"
@@ -98,18 +96,16 @@ const Navbar = () => {
               <>
                 <li className="nav-item">
                   <Link
-                    className="nav-link"
+                    className="nav-link chiryo_nav_secondary_link"
                     to="/dashboard"
-                    style={{ color: 'darkgrey' }}
                   >
                     Dashboard
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link
-                    className="nav-link"
+                    className="nav-link chiryo_nav_secondary_link"
                     to="/profile"
-                    style={{ color: 'darkgrey' }}
                   >
                     Profile
                   </Link>
@@ -121,9 +117,8 @@ const Navbar = () => {
               <>
                 <li className="nav-item">
                   <Link
-                    className="nav-link"
+                    className="nav-link chiryo_nav_secondary_link"
                     to="/applicants"
-                    style={{ color: 'darkgrey' }}
                   >
                     Applicants
                   </Link>

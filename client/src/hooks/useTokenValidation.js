@@ -3,15 +3,13 @@ import { fetchToken } from '../api/auth';
 import { useLocation } from 'wouter';
 
 const useTokenValidation = ({
-  userId,
-  adminId,
+  userId = null,
+  adminId = null,
   storedToken = 'loginToken',
   redirect = true,
 }) => {
   const [validated, setValidated] = useState(false);
-  const [location, setLocation] = useLocation();
-
-  console.log(location);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const loadToken = () => {

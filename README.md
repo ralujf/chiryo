@@ -1,13 +1,14 @@
 ### Chiryo ###
 #### Abstract #### 
 
-Mental health is becoming an increasingly prevalent issue in society, this project explores how to address this.
+Mental health is becoming an increasingly prevalent issue in society, this project explores how to address this using a novel GenAI approach.
 
 #### Setup #####
 
 In order to run the project locally, you will require the following:
 MongoDB - Account (with set up Mongo Cluster)
 Google API Key (Google Console/Google AI Studio)
+Node - LTS
 
 The above will provide the environment variable values for:
 
@@ -23,7 +24,7 @@ JWT_SECRET=value
 // ObjectId of admin for Mongodb User
 ADMIN=value
 // Google account password
-ADMINPASS=value
+ADMIN_PASS=value
 
 // Frontend
 // Random UUID
@@ -31,6 +32,8 @@ VITE_CRYPTO_KEY=value
 ```
 NOTE: MONGO_URL is for PRODUCTION only
 EXTRA SECURITY MEASURES: ADMIN can only be created with access to the DB
+
+Ensure you have Node's LTS installed before preceding
 
 After, navigate to the main directory of the project and use the following custom scripts to download and run all the dependencies required to run the project.
 
@@ -40,6 +43,6 @@ cd client ; npm install ; npm run dev
 cd ../server ; npm install ; npm run start
 ```
 
-Within your MongoDB cluster, ensure that the ADMIN env matches the adminID of the user
+Within your MongoDB cluster, ensure that the ADMIN environment variable and adminID of the admin user match
 
-Due to the nature of this project and the rapid speed of innovation, the Gemini API may be deprecated 
+Due to the nature of this project and the rapid speed of innovation, the Gemini API may be deprecated and therefore the setup will be visible on the documentation

@@ -4,6 +4,7 @@ import { animationOptions3 } from '../styles/animations';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useIdentityStore } from '../state/state';
+import { useTokenValidation } from '../hooks/useTokenValidation';
 
 import {
   loadTableData,
@@ -20,13 +21,13 @@ import DashboardSidebar from '../components/dashboardSidebar';
 import { copyToClipBoard } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
-import { useTokenValidation } from '../hooks/useTokenValidation';
 
 const Dashboard = () => {
+  const { userId, role, firstLogin } = useIdentityStore((state) => state);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [tableData, setTableData] = useState([]);
-  const { userId, role, firstLogin } = useIdentityStore((state) => state);
 
   const validated = useTokenValidation({ userId });
 
@@ -39,7 +40,7 @@ const Dashboard = () => {
   }, [firstLogin, userId, role, validated]);
 
   useEffect(() => {
-    let offset = currentPage;
+    let offset = String(currentPage);
 
     const updateData = async () => {
       if (validated) {
@@ -67,7 +68,7 @@ const Dashboard = () => {
    * @param {Array<string>} keyArr - i.e. time, location, locationLink
    * @description - Update the state, then pass the newly updated state to an async function that will update the database
    */
-  const handleRowUpdate = (rowIndex, valueArr, keyArr) => {
+  const handleRowUpdate = async (rowIndex, valueArr, keyArr) => {
     const updatedTableData = [...tableData];
 
     keyArr.forEach((key, index) => {
@@ -76,13 +77,36 @@ const Dashboard = () => {
 
     setTableData(updatedTableData);
 
-    updateRowFromTable({
+    const initResponse = await updateRowFromTable({
       data: {
         userId: updatedTableData[rowIndex].userId,
         therapistId: updatedTableData[rowIndex].therapistId,
         rowData: { ...updatedTableData[rowIndex] },
       },
     });
+
+    responseHandler({ res: initResponse });
+  };
+
+  const handleRemoveRow = async ({ userId, therapistId }) => {
+    const initResponse = await removeRowFromTable({
+      data: {
+        userId,
+        therapistId,
+      },
+    });
+    responseHandler({ res: initResponse });
+  };
+
+  const handleClearTable = async ({ role, userId }) => {
+    const initResponse = await clearTable({
+      data: {
+        role: role,
+        userId: userId,
+      },
+    });
+
+    responseHandler({ res: initResponse });
   };
 
   return validated ? (
@@ -123,14 +147,7 @@ const Dashboard = () => {
               <th className="chiryo_primary">
                 <button
                   className="btn chiryo_rounded chiryo_primary_action w-100"
-                  onClick={() =>
-                    clearTable({
-                      data: {
-                        role: role,
-                        userId: userId,
-                      },
-                    })
-                  }
+                  onClick={() => handleClearTable({ role, userId })}
                 >
                   {' '}
                   <i className="bi bi-trash"></i> Remove All
@@ -322,11 +339,9 @@ const Dashboard = () => {
                     <button
                       className="btn btn-outline-secondary w-100 h-100"
                       onClick={() =>
-                        removeRowFromTable({
-                          data: {
-                            userId: row.userId,
-                            therapistId: row.therapistId,
-                          },
+                        handleRemoveRow({
+                          userId: row.userId,
+                          therapistId: row.therapistId,
                         })
                       }
                     >

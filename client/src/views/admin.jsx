@@ -11,10 +11,10 @@ import {
   searchForTherapists,
 } from '../api/crud';
 
+import Pagination from '../components/pagination';
 import DashboardSidebar from '../components/dashboardSidebar';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
-import Pagination from '../components/pagination';
 
 const Admin = () => {
   const { adminId } = useIdentityStore((state) => state);
@@ -23,14 +23,17 @@ const Admin = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [tableData, setTableData] = useState([]);
 
-  const validated = useTokenValidation({ userId: null, adminId });
+  const validated = useTokenValidation({ adminId });
 
   useEffect(() => {
-    let offset = currentPage;
+    let offset = String(currentPage);
 
-    const updateData = () => {
+    const updateData = async () => {
       if (validated) {
-        const initResponse = loadApplicants({ data: { adminId } }, offset);
+        const initResponse = await loadApplicants(
+          { data: { adminId } },
+          offset,
+        );
         const response = responseHandler({ res: initResponse, silence: true });
 
         console.log('Admin Data:', response);
@@ -43,21 +46,21 @@ const Admin = () => {
     updateData();
   }, [currentPage, adminId, validated]);
 
-  const handleRejectApplicant = (email) => {
-    const response = rejectApplicant({
+  const handleRejectApplicant = async (email) => {
+    const initResponse = await rejectApplicant({
       data: {
         email: email,
         adminId,
       },
     });
-    responseHandler({ res: response });
+    responseHandler({ res: initResponse });
   };
 
-  const handleAcceptApplicant = (data) => {
-    const response = acceptApplicant({
+  const handleAcceptApplicant = async (data) => {
+    const initResponse = await acceptApplicant({
       data: { applicationInformation: data, adminId },
     });
-    responseHandler({ res: response });
+    responseHandler({ res: initResponse });
   };
 
   return validated ? (
@@ -110,14 +113,14 @@ const Admin = () => {
                   <td className="d-flex flex-row gap-1 h-100">
                     <button
                       className="chiryo_secondary text-secondary w-100 p-2"
-                      onClick={() => handleRejectApplicant()}
+                      onClick={() => handleRejectApplicant(row.email)}
                     >
                       <i className="bi bi-x"></i>
                     </button>
 
                     <button
                       className="btn btn-outline-secondary w-100 p-2"
-                      onClick={() => handleAcceptApplicant()}
+                      onClick={() => handleAcceptApplicant(...row)}
                     >
                       <i className="bi bi-check2-circle"></i>
                     </button>
