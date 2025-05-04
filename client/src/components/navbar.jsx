@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
+      className="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom"
       style={{ boxShadow: '0 2px 40px rgba(0, 0, 0, 0.1)' }}
     >
       <div className="container-fluid px-5">

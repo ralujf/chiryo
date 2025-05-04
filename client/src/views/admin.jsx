@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { useIdentityStore } from '../state/state';
 import { useTokenValidation } from '../hooks/useTokenValidation';
+import { Tooltip } from 'react-tooltip';
 
 import {
   loadApplicants,
@@ -15,15 +16,19 @@ import Pagination from '../components/pagination';
 import DashboardSidebar from '../components/dashboardSidebar';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Admin = () => {
+  usePageInfo({
+    title: 'Applicants | Chiryō',
+    metaDescription: 'Accept and reject incoming applicants into Chiryō',
+  });
   const { adminId } = useIdentityStore((state) => state);
+  const validated = useTokenValidation({ adminId });
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [tableData, setTableData] = useState([]);
-
-  const validated = useTokenValidation({ adminId });
 
   useEffect(() => {
     let offset = String(currentPage);
@@ -78,11 +83,14 @@ const Admin = () => {
   return validated ? (
     <div className="container-fluid main-container vw-100 p-5 mt-5">
       <NotificationContainer />
+      <Tooltip id="name-header" />
+      <Tooltip id="accept-header" />
       <motion.h1 {...animationOptions3} className="display-3 fw-bolder mb-5">
         Applicants | {currentPage + 1}
       </motion.h1>
 
       <motion.button
+        {...animationOptions3}
         onClick={() => searchForTherapists({ data: { adminId: adminId } })}
         className="right text-dark chiryo_rounded chiryo_primary_active mb-3"
       >
@@ -101,9 +109,23 @@ const Admin = () => {
         <table className="table w-100">
           <thead className="chiryo_primary">
             <tr>
-              <th className="chiryo_primary align-middle">Name</th>
+              <th
+                className="chiryo_primary align-middle"
+                data-tooltip-id="name-header"
+                data-tooltip-content="Click the name of the applicant to find out more"
+                data-tooltip-place="top"
+              >
+                Name
+              </th>
               <th className="chiryo_primary align-middle">Qualifications</th>
-              <th className="chiryo_primary align-middle">Accept?</th>
+              <th
+                className="chiryo_primary align-middle"
+                data-tooltip-id="accept-header"
+                data-tooltip-content="Accept or reject the applicant"
+                data-tooltip-place="top"
+              >
+                Accept?
+              </th>
             </tr>
           </thead>
           <tbody>

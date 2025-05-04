@@ -1,7 +1,13 @@
 import { motion } from 'motion/react';
 import { animationOptions } from '../styles/animations';
+import usePageInfo from '../hooks/usePageInfo';
 
-const therapistInfo = () => {
+const TherapistInfo = () => {
+  usePageInfo({
+    title: 'Additional Information for Therapists | Chiryō',
+    metaDescription: '',
+  });
+
   return (
     <div className="container p-5">
       <section className="mt-5">
@@ -109,4 +115,4 @@ const therapistInfo = () => {
   );
 };
 
-export default therapistInfo;
+export default TherapistInfo;

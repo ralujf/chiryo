@@ -4,6 +4,12 @@ const Schema = mongoose.Schema;
 
 const TherapistSchema = new Schema(
   {
+    username: {
+      type: String,
+      required: true,
+      unique: false,
+      immutable: true,
+    },
     firstName: {
       type: String,
       required: true,
@@ -28,12 +34,6 @@ const TherapistSchema = new Schema(
       type: String,
       required: true,
       unique: false,
-    },
-    username: {
-      type: String,
-      required: true,
-      unique: false,
-      immutable: true,
     },
     age: {
       type: Number,

@@ -58,29 +58,6 @@ const DashboardSchema = new Schema(
       required: true,
     },
   },
-  {
-    query: {
-      returnTherapistTable() {
-        return this.where({
-          user: this.user,
-          location: this.location,
-          locationLink: this.locationLink,
-          time: this.time,
-          markResolved: this.markResolvedUser,
-          problem: this.problem,
-        });
-      },
-      returnUserTable() {
-        return this.where({
-          therapist: this.therapist,
-          location: this.location,
-          locationLink: this.locationLink,
-          time: this.time,
-          markResolved: this.markResolvedUser,
-        });
-      },
-    },
-  },
   { timestamps: true },
 );
 

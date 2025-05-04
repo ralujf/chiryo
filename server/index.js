@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 
 require('dotenv').config();
 
+const { validateAdmin, validateInternalJWT } = require('./middleware/auth');
+
 let server;
 
 const app = express();
@@ -20,8 +22,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
-const { validateAdmin, validateInternalJWT } = require('./middleware/auth');
 
 // Routers
 const adminRouter = require('./routes/admin');

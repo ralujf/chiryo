@@ -7,18 +7,25 @@ import {
 import topHero from '../assets/chiryohero1.png';
 import mentalHealthChart from '../assets/chart.png';
 import bottomHero from '../assets/chiryohero2.png';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Main = () => {
+  usePageInfo({
+    title: 'Home | Chiryō',
+    metaDescription:
+      'Get access to therapists who can provide the help you need with hassle',
+  });
+
   return (
     <div className="container-fluid p-5 mt-5">
-      <div className="row justify-content-center chiryo_rounded">
+      <div className="row justify-content-center align-items-center chiryo_rounded">
         <div className="col-md-5 chiryo_rounded p-3 p-md">
           <motion.div {...animationOptions3}>
             <img src={topHero} alt="hero" className="w-100" />
           </motion.div>
         </div>
 
-        <div className="col chiryo_rounded chiryo_primary p-3 p-md-5 h-auto d-flex flex-column justify-content-between">
+        <div className="col chiryo_rounded chiryo_primary p-3 p-md-5 h-50 d-flex flex-column justify-content-between">
           <h1 className="text-center display-4 fw-bolder mb-3">
             Find a Therapist
           </h1>
@@ -78,8 +85,8 @@ const Main = () => {
         </div>
       </div>
 
-      <div className="row justify-content-center chiryo_rounded mt-5 pt-5">
-        <div className="col mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 z-3">
+      <div className="mh-50 row justify-content-center align-items-center chiryo_rounded mt-5 pt-5">
+        <div className="col h-50 mb-3 mb-md-0 chiryo_rounded chiryo_primary p-3 p-md-5 z-3">
           <h1 className="text-center display-3 fw-bolder mb-3">
             Why Use Chiryo?
           </h1>
@@ -103,13 +110,12 @@ const Main = () => {
         </div>
       </div>
 
-      <div className="row mt-5 pt-5">
+      <div className="row position-relative mt-5 pt-5">
         <motion.a
           {...animationOptions2}
-          className="text-center fw-bold display-3 chiryo_primary_action chiryo_rounded"
+          className="text-center chiryo_button_background chiryo_rounded"
           href="mailto:r.fajobi@se21.qmul.ac.uk"
         >
-          <p style={{ color: '#212529' }}>Contact us</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="160"
@@ -121,6 +127,12 @@ const Main = () => {
             <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
           </svg>
         </motion.a>
+        <div
+          className="position-absolute start-50 translate-middle-x text-center"
+          style={{ top: '20%' }}
+        >
+          <p className="chiryo_text fw-bold display-3">Contact us</p>
+        </div>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ const UPDATE_PROFILE_URL = `${API_URL}/update-profile`;
 const NEW_PASS_URL = `${API_URL}/update-password`;
 const DELETE_USER_URL = `${API_URL}/delete-user-account`;
 const SET_LOGIN_URL = `${API_URL}/set-first-login`;
+const VIEW_INFO_URL = `${API_URL}/view-account-info`;
 
 const POST_SYMPTOMS_URL = `${API_URL}/matching/find-matches`;
 
@@ -30,6 +31,7 @@ export {
   UPDATE_PROFILE_URL,
   NEW_PASS_URL,
   REGISTER_URL,
+  VIEW_INFO_URL,
   DELETE_USER_URL,
   SET_LOGIN_URL,
   LOGIN_URL,

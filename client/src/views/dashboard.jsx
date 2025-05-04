@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
+
+import { Tooltip } from 'react-tooltip';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useIdentityStore } from '../state/state';
@@ -18,18 +20,23 @@ import {
 import Pagination from '../components/pagination';
 import Intro from '../components/intro';
 import DashboardSidebar from '../components/dashboardSidebar';
-import { copyToClipBoard } from '../components/notifications';
+import { copyToClipBoard, notifyError } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Dashboard = () => {
+  usePageInfo({
+    title: 'Dashboard | Chiryō',
+    metaDescription:
+      'See therapists that you have been matched and schedule different dates',
+  });
   const { userId, role, firstLogin } = useIdentityStore((state) => state);
+  const validated = useTokenValidation({ userId });
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [tableData, setTableData] = useState([]);
-
-  const validated = useTokenValidation({ userId });
 
   useEffect(() => {
     if (validated) {
@@ -112,11 +119,19 @@ const Dashboard = () => {
   };
 
   const handleClearTable = async ({ role, userId }) => {
+    let offset = String(currentPage);
+
+    if (tableData.length === 0) {
+      notifyError('Nothing to clear here!');
+      return null;
+    }
+
     const initResponse = await clearTable({
       data: {
         role: role,
         userId: userId,
       },
+      offset,
     });
 
     responseHandler({ res: initResponse });
@@ -128,6 +143,9 @@ const Dashboard = () => {
   return validated ? (
     <div className="container-fluid main-container vw-100 p-5 mt-5">
       {firstLogin && <Intro />}
+      <Tooltip id="status-header" />
+      <Tooltip id="time-header" />
+      <Tooltip id="meeting-header" />
       <NotificationContainer />
       <motion.h1 {...animationOptions3} className="display-3 fw-bolder mb-5">
         Dashboard | {currentPage + 1}
@@ -155,9 +173,28 @@ const Dashboard = () => {
               <th className="chiryo_primary align-middle">
                 {role === 'user' ? 'Therapist' : 'Client'}
               </th>
-              <th className="chiryo_primary align-middle">Time</th>
-              <th className="chiryo_primary align-middle">Meeting Point</th>
-              <th className="chiryo_primary align-middle">
+              <th
+                className="chiryo_primary align-middle"
+                data-tooltip-id="time-header"
+                data-tooltip-content="Pick the time at which you want to meet"
+                data-tooltip-place="top"
+              >
+                Time
+              </th>
+              <th
+                className="chiryo_primary align-middle"
+                data-tooltip-id="meeting-header"
+                data-tooltip-content="Pick the style of meeting you want"
+                data-tooltip-place="top"
+              >
+                Meeting Point
+              </th>
+              <th
+                className="chiryo_primary align-middle"
+                data-tooltip-id="status-header"
+                data-tooltip-content="Indicate how you feel about the sessions"
+                data-tooltip-place="top"
+              >
                 {role == 'therapist' ? 'Success' : 'Status'}
               </th>
               <th className="chiryo_primary">

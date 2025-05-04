@@ -24,6 +24,7 @@ import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
 import { INTRO_STATE_OPTIONS } from '../components/introState';
 import quizSound from '../assets/correct.mp3';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Questionnaire = () => {
   const { introState, setIntroState, role, userId, setUser, resetUser } =
@@ -32,6 +33,13 @@ const Questionnaire = () => {
   const { username, setUsername, password, setPassword } = useLoginStore(
     (state) => state,
   );
+
+  usePageInfo({
+    title: 'Questionnaire',
+    metaDescription:
+      'Chiryo - answer questions to matched with a therapist in the most effective way.',
+  });
+
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -158,9 +166,8 @@ const Questionnaire = () => {
         },
       });
 
-      console.log(response);
-
-      const { token, id } = await response.data;
+      const data = await response.data;
+      const { token, id } = data;
 
       if (!token || !id) {
         notifyError('Failed to create account. Please try again');
@@ -456,7 +463,7 @@ const Questionnaire = () => {
         <NotificationContainer />
         <motion.div
           {...animationOptions3}
-          className="modal d-block show mt-5"
+          className="modal fade d-block show mt-5"
           tabIndex="-1"
           role="dialog"
           aria-labelledby="credsModal"

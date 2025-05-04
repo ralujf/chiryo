@@ -420,4 +420,45 @@ describe('User Routes', () => {
 
     expect(response.status).toBe(200);
   });
+
+  it('should view the users information', async () => {
+    const response = await request(app)
+      .put('/api/view-account-info')
+      .set('Authorization', token)
+      .send({
+        data: {
+          userId: userId,
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should fail to view the users information', async () => {
+    const response = await request(app)
+      .put('/api/view-account-info')
+      .set('Authorization', token)
+      .send({
+        data: {
+          userId: userId + 'fake',
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(404);
+  });
+
+  it('should fail to view the users information due to missing information', async () => {
+    const response = await request(app)
+      .put('/api/view-account-info')
+      .set('Authorization', token)
+      .send({
+        data: {
+          role: 'user',
+        },
+      });
+
+    expect(response.status).toBe(404);
+  });
 });

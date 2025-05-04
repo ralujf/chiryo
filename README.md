@@ -6,7 +6,7 @@ Mental health is becoming an increasingly prevalent issue in society, this proje
 #### Setup #####
 
 In order to run the project locally, you will require the following:
-MongoDB - Account (with set up Mongo Cluster)
+MongoDB - Account (with set up Mongo Atlas Cluster)
 Google API Key (Google Console/Google AI Studio)
 Node - LTS
 
@@ -23,7 +23,7 @@ MONGO_URL=value
 JWT_SECRET=value
 // ObjectId of admin for Mongodb User
 ADMIN=value
-// Google account password
+// Google account password for admin user
 ADMIN_PASS=value
 
 // Frontend
@@ -43,6 +43,24 @@ cd client ; npm install ; npm run dev
 cd ../server ; npm install ; npm run start
 ```
 
+Randomized data can be added to your local cluster by running the command:
+
+```powershell
+npm run setup
+```
+in the /server directory to populate the database with an admin and predefined data in used in the /fixtures directory
+
 Within your MongoDB cluster, ensure that the ADMIN environment variable and adminID of the admin user match
 
 Due to the nature of this project and the rapid speed of innovation, the Gemini API may be deprecated and therefore the setup will be visible on the documentation
+
+#### Assets ####
+
+Image assets were either created or sourced from free to use creators on Pexels
+
+Asset References 
+https://www.pexels.com/@hillaryfox/
+https://www.pexels.com/@edmond-dantes/
+https://www.pexels.com/@ketut-subiyanto/
+https://www.pexels.com/@ian-panelo/
+https://www.pexels.com/@sachuzayn/

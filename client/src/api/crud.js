@@ -17,21 +17,20 @@ import {
   REMOVE_ALL_URL,
   SCRAPE_URL,
   SET_LOGIN_URL,
+  VIEW_INFO_URL,
 } from './config';
 import { fetchToken } from './auth';
 // eslint-disable-next-line no-unused-vars
 import * as types from './typedefs';
 
-const createURL = ({ baseURL = '', userId = null, resourceId = null } = {}) => {
+const createURL = ({ baseURL = '', resourceId = null } = {}) => {
   let url = baseURL;
-
-  if (userId) {
-    url += `/${userId}`;
-  }
 
   if (resourceId) {
     url += `/${resourceId}`;
   }
+
+  console.log(url);
 
   return url;
 };
@@ -130,6 +129,19 @@ const deleteUser = (userData) =>
 
 /**
  *
+ * @param {object} userData - { data: { userId, role }}
+ * @returns -
+ * @description - enable user to view account info
+ */
+const viewUser = (userData) =>
+  handleRequest({
+    method: 'put',
+    url: createURL({ baseURL: VIEW_INFO_URL }),
+    data: userData,
+  });
+
+/**
+ *
  * @param {Object} userData - { data: { userId, firstLogin, role }}
  * @returns
  */
@@ -165,10 +177,10 @@ const updatePassword = (profileData) =>
  * @returns {types.TableRow[]}
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
-const loadTableData = (userData, offset) => {
+const loadTableData = (userData, offset = '0') => {
   const response = handleRequest({
     method: 'put',
-    url: createURL({ baseURL: GET_TABLE_URL }),
+    url: createURL({ baseURL: GET_TABLE_URL, resourceId: offset }),
     data: userData,
     params: { offset },
   });
@@ -185,12 +197,12 @@ const loadTableData = (userData, offset) => {
  * @returns - void
  * @description - finds and dereferences a specific row from a specific users view, does not delete data
  */
-const removeRowFromTable = (userData, offset) =>
+const removeRowFromTable = (userData, offset = '0') =>
   handleRequest({
     method: 'put',
-    url: createURL({ baseURL: REMOVE_ROW_URL }),
+    url: createURL({ baseURL: REMOVE_ROW_URL, resourceId: offset }),
     data: userData,
-    offset: offset,
+    offset: { offset },
   });
 
 /**
@@ -199,11 +211,12 @@ const removeRowFromTable = (userData, offset) =>
  * @returns - void
  * @description - Removes the users reference to be able to retrieve data
  */
-const clearTable = (userData) =>
+const clearTable = (userData, offset = '0') =>
   handleRequest({
     method: 'put',
-    url: createURL({ baseURL: REMOVE_ALL_URL }),
+    url: createURL({ baseURL: REMOVE_ALL_URL, resourceId: offset }),
     data: userData,
+    offset: { offset },
   });
 
 /**
@@ -212,12 +225,12 @@ const clearTable = (userData) =>
  * @returns - void
  * @description - Update a specific item of a specific record by overwriting with new row data
  */
-const updateRowFromTable = (dashboardData, offset) =>
+const updateRowFromTable = (dashboardData, offset = '0') =>
   handleRequest({
     method: 'put',
-    url: createURL({ baseURL: UPDATE_ROW_URL }),
+    url: createURL({ baseURL: UPDATE_ROW_URL, resourceId: offset }),
     data: dashboardData,
-    offset: offset,
+    offset: { offset },
   });
 
 /**
@@ -255,7 +268,7 @@ const sendApplication = (applicationData) =>
  * @returns {Promise<Array>} - A promise that resolves to an array of data
  * @description - Fetches a list of applicants from the database for review
  */
-const loadApplicants = (adminData, offset) => {
+const loadApplicants = (adminData, offset = '0') => {
   let response = handleRequest({
     method: 'put',
     url: createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
@@ -273,11 +286,12 @@ const loadApplicants = (adminData, offset) => {
  * @returns
  * @description - Approve therapist into the account
  */
-const acceptApplicant = (adminData) =>
+const acceptApplicant = (adminData, offset = '0') =>
   handleRequest({
     method: 'post',
-    url: ACCEPT_APPLICATION_URL,
+    url: createURL({ baseURL: ACCEPT_APPLICATION_URL, resourceId: offset }),
     data: adminData,
+    params: { offset },
   });
 
 /**
@@ -287,11 +301,12 @@ const acceptApplicant = (adminData) =>
  * @returns
  * @description - Reject therapist into the account
  */
-const rejectApplicant = (adminData) =>
+const rejectApplicant = (adminData, offset = '0') =>
   handleRequest({
     method: 'delete',
-    url: REJECT_APPLICATION_URL,
+    url: createURL({ baseURL: REJECT_APPLICATION_URL, resourceId: offset }),
     data: adminData,
+    params: { offset },
   });
 
 /**
@@ -308,6 +323,7 @@ export {
   registerUser,
   deleteUser,
   loginUser,
+  viewUser,
   logoutUserRedirect,
   updatePassword,
   loadTableData,

@@ -48,8 +48,6 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
     try {
       const { token, userSubset } = await response.data;
 
-      console.log(userSubset);
-
       responseHandler({
         res: response,
         setter: setUser,
@@ -59,8 +57,8 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
       });
 
       return <Redirect to="/dashboard" />;
-    } catch (err) {
-      notifyError('Incorrect password or username: ' + err);
+    } catch {
+      notifyError('Incorrect password or username');
     }
   };
 
@@ -95,7 +93,7 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
           <label className="fw-bold">Password</label>
           <input
             type="password"
-            placeholder="•••••••••••"
+            placeholder=""
             className="w-100 form-control"
             onInput={(e) => {
               handleResponseStatus(e, errors.password);

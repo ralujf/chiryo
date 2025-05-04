@@ -84,6 +84,8 @@ const logoutUser = async (req, res) => {
       return res.status(400).send('Authorization header is required');
     }
 
+    res.removeHeader('Authorization');
+
     return res.status(200).send('Logout successful');
   } catch (err) {
     return res.status(500).send('Error logging out user');
@@ -130,7 +132,7 @@ const updateUser = async (req, res) => {
 };
 
 const setFirstLogin = async (req, res) => {
-  const { userId, firstLogin, role } = req.body.data;
+  const { userId, role } = req.body.data;
 
   if (!userId || !role) {
     return res.status(400).send('Missing userId or role');
@@ -208,6 +210,8 @@ const deleteUser = async (req, res) => {
       await (role === 'therapist' ? Therapist : User)
         .deleteOne({ username })
         .exec();
+
+      res.removeHeader('Authorization');
       return res.status(200).send('Successfully removed account');
     }
 
@@ -220,11 +224,44 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const viewUser = async (req, res) => {
+  const { userId, role } = req.body.data;
+
+  if (!userId) {
+    return res.status(400).send('Missing userId or role');
+  }
+
+  try {
+    const user =
+      role === 'therapist'
+        ? await Therapist.findById(userId).exec()
+        : await User.findById(userId).exec();
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const userInfo = {
+      username: user.username,
+      email: user.email,
+      age: user.age,
+      race: user.race,
+      problem: user?.problem,
+    };
+
+    return res.status(200).send({ userInfo });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send(`There was an error: ${err}`);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   deleteUser,
+  viewUser,
   updateUser,
   updatePassword,
   setFirstLogin,

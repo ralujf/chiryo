@@ -12,7 +12,7 @@ const KEY = CryptoJS.PBKDF2(CRYPTO_KEY, SALT, {
 
 export const privateStorage = {
   getItem: (name) => {
-    const data = localStorage.getItem(name);
+    const data = sessionStorage.getItem(name);
 
     if (!data) {
       return null;
@@ -49,7 +49,7 @@ export const privateStorage = {
       padding: CryptoJS.pad.Pkcs7,
     });
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       name,
       `${iv.toString(CryptoJS.enc.Hex)}:${encrypted.ciphertext.toString(
         CryptoJS.enc.Hex,
@@ -57,6 +57,6 @@ export const privateStorage = {
     );
   },
   removeItem: (name) => {
-    localStorage.removeItem(name);
+    sessionStorage.removeItem(name);
   },
 };

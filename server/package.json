@@ -12,7 +12,8 @@
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles",
     "test:coverage": "jest --coverage --watchAll --detectOpenHandles",
-    "start": "node --watch --trace-deprecation --trace-warnings index.js"
+    "start": "node --trace-deprecation --trace-warnings index.js",
+    "setup": "node localSetup"
   },
   "author": "JonathanFajobi",
   "license": "ISC",

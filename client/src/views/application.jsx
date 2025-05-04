@@ -9,8 +9,13 @@ import { sendApplication } from '../api/crud';
 import { handleResponseStatus } from '../components/formHelpers';
 import { responseHandler } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Application = () => {
+  usePageInfo({
+    title: 'Apply | Chiryō',
+    metaDescription: 'Apply to become a therapist on Chiryō today',
+  });
   const {
     register,
     handleSubmit,

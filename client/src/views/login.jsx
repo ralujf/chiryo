@@ -7,8 +7,13 @@ import { loginUser } from '../api/crud';
 
 import LoginForm from '../components/loginForm';
 import { Redirect } from 'wouter';
+import usePageInfo from '../hooks/usePageInfo';
 
 const Login = () => {
+  usePageInfo({
+    title: 'Login | Chiryō',
+    metaDescription: 'Login into your Chiryo account to access therapist',
+  });
   const { userId, adminId } = useIdentityStore((state) => state);
   const validated = useTokenValidation({ userId, adminId });
 

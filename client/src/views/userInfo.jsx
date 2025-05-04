@@ -1,7 +1,14 @@
 import { motion } from 'motion/react';
 import { animationOptions, animationOptions3 } from '../styles/animations';
+import usePageInfo from '../hooks/usePageInfo';
 
-const userInfo = () => {
+const UserInfo = () => {
+  usePageInfo({
+    title: 'Importance of Mental Health | Chiryō',
+    metaDescription: `Mental health is important for many reasons, 
+      COVID-19 highlighted the importance of this - here are ways of improving your own health.`,
+  });
+
   return (
     <div className="container p-5">
       <section className="mt-5">
@@ -140,4 +147,4 @@ const userInfo = () => {
   );
 };
 
-export default userInfo;
+export default UserInfo;

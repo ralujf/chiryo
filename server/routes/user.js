@@ -5,11 +5,12 @@ const {
   logoutUser,
   registerUser,
   deleteUser,
+  viewUser,
   updateUser,
   updatePassword,
   setFirstLogin,
 } = require('../controller/userController');
-const { generateJWT } = require('../middleware/auth');
+const { generateJWT, validateInternalJWT } = require('../middleware/auth');
 const router = express.Router();
 
 const MIN_LENGTH_NAME = 3;
@@ -58,6 +59,8 @@ router.post('/register', registrationValidation, concatErrors, registerUser);
 router.post('/login', loginValidation, concatErrors, loginUser, generateJWT);
 
 router.post('/logout', logoutUser);
+
+router.put('/view-account-info', validateInternalJWT, viewUser);
 
 router.patch(
   '/update-profile',
