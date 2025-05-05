@@ -39,7 +39,7 @@ const Dashboard = () => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    if (validated) {
+    if (validated && firstLogin) {
       setFirstLogin({
         data: { userId: userId, firstLogin: firstLogin, role: role },
       });
@@ -142,7 +142,7 @@ const Dashboard = () => {
 
   return validated ? (
     <div className="container-fluid main-container vw-100 p-5 mt-5">
-      {firstLogin && <Intro />}
+      {firstLogin && <Intro role={role} />}
       <Tooltip id="status-header" />
       <Tooltip id="time-header" />
       <Tooltip id="meeting-header" />

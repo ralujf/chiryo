@@ -68,6 +68,7 @@ function assertObject(objectA, objectB) {
 const returnAllTherapists = async () => {
   try {
     const therapists = await Therapist.find({});
+    console.log(therapists);
     return therapists;
   } catch (error) {
     console.error(`Error fetching therapists: ${error}`);
@@ -150,6 +151,8 @@ async function matchObject(userInfo) {
     matches: rankedTherapistByCompat,
     diagnosis: user.diagnosis,
   };
+
+  console.log(result);
 
   return result;
 }

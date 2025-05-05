@@ -168,6 +168,21 @@ describe('User Routes', () => {
     expect(response.text).toBe('User details updated successfully');
   });
 
+  it('should update user profile with empty email and no update', async () => {
+    const response = await request(app)
+      .patch('/api/update-profile')
+      .set('Authorization', token)
+      .send({
+        data: {
+          username: userFixture[2].username,
+          password: userFixture[2].password,
+        },
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('User details updated successfully');
+  });
+
   it('should fail to update user profile with wrong password', async () => {
     const response = await request(app)
       .patch('/api/update-profile')

@@ -46,6 +46,7 @@ const scrapeTherapists = async () => {
         };
         therapists.push(therapist);
       });
+      console.log(therapists);
 
       return therapists;
     });

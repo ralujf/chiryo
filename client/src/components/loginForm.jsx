@@ -54,9 +54,14 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
         storeSetter: (value) => storeToken(value),
         defaultVar: userSubset,
         stateVar: { key: 'loginToken', value: token },
+        redirect: () => {
+          if (userSubset.adminId) {
+            <Redirect to="/applicants" />;
+          } else {
+            <Redirect to="/dashboard" />;
+          }
+        },
       });
-
-      return <Redirect to="/dashboard" />;
     } catch {
       notifyError('Incorrect password or username');
     }
@@ -93,7 +98,7 @@ const LoginForm = ({ formTitle, submissionMethod, submissionText }) => {
           <label className="fw-bold">Password</label>
           <input
             type="password"
-            placeholder=""
+            placeholder="Password"
             className="w-100 form-control"
             onInput={(e) => {
               handleResponseStatus(e, errors.password);

@@ -115,10 +115,14 @@ const updateUser = async (req, res) => {
       return res.status(403).send('Incorrect password');
     }
 
+    const filteredUserInformation = Object.fromEntries(
+      Object.entries(userInformation).filter(([, value]) => value !== ''),
+    );
+
     const updateRes =
       role === 'therapist'
-        ? await Therapist.updateOne({ username }, userInformation)
-        : await User.updateOne({ username }, userInformation);
+        ? await Therapist.updateOne({ username }, filteredUserInformation)
+        : await User.updateOne({ username }, filteredUserInformation);
 
     if (updateRes.modifiedCount === 0) {
       return res.status(500).send('Failed to update');

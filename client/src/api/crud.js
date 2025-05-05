@@ -24,15 +24,11 @@ import { fetchToken } from './auth';
 import * as types from './typedefs';
 
 const createURL = ({ baseURL = '', resourceId = null } = {}) => {
-  let url = baseURL;
-
   if (resourceId) {
-    url += `/${resourceId}`;
+    return (baseURL += `/${resourceId}`);
   }
 
-  console.log(url);
-
-  return url;
+  return baseURL;
 };
 
 const handleRequest = async ({
@@ -177,18 +173,13 @@ const updatePassword = (profileData) =>
  * @returns {types.TableRow[]}
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
-const loadTableData = (userData, offset = '0') => {
-  const response = handleRequest({
+const loadTableData = (userData, offset = '0') =>
+  handleRequest({
     method: 'put',
     url: createURL({ baseURL: GET_TABLE_URL, resourceId: offset }),
     data: userData,
     params: { offset },
   });
-
-  return response;
-
-  // dashboardData.map((dashboard) => (dashboard.time = new Date(dashboard.time)));
-};
 
 /**
  *
@@ -268,16 +259,13 @@ const sendApplication = (applicationData) =>
  * @returns {Promise<Array>} - A promise that resolves to an array of data
  * @description - Fetches a list of applicants from the database for review
  */
-const loadApplicants = (adminData, offset = '0') => {
-  let response = handleRequest({
+const loadApplicants = (adminData, offset = '0') =>
+  handleRequest({
     method: 'put',
     url: createURL({ baseURL: GET_APPLICATIONS_URL, resourceId: offset }),
     data: adminData,
     params: { offset },
   });
-
-  return response;
-};
 
 /**
  *

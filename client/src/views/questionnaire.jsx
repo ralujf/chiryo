@@ -35,7 +35,7 @@ const Questionnaire = () => {
   );
 
   usePageInfo({
-    title: 'Questionnaire',
+    title: 'Questionnaire | Chiryō',
     metaDescription:
       'Chiryo - answer questions to matched with a therapist in the most effective way.',
   });
@@ -294,7 +294,7 @@ const Questionnaire = () => {
                   This information is required to find you a perfect match
                   they&apos;d really help find better matches! However, if you
                   want to skip, enter anonymous information, and press next.
-                  This will provide random results
+                  This will provide randomized results.
                 </small>
                 <div className="mb-3">
                   <label className="fw-bold">Email</label>
@@ -332,7 +332,7 @@ const Questionnaire = () => {
                     required
                     name="race"
                     data-cy="race"
-                    className="form-control"
+                    className="form-control form-select"
                     onInput={(e) => {
                       handleResponseStatus(e);
                     }}
@@ -351,7 +351,7 @@ const Questionnaire = () => {
                     required
                     name="background"
                     data-cy="background"
-                    className="form-control"
+                    className="form-control form-select"
                     onInput={(e) => {
                       handleResponseStatus(e);
                     }}
@@ -370,7 +370,7 @@ const Questionnaire = () => {
                     required
                     name="religion"
                     data-cy="religion"
-                    className="form-control"
+                    className="form-control form-select"
                     onInput={(e) => {
                       handleResponseStatus(e);
                     }}
@@ -384,19 +384,36 @@ const Questionnaire = () => {
                   </select>
                 </div>
                 <div className="mb-3">
-                  <label className="fw-bold">Location</label>
-                  <input
-                    required
+                  <label htmlFor="location" className="form-label fw-bold">
+                    Location
+                  </label>
+                  <select
                     placeholder="Location"
                     type="text"
                     name="location"
-                    className="form-control mb-3"
+                    className="form-control form-select mb-3"
                     id="locationInput"
                     data-cy="location"
                     onInput={(e) => {
                       handleResponseStatus(e);
                     }}
-                  />
+                  >
+                    <option value="">Select Location</option>
+                    <option value="london">London</option>
+                    <option value="manchester">Manchester</option>
+                    <option value="birmingham">Birmingham</option>
+                    <option value="leeds">Leeds</option>
+                    <option value="glasgow">Glasgow</option>
+                    <option value="liverpool">Liverpool</option>
+                    <option value="edinburgh">Edinburgh</option>
+                    <option value="bristol">Bristol</option>
+                    <option value="sheffield">Sheffield</option>
+                    <option value="newcastle">Newcastle</option>
+                    <option value="nottingham">Nottingham</option>
+                    <option value="cardiff">Cardiff</option>
+                    <option value="leicester">Leicester</option>
+                    <option value="brighton">Brighton</option>
+                  </select>
                 </div>
                 <div className="mb-3">
                   <p>Anything else?</p>
@@ -460,6 +477,7 @@ const Questionnaire = () => {
   } else if (introState === INTRO_STATE_OPTIONS.GENCRED) {
     return (
       <div className="min-vh-100">
+        <div className="modal-backdrop opacity-50"></div>
         <NotificationContainer />
         <motion.div
           {...animationOptions3}

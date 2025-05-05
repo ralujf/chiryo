@@ -27,10 +27,7 @@ const loginValidation = [
   body('data.password').isLength({ min: MIN_LENGTH_PASS }).escape(),
 ];
 
-const updateProfileValidation = [
-  loginValidation,
-  body('data.email').optional().isEmail().normalizeEmail(),
-];
+const updateProfileValidation = loginValidation;
 
 const updatePasswordValidation = [
   body('data.username').trim().isLength({ min: MIN_LENGTH_NAME }).escape(),
@@ -40,6 +37,7 @@ const updatePasswordValidation = [
 
 const concatErrors = (req, res, next) => {
   const errors = validationResult(req);
+  console.error(req.body.data);
   if (!errors.isEmpty()) {
     let array = errors.array();
 

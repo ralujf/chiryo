@@ -85,14 +85,14 @@ async function run(data) {
 }
 
 const combineResponse = (geminiResponse) => {
-  return geminiResponse.reduce((combined, chunk) => combined + chunk, '');
+  const combined = geminiResponse.join('');
+  const cleaned = combined.trim();
+  return cleaned;
 };
 
 const parseFromJSON = (geminiResponse) => {
-  const cleanedResponse = geminiResponse.replace(/```json\n|```/g, '');
-
   try {
-    const parsedResponse = JSON.parse(cleanedResponse);
+    const parsedResponse = JSON.parse(geminiResponse);
     return parsedResponse;
   } catch (err) {
     console.error('Failed to parse JSON response:', err);
@@ -111,6 +111,8 @@ const matchUserWithTherapist = async (req, res, next) => {
   const { age, race, religion, problem } = currentUser;
 
   const response = await run(problem);
+
+  console.log(response);
 
   if (!response || !response.diagnosis) {
     return res.status(500).send('Failed to diagnose user');

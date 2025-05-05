@@ -7,6 +7,17 @@ const { startServer, closeServer } = require('./index');
 const therapistData = require('./__fixtures__/therapists.data.json');
 const applicantData = require('./__fixtures__/applicants.data.json');
 
+const hashPasswordAndStore = async (document) => {
+  const SALT_ROUNDS = 13;
+
+  const salt = await bcrypt.genSalt(SALT_ROUNDS);
+  const hashedPassword = await bcrypt.hash(document.password, salt);
+
+  document.password = hashedPassword;
+
+  await document.save();
+};
+
 const runSetup = async () => {
   try {
     await startServer();
@@ -16,13 +27,13 @@ const runSetup = async () => {
     await User.deleteMany({});
 
     for (const therapistJSON of therapistData) {
-      const item = new Therapist(therapistJSON);
-      await item.save();
+      const user = new Therapist(therapistJSON);
+      await hashPasswordAndStore(user);
     }
 
     for (const applicantJSON of applicantData) {
-      const item = new Application(applicantJSON);
-      await item.save();
+      const user = new Application(applicantJSON);
+      await hashPasswordAndStore(user);
     }
 
     const SALT_ROUNDS = 13;

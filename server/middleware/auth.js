@@ -108,14 +108,12 @@ const validateJWT = async (req, res, next) => {
  * @returns - 403 if token present and not valid, userId 404 if token valid and not userId is not found, 500 if the user cannot be found at all
  */
 const validateInternalJWT = async (req, res, next) => {
-  console.log('Reached');
   try {
     const token = req.headers.authorization;
     const { userId } = req.body.data;
 
     const decoded = verifyToken(token);
-    console.error(userId);
-    console.error(decoded);
+
     if (!decoded || !decoded.email) {
       return res.status(403).send('Invalid token, user not authenticated');
     }

@@ -4,6 +4,7 @@ const {
   assertObject,
   matchObject,
 } = require('../utils/matchingAlgo');
+const therapistFixture = require('../__fixtures__/therapists.data.json');
 
 describe('matching algorithm tests', () => {
   const returnAllTherapists = jest.fn((data) => data);
@@ -53,17 +54,7 @@ describe('matching algorithm tests', () => {
       diagnosis: 'Anxiety',
     };
 
-    const therapists = [
-      { age: 30, race: 'Asian', religion: 'None', diagnosis: 'Anxiety' },
-      {
-        age: 40,
-        race: 'Caucasian',
-        religion: 'Christian',
-        diagnosis: 'Depression',
-      },
-    ];
-
-    returnAllTherapists.mockResolvedValue(therapists);
+    returnAllTherapists.mockResolvedValue(therapistFixture);
 
     const result = await matchObject(user);
 

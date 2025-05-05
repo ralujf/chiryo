@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { motion } from 'motion/react';
-import { animationOptions, animationOptions3 } from '../styles/animations';
+import { animationOptions3 } from '../styles/animations';
 import {
   deleteUser,
   logoutUserRedirect,
@@ -21,10 +21,23 @@ import usePageInfo from '../hooks/usePageInfo';
 
 const Profile = () => {
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: registerUpdate,
+    handleSubmit: handleSubmitUpdate,
+    formState: { errors: errorsUpdate },
   } = useForm();
+
+  const {
+    register: registerChangePass,
+    handleSubmit: handleSubmitChangePass,
+    formState: { errors: errorsChangePass },
+  } = useForm();
+
+  const {
+    register: registerDelete,
+    handleSubmit: handleSubmitDelete,
+    formState: { errors: errorsDelete },
+  } = useForm();
+
   usePageInfo({
     title: 'Profile | Chiryō',
     metaDescription: 'Update your profile information for your Chiryō account',
@@ -107,9 +120,9 @@ const Profile = () => {
           </motion.h1>
 
           <div className="d-flex flex-column flex-lg-row gap-5">
-            <aside className="w-sm-100 w-md-50">
+            <aside className="mw-sm-100 mw-md-50">
               <motion.div
-                {...animationOptions}
+                {...animationOptions3}
                 style={{ position: 'sticky', top: '0' }}
               >
                 <div className="text-start">
@@ -122,7 +135,8 @@ const Profile = () => {
                     information given in the forms.
                   </p>
                 </div>
-                <div className="card text-bg-light mb-3">
+
+                <div className="card mw-50 text-bg-light mb-3">
                   <div className="card-header">{userInfo.username}</div>
                   <div className="card-body">
                     <h5 className="card-title">Personal Info</h5>
@@ -135,7 +149,9 @@ const Profile = () => {
                     {userInfo.problem && (
                       <>
                         <hr></hr>
-                        <p className="card-text">Problem {userInfo.problem}</p>
+                        <p className="card-text" style={{ maxWidth: '100%' }}>
+                          Problem: <br></br> {userInfo.problem}
+                        </p>
                       </>
                     )}
                   </div>
@@ -150,7 +166,7 @@ const Profile = () => {
               >
                 <form
                   className="form-floating"
-                  onSubmit={handleSubmit(onSubmitUpdate)}
+                  onSubmit={handleSubmitUpdate(onSubmitUpdate)}
                 >
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label fw-bold">
@@ -162,12 +178,14 @@ const Profile = () => {
                       type="text"
                       className="form-control"
                       id="username"
-                      {...register('username', { required: true })}
+                      {...registerUpdate('username', { required: true })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.username && <span>This field is required</span>}
+                    {errorsUpdate.username && (
+                      <span>This field is required</span>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label fw-bold">
@@ -178,12 +196,14 @@ const Profile = () => {
                       type="password"
                       className="form-control"
                       id="password"
-                      {...register('password', { required: true })}
+                      {...registerUpdate('password', { required: true })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.password && <span>This field is required</span>}
+                    {errorsUpdate.password && (
+                      <span>This field is required</span>
+                    )}
                     <small>
                       The fields above are required to update the information
                       below
@@ -198,7 +218,7 @@ const Profile = () => {
                       type="email"
                       className="form-control"
                       id="email"
-                      {...register('email')}
+                      {...registerUpdate('email')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -212,7 +232,7 @@ const Profile = () => {
                       type="number"
                       className="form-control"
                       id="age"
-                      {...register('age')}
+                      {...registerUpdate('age')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -223,9 +243,9 @@ const Profile = () => {
                       Race
                     </label>
                     <select
-                      className="form-control"
+                      className="form-control form-select"
                       id="race"
-                      {...register('race')}
+                      {...registerUpdate('race')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -242,9 +262,9 @@ const Profile = () => {
                       Background
                     </label>
                     <select
-                      className="form-control"
+                      className="form-control form-select"
                       id="background"
-                      {...register('background')}
+                      {...registerUpdate('background')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -262,9 +282,9 @@ const Profile = () => {
                       Religion
                     </label>
                     <select
-                      className="form-control"
+                      className="form-control form-select"
                       id="religion"
-                      {...register('religion')}
+                      {...registerUpdate('religion')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -282,9 +302,9 @@ const Profile = () => {
                       Location
                     </label>
                     <select
-                      className="form-control"
+                      className="form-control form-select"
                       id="location"
-                      {...register('location')}
+                      {...registerUpdate('location')}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
@@ -324,7 +344,7 @@ const Profile = () => {
                 {...animationOptions3}
                 className="chiryo_rounded chiryo_primary p-3 p-md-5"
               >
-                <form onSubmit={handleSubmit(onSubmitChangePass)}>
+                <form onSubmit={handleSubmitChangePass(onSubmitChangePass)}>
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label fw-bold">
                       Username
@@ -333,12 +353,14 @@ const Profile = () => {
                       type="text"
                       className="form-control"
                       id="username"
-                      {...register('username', { required: true })}
+                      {...registerChangePass('username', { required: true })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.username && <span>This field is required</span>}
+                    {errorsChangePass.username && (
+                      <span>This field is required</span>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label htmlFor="oldPassword" className="form-label fw-bold">
@@ -348,27 +370,29 @@ const Profile = () => {
                       type="text"
                       className="form-control"
                       id="oldPassword"
-                      {...register('oldPassword', { required: true })}
+                      {...registerChangePass('oldPassword', { required: true })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.oldPassword && <span>This field is required</span>}
+                    {errorsChangePass.oldPassword && (
+                      <span>This field is required</span>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label fw-bold">New Password</label>
                     <input
                       type="password"
                       className="form-control"
-                      {...register('newPassword', {
+                      {...registerChangePass('newPassword', {
                         required: 'Password is required',
                       })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.newPassword && (
-                      <span>{errors.newPassword.message}</span>
+                    {errorsChangePass.newPassword && (
+                      <span>{errorsChangePass.newPassword.message}</span>
                     )}
                   </div>
                   <input
@@ -390,7 +414,7 @@ const Profile = () => {
                 {...animationOptions3}
                 className="chiryo_rounded chiryo_primary p-3 p-md-5"
               >
-                <form onSubmit={handleSubmit(onSubmitDelete)}>
+                <form onSubmit={handleSubmitDelete(onSubmitDelete)}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label fw-bold">
                       Email
@@ -399,26 +423,28 @@ const Profile = () => {
                       type="email"
                       className="form-control"
                       id="email"
-                      {...register('email', { required: true })}
+                      {...registerDelete('email', { required: true })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.email && <span>This field is required</span>}
+                    {errorsDelete.email && <span>This field is required</span>}
                   </div>
                   <div className="mb-3">
                     <label className="fw-bold">Password</label>
                     <input
                       type="password"
                       className="form-control"
-                      {...register('password', {
+                      {...registerDelete('password', {
                         required: 'Password is required',
                       })}
                       onInput={(e) => {
                         handleResponseStatus(e);
                       }}
                     />
-                    {errors.password && <span>{errors.password.message}</span>}
+                    {errorsDelete.password && (
+                      <span>{errorsDelete.password.message}</span>
+                    )}
                   </div>
                   <input
                     type="submit"

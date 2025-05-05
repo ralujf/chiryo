@@ -7,8 +7,9 @@ import { logoutUserRedirect } from '../api/crud';
 import { useTokenValidation } from '../hooks/useTokenValidation';
 
 const Navbar = () => {
-  const { userId, adminId, role, resetUser, setCurrentQuestionIndex } =
-    useIdentityStore((state) => state);
+  const { userId, adminId, role, resetUser } = useIdentityStore(
+    (state) => state,
+  );
 
   const validated = useTokenValidation({ userId, adminId, redirect: false });
   const [signIn, setSignIn] = useState(false);
@@ -132,7 +133,6 @@ const Navbar = () => {
               className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
               onClick={() => {
                 resetUser();
-                setCurrentQuestionIndex(0);
                 logoutUserRedirect();
               }}
             >

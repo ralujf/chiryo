@@ -1,5 +1,5 @@
 const API_URL = import.meta.env.PROD
-  ? import.meta.env.VITE_API_URL + '/api'
+  ? 'https://chiryo-backend.vercel.app/api'
   : 'http://localhost:3000/api';
 
 const REGISTER_URL = `${API_URL}/register`;

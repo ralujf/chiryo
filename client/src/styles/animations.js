@@ -42,12 +42,12 @@ const animationOptions4 = {
   initial: {
     opacity: 0,
     y: 50,
-    rotate: 180,
+    rotate: -70,
   },
   whileInView: {
     opacity: 1,
     y: 0,
-    rotate: 360,
+    rotate: 0,
     transition: { duration: 2 },
     easeOut: { duration: 0.5 },
   },
