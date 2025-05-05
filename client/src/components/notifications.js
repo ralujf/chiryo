@@ -96,10 +96,14 @@ const responseHandler = ({
         return res.data;
       }
     } else {
-      notifyError(res.message ? res.message : res.statusText);
+      if (!silence) {
+        notifyError(res.message ? res.message : res.statusText);
+      }
     }
   } catch (err) {
-    notifyError(err);
+    if (!silence) {
+      notifyError(err);
+    }
   }
 };
 

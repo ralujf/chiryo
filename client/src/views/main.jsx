@@ -4,10 +4,12 @@ import {
   animationOptions3,
   animationOptions4,
 } from '../styles/animations';
+
+import { usePageInfo } from '../hooks/usePageInfo';
+
 import topHero from '../assets/chiryohero1.png';
 import mentalHealthChart from '../assets/chart.png';
 import bottomHero from '../assets/chiryohero2.png';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Main = () => {
   usePageInfo({

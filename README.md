@@ -1,9 +1,9 @@
-### Chiryo ###
-#### Abstract #### 
+## Chiryo 
+### Abstract  
 
 Mental health is becoming an increasingly prevalent issue in society, this project explores how to address this using a novel GenAI approach.
 
-#### Setup #####
+#### Setup 
 
 In order to run the project locally, you will require the following:
 MongoDB Cluster - Account (with set up Mongo Atlas Cluster)
@@ -60,13 +60,31 @@ Within your MongoDB cluster, ensure that the ADMIN environment variable and admi
 
 Due to the nature of this project and the rapid speed of innovation, the Gemini API may be deprecated and therefore the setup will be visible on the documentation
 
-#### Assets ####
+#### Assets 
 
 Image assets were edited and either created or sourced from free to use creators on Pexels
 
-Asset References 
-https://www.pexels.com/@hillaryfox/
-https://www.pexels.com/@edmond-dantes/
-https://www.pexels.com/@ketut-subiyanto/
-https://www.pexels.com/@ian-panelo/
-https://www.pexels.com/@sachuzayn/
+#### Asset References 
+- https://www.pexels.com/@hillaryfox/
+- https://www.pexels.com/@edmond-dantes/
+- https://www.pexels.com/@ketut-subiyanto/
+- https://www.pexels.com/@ian-panelo/
+- https://www.pexels.com/@sachuzayn/
+
+#### Other (Key)
+- https://github.com/molefrog/wouter/issues/132
+- https://www.npmjs.com/package/wouter
+- https://www.npmjs.com/package/jsonwebtoken
+- https://www.npmjs.com/package/mongoose
+- https://www.npmjs.com/package/express-validator
+- https://www.npmjs.com/package/bcrypt
+- https://www.npmjs.com/package/zustand
+- https://www.npmjs.com/package/string-comparison
+- https://www.npmjs.com/package/react-tooltip
+- https://www.npmjs.com/package/react-toastify
+- https://www.npmjs.com/package/react-hook-form
+- https://www.npmjs.com/package/react-datepicker
+- https://www.npmjs.com/package/motion
+- https://www.npmjs.com/package/axios
+- https://www.npmjs.com/package/crypto-js
+- https://www.npmjs.com/package/json-server

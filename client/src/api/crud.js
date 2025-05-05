@@ -173,13 +173,17 @@ const updatePassword = (profileData) =>
  * @returns {types.TableRow[]}
  * @description - Load the paginated view for the users (therapist or client) dashboard
  */
-const loadTableData = (userData, offset = '0') =>
-  handleRequest({
+const loadTableData = async (userData, offset = '0') => {
+  const response = await handleRequest({
     method: 'put',
     url: createURL({ baseURL: GET_TABLE_URL, resourceId: offset }),
     data: userData,
     params: { offset },
   });
+
+  response.data.data.map((row) => (row.time = new Date(row.time)));
+  return response;
+};
 
 /**
  *

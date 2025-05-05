@@ -12,7 +12,9 @@ import { QUESTIONS, createProblem } from '../api/questions';
 import { registerUser } from '../api/crud';
 import { sanitizeInput } from '../api/sanitizers';
 import { fetchToken, storeToken } from '../api/auth';
+
 import { useIdentityStore, useLoginStore } from '../state/state';
+import { usePageInfo } from '../hooks/usePageInfo';
 
 import Stars from '../components/stars';
 import {
@@ -24,10 +26,9 @@ import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
 import { INTRO_STATE_OPTIONS } from '../components/introState';
 import quizSound from '../assets/correct.mp3';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Questionnaire = () => {
-  const { introState, setIntroState, role, userId, setUser, resetUser } =
+  const { introState, setIntroState, role, userId, adminId, resetUser } =
     useIdentityStore((state) => state);
 
   const { username, setUsername, password, setPassword } = useLoginStore(
@@ -43,6 +44,7 @@ const Questionnaire = () => {
   const [answers, setAnswers] = useState([]);
   const [animate, setAnimate] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [signInId, setSignInId] = useState('');
 
   const textareaRef = useRef(null);
 
@@ -139,7 +141,7 @@ const Questionnaire = () => {
   const createUser = async ({ token, userDetails, problem }) => {
     if (
       (userId && token && role != 'therapist') ||
-      (userId && token && role != 'admin')
+      (userId && token && adminId)
     ) {
       // If the user already exists, do not create another
       setIntroState(INTRO_STATE_OPTIONS.MATCH);
@@ -167,27 +169,22 @@ const Questionnaire = () => {
       });
 
       const data = await response.data;
-      const { token, id } = data;
 
-      if (!token || !id) {
+      try {
+        const { token, id } = data;
+        storeToken({ key: 'signinToken', value: token });
+
+        const res = await responseHandler({
+          res: response,
+        });
+
+        if (res) {
+          setSignInId(id);
+          setIntroState(INTRO_STATE_OPTIONS.MATCH);
+        }
+      } catch {
         notifyError('Failed to create account. Please try again');
         return null;
-      }
-
-      storeToken({ key: 'signinToken', value: token });
-
-      const res = await responseHandler({
-        res: response,
-        setter: setUser,
-        defaultVar: {
-          userId: id,
-          role: id ? 'user' : '',
-          firstLogin: true,
-        },
-      });
-
-      if (res) {
-        setIntroState(INTRO_STATE_OPTIONS.MATCH);
       }
     }
   };
@@ -471,7 +468,10 @@ const Questionnaire = () => {
   } else if (introState === INTRO_STATE_OPTIONS.MATCH) {
     return (
       <div style={{ paddingTop: '20vh' }}>
-        <IsLoading introStateOptions={INTRO_STATE_OPTIONS} />
+        <IsLoading
+          introStateOptions={INTRO_STATE_OPTIONS}
+          signInId={signInId}
+        />
       </div>
     );
   } else if (introState === INTRO_STATE_OPTIONS.GENCRED) {

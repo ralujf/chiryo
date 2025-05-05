@@ -25,7 +25,7 @@ const LOADING_TEXT = [
 
 Object.freeze(LOADING_TEXT);
 
-const IsLoading = ({ introStateOptions }) => {
+const IsLoading = ({ introStateOptions, signInId = null }) => {
   const { setIntroState, userId } = useIdentityStore((state) => state);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [text, setText] = useState('Generating your match...');
@@ -35,12 +35,16 @@ const IsLoading = ({ introStateOptions }) => {
   const LIMIT = 10;
 
   useEffect(() => {
-    if (userId) {
+    console.log(signInId);
+    console.log(userId);
+    if (signInId && !userId) {
+      matchUserWithTherapists({ data: { userId: signInId } });
+    } else if (userId) {
       matchUserWithTherapists({ data: { userId: userId } });
     } else {
       setIntroState(INTRO_STATE_OPTIONS.START);
     }
-  }, [userId, setIntroState]);
+  }, [userId, signInId, setIntroState]);
 
   useEffect(() => {
     let incrementor = Math.floor(Math.random() * (LIMIT + 1)) + 1;
@@ -100,6 +104,7 @@ const IsLoading = ({ introStateOptions }) => {
 
 IsLoading.propTypes = {
   introStateOptions: PropTypes.object.isRequired,
+  signInId: PropTypes.string,
 };
 
 export default IsLoading;

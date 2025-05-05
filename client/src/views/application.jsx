@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
 import { useForm } from 'react-hook-form';
+import { usePageInfo } from '../hooks/usePageInfo';
 
 import applicationImage from '../assets/chiryohero-application.png';
 import { sanitizeInput } from '../api/sanitizers';
@@ -9,7 +10,6 @@ import { sendApplication } from '../api/crud';
 import { handleResponseStatus } from '../components/formHelpers';
 import { responseHandler } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Application = () => {
   usePageInfo({

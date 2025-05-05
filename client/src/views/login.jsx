@@ -1,13 +1,13 @@
 import { motion } from 'motion/react';
+import { Redirect } from 'wouter';
 import { animationOptions3 } from '../styles/animations';
 
 import { useIdentityStore } from '../state/state';
+import { usePageInfo } from '../hooks/usePageInfo';
 import { useTokenValidation } from '../hooks/useTokenValidation';
 import { loginUser } from '../api/crud';
 
 import LoginForm from '../components/loginForm';
-import { Redirect } from 'wouter';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Login = () => {
   usePageInfo({

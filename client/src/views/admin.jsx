@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { Tooltip } from 'react-tooltip';
 import { animationOptions3 } from '../styles/animations';
 import { useIdentityStore } from '../state/state';
 import { useTokenValidation } from '../hooks/useTokenValidation';
-import { Tooltip } from 'react-tooltip';
+import { usePageInfo } from '../hooks/usePageInfo';
 
 import {
   loadApplicants,
@@ -16,7 +17,6 @@ import Pagination from '../components/pagination';
 import DashboardSidebar from '../components/dashboardSidebar';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Admin = () => {
   usePageInfo({

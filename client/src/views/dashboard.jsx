@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useIdentityStore } from '../state/state';
 import { useTokenValidation } from '../hooks/useTokenValidation';
+import { usePageInfo } from '../hooks/usePageInfo';
 
 import {
   loadTableData,
@@ -23,7 +24,6 @@ import DashboardSidebar from '../components/dashboardSidebar';
 import { copyToClipBoard, notifyError } from '../components/notifications';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Dashboard = () => {
   usePageInfo({
@@ -87,14 +87,14 @@ const Dashboard = () => {
     const initResponse = await updateRowFromTable({
       data: {
         role: role,
-        userId: updatedTableData[rowIndex].userId,
-        therapistId: updatedTableData[rowIndex].therapistId,
+        userId: updatedTableData[rowIndex].user._id,
+        therapistId: updatedTableData[rowIndex].therapist._id,
         rowData: { ...updatedTableData[rowIndex] },
       },
       offset,
     });
 
-    const response = responseHandler({ res: initResponse });
+    const response = responseHandler({ res: initResponse, silence: true });
 
     setTableData(response.data);
     setTotalPages(response.total);
@@ -235,16 +235,17 @@ const Dashboard = () => {
                   <td>
                     <div className="block">
                       <DatePicker
-                        selected={row.time}
+                        selected={new Date(row.time)}
                         showTimeSelect
                         timeFormat="HH:mm"
                         timeIntervals={15}
                         timeCaption="time"
                         dateFormat="Pp"
-                        onChange={(e) => {
+                        onChange={(date) => {
+                          console.log(date);
                           handleRowUpdate(
                             rowIndex,
-                            [e.currentTarget.value],
+                            [date.toISOString()],
                             ['time'],
                           );
                         }}
@@ -270,7 +271,8 @@ const Dashboard = () => {
                           <li>
                             <button
                               className="dropdown-item"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.preventDefault();
                                 let sentMail =
                                   role === 'therapist'
                                     ? row.user.email
@@ -324,14 +326,16 @@ const Dashboard = () => {
                         </ul>
                       </div>
                       <a
+                        target="_blank"
                         href={
                           row.locationLink.match(/^https?:\/\//)
                             ? `${row.locationLink}`
                             : undefined
                         }
-                        onClick={() =>
-                          copyToClipBoard(row.locationLink, row.location)
-                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          copyToClipBoard(row.locationLink, row.location);
+                        }}
                         className="chiryo_secondary text-secondary rounded py-1 px-2"
                       >
                         {row.locationLink.match(/^\d+$/) && (
@@ -393,8 +397,8 @@ const Dashboard = () => {
                       className="btn btn-outline-secondary w-100 h-100"
                       onClick={() =>
                         handleRemoveRow({
-                          userId: row.userId,
-                          therapistId: row.therapistId,
+                          userId: row.user._id,
+                          therapistId: row.therapist._id,
                         })
                       }
                     >

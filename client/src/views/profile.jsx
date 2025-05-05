@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'motion/react';
 import { animationOptions3 } from '../styles/animations';
@@ -11,13 +12,12 @@ import {
 import { sanitizeInput } from '../api/sanitizers';
 
 import { useTokenValidation } from '../hooks/useTokenValidation';
+import { usePageInfo } from '../hooks/usePageInfo';
 import { useIdentityStore } from '../state/state';
 
 import { handleResponseStatus } from '../components/formHelpers';
 import { NotificationContainer } from '../components/notificationContainer';
 import { responseHandler } from '../components/notifications';
-import { useEffect, useState } from 'react';
-import usePageInfo from '../hooks/usePageInfo';
 
 const Profile = () => {
   const {
@@ -119,24 +119,28 @@ const Profile = () => {
             Profile Information
           </motion.h1>
 
-          <div className="d-flex flex-column flex-lg-row gap-5">
-            <aside className="mw-sm-100 mw-md-50">
+          <div className="d-flex flex-column flex-md-row gap-5">
+            <aside className="mw-100 mw-md-50" style={{ maxWidth: '50%' }}>
+              <motion.div {...animationOptions3} className="text-start">
+                <p className="display-6">
+                  <i className="bi bi-card-heading"></i> Personal Info
+                </p>
+                <br></br>
+                <p>
+                  Personal info and options to manage it. You can edit
+                  information given in the forms.
+                </p>
+              </motion.div>
               <motion.div
                 {...animationOptions3}
-                style={{ position: 'sticky', top: '0' }}
+                style={{
+                  position: 'sticky',
+                  top: '0',
+                  width: '100%',
+                  maxWidth: '600px',
+                }}
               >
-                <div className="text-start">
-                  <p className="display-6">
-                    <i className="bi bi-card-heading"></i> Personal Info
-                  </p>
-                  <br></br>
-                  <p>
-                    Personal info and options to manage it. You can edit
-                    information given in the forms.
-                  </p>
-                </div>
-
-                <div className="card mw-50 text-bg-light mb-3">
+                <div className="card text-bg-light mb-3">
                   <div className="card-header">{userInfo.username}</div>
                   <div className="card-body">
                     <h5 className="card-title">Personal Info</h5>
@@ -149,8 +153,9 @@ const Profile = () => {
                     {userInfo.problem && (
                       <>
                         <hr></hr>
-                        <p className="card-text" style={{ maxWidth: '100%' }}>
-                          Problem: <br></br> {userInfo.problem}
+                        <p className="card-text">
+                          Problem: <br></br>
+                          <div>{userInfo.problem}</div>
                         </p>
                       </>
                     )}
@@ -159,7 +164,7 @@ const Profile = () => {
               </motion.div>
             </aside>
 
-            <aside>
+            <aside className="mw-md-50">
               <motion.div
                 {...animationOptions3}
                 className="chiryo_rounded chiryo_primary p-3 p-md-5"

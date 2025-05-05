@@ -13,9 +13,9 @@ const useIdentityStore = create(
       introState: INTRO_STATE_OPTIONS.START,
       resetUser: () =>
         set(() => ({
-          adminId: '',
-          userId: '',
-          role: '',
+          adminId: null,
+          userId: null,
+          role: null,
           firstLogin: null,
           introState: INTRO_STATE_OPTIONS.START,
         })),

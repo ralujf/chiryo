@@ -2,65 +2,95 @@ const puppeteer = require('puppeteer');
 const LINK = 'https://www.psychologytoday.com/gb/counselling/eng/london';
 
 const scrapeTherapists = async () => {
+  const LIMIT = 150;
+
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     defaultViewport: null,
+    slowMo: 0,
+    timeout: 600000,
+    args: ['--enable-logging', '--v=1'],
   });
 
-  const TIME_LIMIT = 30000;
-  const timeoutPromise = new Promise((resolve) =>
-    setTimeout(() => {
-      console.log('\x1b[33m%s\x1b[0m', 'STATUS: SCRAPING COMPLETE', '\x1b[0m');
-      resolve(null);
-    }, TIME_LIMIT),
-  );
-
-  const scrapingPromise = (async () => {
-    const page = await browser.newPage();
-    await page.goto(LINK, {
-      waitUntil: 'domcontentloaded',
-    });
-
-    const therapistArray = await page.evaluate(() => {
-      const generalInfo = document.querySelectorAll('.results-row.top-divider');
-      const therapists = [];
-
-      generalInfo.forEach((info) => {
-        const [firstName, lastName] = info
-          .querySelector('.profile-title')
-          .innerText.split(' ');
-        const credentials = info.querySelector(
-          '.profile-subtitle-credentials',
-        ).innerText;
-        const expertise = info.querySelector('.statements').innerText;
-        const location = info.querySelector('.profile-location').innerText;
-        const phoneNumber = info.querySelector('.results-row-phone').innerText;
-        const password = process.env.QUANT_KEY;
-        const therapist = {
-          firstName: firstName,
-          lastName: lastName,
-          phoneNumber: phoneNumber,
-          password: password,
-          expertise: expertise,
-          location: location,
-        };
-        therapists.push(therapist);
-      });
-      console.log(therapists);
-
-      return therapists;
-    });
-
-    await page.click('.page-btn.button-element.page-btn');
-
-    return therapistArray;
-  })();
-
   try {
-    const result = await Promise.race([scrapingPromise, timeoutPromise]);
+    const page = await browser.newPage();
+
+    try {
+      await page.goto(LINK, {
+        waitUntil: 'domcontentloaded',
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    let therapistArray = [];
+    let hasNextPage = true;
+
+    while (hasNextPage) {
+      await page.waitForSelector('.results-row');
+
+      const therapists = await page.evaluate(() => {
+        const generalInfo = document.querySelectorAll('.results-row');
+        const therapists = [];
+
+        generalInfo.forEach((info) => {
+          const titleElement = info.querySelector('.profile-title');
+          const credentialsElement = info.querySelector(
+            '.profile-subtitle-credentials',
+          );
+          const expertiseElement = info.querySelector('.statements');
+          const locationElement = info.querySelector('.profile-location');
+          const phoneElement = info.querySelector('.results-row-phone');
+
+          if (
+            titleElement &&
+            credentialsElement &&
+            expertiseElement &&
+            locationElement &&
+            phoneElement
+          ) {
+            const [firstName, lastName] = titleElement.innerText.split(' ');
+            const credentials = credentialsElement.innerText;
+            const expertise = expertiseElement.innerText;
+            const location = locationElement.innerText;
+            const phoneNumber = phoneElement.innerText;
+
+            therapists.push({
+              firstName,
+              lastName,
+              phoneNumber,
+              credentials,
+              expertise,
+              location,
+            });
+          }
+        });
+
+        return therapists;
+      });
+
+      if (therapistArray.length >= LIMIT) {
+        return therapistArray;
+      }
+
+      therapistArray = therapistArray.concat(therapists);
+
+      console.log(therapistArray);
+
+      const nextPageButton = await page.$('.page-btn.button-element.page-btn');
+
+      if (nextPageButton) {
+        await nextPageButton.click();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } else {
+        hasNextPage = false;
+      }
+    }
+
     await browser.close();
-    return result;
+    return therapistArray;
   } catch (error) {
+    console.error(error);
     await browser.close();
     return null;
   }

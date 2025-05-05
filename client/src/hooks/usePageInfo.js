@@ -18,4 +18,4 @@ const usePageInfo = ({ title, metaDescription }) => {
   }, [title, metaDescription]);
 };
 
-export default usePageInfo;
+export { usePageInfo };

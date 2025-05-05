@@ -2,7 +2,7 @@ const Application = require('../models/application');
 const Therapist = require('../models/therapist');
 
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
+// const nodemailer = require('nodemailer');
 const { scrapeTherapists } = require('./scraper');
 
 const sendApplication = async (req, res) => {
@@ -34,7 +34,9 @@ const findTherapistsExternal = async (_, res) => {
   try {
     const arr = await scrapeTherapists();
 
-    arr.forEach((therapist) => therapist.save());
+    arr.forEach((therapist) => {
+      therapist.save();
+    });
 
     return res.status(201).send('Therapists successfully added');
   } catch (err) {
@@ -97,7 +99,7 @@ const approveApplication = async (req, res, next) => {
 
       // const mailOptions = {
       //   from: ADMIN,
-      //   // Need to remember to turn this off and not actually send to real therapists lol
+      //   // Need to remember to turn this off and not actually send to real therapists
       //   // to: applicationInformation.email,
       //   subject: 'You are now part of Chiryo!',
       //   text: 'You are now a part of Chiryo! Welcome to the family! For next steps visit the website 🫂',

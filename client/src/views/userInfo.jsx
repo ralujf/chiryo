@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { animationOptions, animationOptions3 } from '../styles/animations';
-import usePageInfo from '../hooks/usePageInfo';
+import { usePageInfo } from '../hooks/usePageInfo';
 
 const UserInfo = () => {
   usePageInfo({

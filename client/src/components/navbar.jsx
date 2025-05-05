@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { useIdentityStore } from '../state/state';
 
@@ -12,11 +11,6 @@ const Navbar = () => {
   );
 
   const validated = useTokenValidation({ userId, adminId, redirect: false });
-  const [signIn, setSignIn] = useState(false);
-
-  useEffect(() => {
-    setSignIn(localStorage.getItem('signinToken') ? true : false);
-  }, [userId]);
 
   return (
     <nav
@@ -93,7 +87,7 @@ const Navbar = () => {
               </div>
             </li>
 
-            {validated && signIn === false && (
+            {validated && (
               <>
                 <li className="nav-item">
                   <Link
@@ -114,7 +108,7 @@ const Navbar = () => {
               </>
             )}
 
-            {adminId && signIn === false && (
+            {validated && adminId && (
               <>
                 <li className="nav-item">
                   <Link
@@ -128,7 +122,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {validated && signIn === false ? (
+          {validated ? (
             <button
               className="nav-link text-dark chiryo_rounded chiryo_primary_active fw-bold"
               onClick={() => {
