@@ -56,6 +56,19 @@ const Questionnaire = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (signInId) {
+      setIntroState(INTRO_STATE_OPTIONS.MATCH);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signInId]);
+
+  useEffect(() => {
+    if (introState === INTRO_STATE_OPTIONS.GENCRED) {
+      setSignInId('');
+    }
+  }, [introState]);
+
   const fetchPrevAnswers = (index) => {
     if (answers[index]) {
       textareaRef.current.value = answers[index];
@@ -168,20 +181,16 @@ const Questionnaire = () => {
         },
       });
 
-      const data = await response.data;
+      const { token, id } = await response.data;
 
       try {
-        const { token, id } = data;
+        setSignInId(id);
+
         storeToken({ key: 'signinToken', value: token });
 
-        const res = await responseHandler({
+        await responseHandler({
           res: response,
         });
-
-        if (res) {
-          setSignInId(id);
-          setIntroState(INTRO_STATE_OPTIONS.MATCH);
-        }
       } catch {
         notifyError('Failed to create account. Please try again');
         return null;
